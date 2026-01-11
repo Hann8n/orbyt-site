@@ -6,6 +6,9 @@ export default defineConfig({
   adapter: cloudflare({
     routes: {
       extend: {
+        include: [
+          { pattern: '/@*' }, // Explicitly include routes starting with @
+        ],
         exclude: [
           { pattern: '/css/*' },
           { pattern: '/js/*' },
