@@ -1,0 +1,171 @@
+---
+export const prerender = true;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Orbyt</title>
+    
+    <!-- Favicon setup -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="icon" href="/favicon_io/favicon.ico">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    
+    <!-- Theme colors for mobile browsers -->
+    <meta name="theme-color" content="#000000">
+    <meta name="msapplication-TileColor" content="#000000">
+    <style>
+      @font-face {
+        font-family: 'Figtree';
+        src: url('/fonts/Figtree/Figtree-VariableFont_wght.ttf') format('truetype');
+        font-weight: 300 900;
+        font-style: normal;
+        font-display: swap;
+      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #f3f5fe;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-number {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            color: #f3f5fe;
+            margin-bottom: 1rem;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .error-title {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #f3f5fe;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.25rem;
+            color: #cfd6e8;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            background: #FFFFFF;
+            color: #000000;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: 1px solid #FFFFFF;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
+        }
+
+        .nav-button:hover {
+            background: #F8F8F8;
+            border-color: #E8E8E8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .error-number {
+                font-size: 6rem;
+            }
+
+            .error-title {
+                font-size: 2rem;
+            }
+
+            .error-message {
+                font-size: 1.1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-number {
+                font-size: 4rem;
+            }
+
+            .error-title {
+                font-size: 1.5rem;
+            }
+
+            .error-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-number">404</div>
+        <h1 class="error-title">Page Not Found</h1>
+        <p class="error-message">There's nothing to see here...</p>
+        <div class="navigation-buttons">
+            <a href="/" class="nav-button">Go Home</a>
+        </div>
+    </div>
+</body>
+</html>
