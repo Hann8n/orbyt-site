@@ -8,6 +8,9 @@ header {
   padding: 20px;
   margin-bottom: 2px;
 }
+header.hidden {
+  display: none !important;
+}
 .desktop {
   display: none;
 }
@@ -64,7 +67,7 @@ header {
   width: 50%;
   margin-bottom: 2px;
   box-sizing: border-box;
-  color: white;
+  color: #f3f5fe;
   align-items: flex-end;
   padding: 0;
   overflow: hidden;
@@ -133,7 +136,7 @@ footer {
 #load-more {
   background: #888;
   border-radius: 30px;
-  color: white;
+  color: #f3f5fe;
   cursor: pointer;
   padding: 5px 20px;
   text-decoration: none;
@@ -141,7 +144,7 @@ footer {
 #load-more:hover,
 #load-more:active,
 #load-more:visited {
-  color: white;
+  color: #f3f5fe;
   text-decoration: none;
 }
 

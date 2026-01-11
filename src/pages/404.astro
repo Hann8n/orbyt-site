@@ -93,7 +93,7 @@ export const prerender = true;
 
         .nav-button {
             display: inline-flex;
-            background: #FFFFFF;
+            background: #f3f5fe;
             color: #000000;
             text-decoration: none;
             padding: 12px 20px;
@@ -102,7 +102,7 @@ export const prerender = true;
             font-size: 16px;
             font-weight: 700;
             transition: all 0.3s ease;
-            border: 1px solid #FFFFFF;
+            border: 1px solid #f3f5fe;
             align-items: center;
             justify-content: center;
             min-width: 140px;
@@ -164,7 +164,7 @@ export const prerender = true;
         <h1 class="error-title">Page Not Found</h1>
         <p class="error-message">There's nothing to see here...</p>
         <div class="navigation-buttons">
-            <a href="/" class="nav-button">Go Home</a>
+            <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
         </div>
     </div>
 </body>
