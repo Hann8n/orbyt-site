@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "include": [
+    "/_server-islands/*",
+    "/_image",
+    "/@/*",
+    "/@*"
+  ],
+  "exclude": [
+    "/",
+    "/_astro/*",
+    "/TV-Raw.png",
+    "/callback.html",
+    "/oauth-client-metadata.json",
+    "/api/*",
+    "/css/*",
+    "/favicon_io/*",
+    "/images/*",
+    "/fonts/*",
+    "/js/*",
+    "/404",
+    "/beta",
+    "/privacy",
+    "/terms",
+    "/css/*",
+    "/js/*",
+    "/images/*",
+    "/api/*",
+    "/favicon_io/*",
+    "/oauth-client-metadata.json",
+    "/callback.html"
+  ]
+}
