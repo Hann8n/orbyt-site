@@ -29,10 +29,10 @@ const likeCount = postData?.likeCount || 0;
 const ogImage = toAbsoluteUrl(thumbnail);
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 
-// Use fixed 9:16 aspect ratio dimensions for thumbnail images
-// This ensures consistent preview cards across social platforms
-const imageWidth: number = 1080;
-const imageHeight: number = 1920;
+// Use 1.91:1 aspect ratio (1200×630) for iMessage compatibility
+// This is the recommended aspect ratio for Apple Messages rich previews
+const imageWidth: number = 1200;
+const imageHeight: number = 630;
 
 // Enhanced description: like count first (if > 0), then caption snippet separated by |
 let ogDescription: string;
@@ -308,6 +308,7 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta property="og:type" content="website" />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={ogUrl} />
+    <!-- Primary image: post thumbnail -->
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:type" content={ogImageType} />
