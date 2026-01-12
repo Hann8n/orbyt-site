@@ -61,17 +61,8 @@ const ogImageAlt = caption && caption !== 'Loading post...'
   ? (caption.length > 200 ? caption.substring(0, 200) + '...' : caption)
   : `Post by @${authorHandle}`;
 
-// Title: "post by @[handle]: [description]"
-let ogTitle: string;
-if (caption && caption !== 'Loading post...') {
-  // Truncate caption to fit in title (max ~60 chars for OG, leave room for "post by @handle: ")
-  const truncatedCaption = caption.length > 50 ? caption.substring(0, 50) + '...' : caption;
-  ogTitle = `post by @${authorHandle}: ${truncatedCaption}`;
-} else {
-  ogTitle = `post by @${authorHandle}`;
-}
-// Ensure title doesn't exceed 100 characters (OG best practice)
-const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : ogTitle;
+// Title: "post by @[handle]"
+const finalOgTitle = `post by @${authorHandle}`;
 ---
 
 <!doctype html>
