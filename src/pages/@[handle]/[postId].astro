@@ -1,7 +1,7 @@
 ---
 export const prerender = false; // SSR route (shell-only, lightweight)
 
-import { fetchPost, toAbsoluteUrl } from '../../utils/bluesky-api';
+import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-api';
 
 const { handle, postId } = Astro.params;
 // handle is "wsj.com", postId is "3mc3tjpupzo2i"
@@ -32,8 +32,8 @@ const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 // Calculate thumbnail image dimensions from aspect ratio
 // Use standard thumbnail width (1080px) for vertical videos to ensure high quality
 // Most vertical video thumbnails are 1080x1920 or similar
-let imageWidth: number | undefined;
-let imageHeight: number | undefined;
+let imageWidth: number = 1200; // Default fallback
+let imageHeight: number = 1200; // Default fallback
 if (aspectRatio) {
   // Use 1080px as base width for vertical videos (9:16)
   // This provides high-quality thumbnails that work well for OG images
@@ -42,8 +42,24 @@ if (aspectRatio) {
   imageHeight = Math.round((standardWidth * aspectRatio.height) / aspectRatio.width);
 }
 
-// Description: ❤️ [like count]
-const ogDescription = `❤️ ${likeCount}`;
+// Enhanced description: include caption snippet (truncated to ~150 chars) along with like count
+let ogDescription: string;
+if (caption && caption !== 'Loading post...') {
+  const truncatedCaption = caption.length > 150 ? caption.substring(0, 150) + '...' : caption;
+  ogDescription = `${truncatedCaption} ❤️ ${likeCount}`;
+} else {
+  ogDescription = `❤️ ${likeCount}`;
+}
+// Ensure description doesn't exceed 200 characters (OG best practice)
+if (ogDescription.length > 200) {
+  ogDescription = ogDescription.substring(0, 197) + '...';
+}
+
+// Image metadata
+const ogImageType = getImageMimeType(thumbnail);
+const ogImageAlt = caption && caption !== 'Loading post...' 
+  ? (caption.length > 200 ? caption.substring(0, 200) + '...' : caption)
+  : `Post by @${authorHandle}`;
 
 // Title: "post by @[handle]: [description]"
 let ogTitle: string;
@@ -297,13 +313,10 @@ const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : o
     <meta property="og:url" content={ogUrl} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
-    <meta property="og:image:type" content="image/jpeg" />
-    {imageWidth && imageHeight && (
-      <>
-        <meta property="og:image:width" content={imageWidth.toString()} />
-        <meta property="og:image:height" content={imageHeight.toString()} />
-      </>
-    )}
+    <meta property="og:image:type" content={ogImageType} />
+    <meta property="og:image:width" content={imageWidth.toString()} />
+    <meta property="og:image:height" content={imageHeight.toString()} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
     {videoUrl && (
@@ -325,11 +338,11 @@ const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : o
     {indexedAt && (
       <meta property="og:updated_time" content={indexedAt} />
     )}
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:site" content="orbyt_app" />
-    <meta property="twitter:title" content={finalOgTitle} />
-    <meta property="twitter:description" content={ogDescription} />
-    <meta property="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="orbyt_app" />
+    <meta name="twitter:title" content={finalOgTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Favicon setup -->
     <!-- iOS apple-touch-icon (iOS doesn't support media queries, use dark icon) -->

@@ -1,7 +1,7 @@
 ---
 export const prerender = false; // SSR route (shell-only, lightweight)
 
-import { fetchProfile, toAbsoluteUrl } from '../utils/bluesky-api';
+import { fetchProfile, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
 
 const { handle } = Astro.params;
 // handle is "wsj.com" (no @ prefix)
@@ -25,6 +25,12 @@ const ogImage = toAbsoluteUrl(avatar);
 const ogUrl = `https://getorbyt.com/@${handle}`;
 const ogTitle = `@${handle} on orbyt`;
 const ogDescription = description.length > 200 ? description.substring(0, 200) + '...' : description;
+
+// OG image properties - avatars are typically square, default to 1200x1200
+const ogImageWidth = 1200;
+const ogImageHeight = 1200;
+const ogImageType = getImageMimeType(avatar);
+const ogImageAlt = description.length > 200 ? description.substring(0, 200) : description;
 ---
 
 <!doctype html>
@@ -43,15 +49,21 @@ const ogDescription = description.length > 200 ? description.substring(0, 200) +
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content={ogImageType} />
+    <meta property="og:image:width" content={ogImageWidth.toString()} />
+    <meta property="og:image:height" content={ogImageHeight.toString()} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:url" content={ogUrl} />
     <meta property="og:type" content="profile" />
+    <meta property="profile:username" content={handle} />
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
-    <meta property="twitter:card" content="summary" />
-    <meta property="twitter:site" content="orbyt_video" />
-    <meta property="twitter:title" content={ogTitle} />
-    <meta property="twitter:description" content={ogDescription} />
-    <meta property="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="orbyt_app" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 

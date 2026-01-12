@@ -168,3 +168,30 @@ export function toAbsoluteUrl(url: string | undefined, fallback: string = '/imag
   if (url.startsWith('/')) return `${SITE_URL}${url}`;
   return `${SITE_URL}/${url}`;
 }
+
+/**
+ * Detect image MIME type from URL extension
+ * @param url - Image URL
+ * @returns MIME type string (e.g., "image/jpeg", "image/png", "image/webp")
+ */
+export function getImageMimeType(url: string): string {
+  if (!url) return 'image/jpeg';
+  
+  const urlLower = url.toLowerCase();
+  
+  if (urlLower.includes('.png') || urlLower.endsWith('png')) {
+    return 'image/png';
+  }
+  if (urlLower.includes('.webp') || urlLower.endsWith('webp')) {
+    return 'image/webp';
+  }
+  if (urlLower.includes('.gif') || urlLower.endsWith('gif')) {
+    return 'image/gif';
+  }
+  if (urlLower.includes('.jpg') || urlLower.includes('.jpeg') || urlLower.endsWith('jpg') || urlLower.endsWith('jpeg')) {
+    return 'image/jpeg';
+  }
+  
+  // Default to JPEG for unknown types
+  return 'image/jpeg';
+}
