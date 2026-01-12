@@ -20,7 +20,8 @@ if (!postData) {
 // Extract metadata with fallbacks - all from postData
 const caption = postData?.text || 'Loading post...';
 const authorHandle = postData?.author?.handle || handle;
-const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/Default-avatar.png';
+// Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
+const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/post/Orbyt-with-background.png';
 const videoUrl = postData?.embed?.videoUrl;
 const aspectRatio = postData?.embed?.aspectRatio;
 const createdAt = postData?.createdAt; // ISO 8601 timestamp

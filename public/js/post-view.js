@@ -651,7 +651,8 @@ function updateMetaTags(postData, authorProfile) {
   const handle = authorProfile?.handle || '';
   const avatar = authorProfile?.avatar || '';
   const videoData = extractVideoData(postData);
-  const thumbnail = videoData?.thumbnail || avatar;
+  // Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
+  const thumbnail = videoData?.thumbnail || avatar || '/images/post/Orbyt-with-background.png';
 
   // Update title
   document.title = `@${handle} - ${caption.substring(0, 50)}${caption.length > 50 ? '...' : ''}`;
@@ -665,11 +666,18 @@ function updateMetaTags(postData, authorProfile) {
   }
   metaDesc.setAttribute('content', caption);
 
+  // Convert relative thumbnail URL to absolute if needed
+  const ogImageUrl = thumbnail.startsWith('http') 
+    ? thumbnail 
+    : thumbnail.startsWith('/') 
+      ? `https://getorbyt.com${thumbnail}`
+      : `https://getorbyt.com/${thumbnail}`;
+
   // Update OG tags
   const ogTags = {
     'og:title': `@${handle} on orbyt`,
     'og:description': caption,
-    'og:image': thumbnail,
+    'og:image': ogImageUrl,
     'og:type': 'video.other',
     'og:url': window.location.href,
   };
@@ -700,7 +708,7 @@ function updateMetaTags(postData, authorProfile) {
     'twitter:card': 'summary_large_image',
     'twitter:title': `@${handle} on orbyt`,
     'twitter:description': caption,
-    'twitter:image': thumbnail,
+    'twitter:image': ogImageUrl,
   };
 
   Object.entries(twitterTags).forEach(([name, content]) => {

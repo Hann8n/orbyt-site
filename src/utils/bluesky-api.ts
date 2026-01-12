@@ -162,7 +162,7 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
   }
 }
 
-export function toAbsoluteUrl(url: string | undefined, fallback: string = '/images/Default-avatar.png'): string {
+export function toAbsoluteUrl(url: string | undefined, fallback: string = '/images/post/Orbyt-with-background.png'): string {
   if (!url) return `${SITE_URL}${fallback}`;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('/')) return `${SITE_URL}${url}`;
