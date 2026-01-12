@@ -650,12 +650,32 @@ function updateMetaTags(postData, authorProfile) {
   const authorName = authorProfile?.displayName || authorProfile?.handle || 'Unknown';
   const handle = authorProfile?.handle || '';
   const avatar = authorProfile?.avatar || '';
+  const likeCount = postData.likeCount || 0;
   const videoData = extractVideoData(postData);
   // Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
   const thumbnail = videoData?.thumbnail || avatar || '/images/post/Orbyt-with-background.png';
 
   // Update title
   document.title = `@${handle} - ${caption.substring(0, 50)}${caption.length > 50 ? '...' : ''}`;
+
+  // Format description: likes on first line, caption on second line
+  let ogDescription;
+  if (caption && caption !== 'Bluesky video post') {
+    if (likeCount > 0) {
+      const likeCountLine = `❤️ ${likeCount}`;
+      const maxCaptionLength = 200 - likeCountLine.length - 1; // -1 for newline
+      const truncatedCaption = caption.length > maxCaptionLength 
+        ? caption.substring(0, maxCaptionLength - 3) + '...' 
+        : caption;
+      ogDescription = `${likeCountLine}\n${truncatedCaption}`;
+    } else {
+      ogDescription = caption.length > 200 
+        ? caption.substring(0, 197) + '...' 
+        : caption;
+    }
+  } else {
+    ogDescription = likeCount > 0 ? `❤️ ${likeCount}` : '';
+  }
 
   // Update meta description
   let metaDesc = document.querySelector('meta[name="description"]');
@@ -676,7 +696,7 @@ function updateMetaTags(postData, authorProfile) {
   // Update OG tags
   const ogTags = {
     'og:title': `@${handle} on orbyt`,
-    'og:description': caption,
+    'og:description': ogDescription,
     'og:image': ogImageUrl,
     'og:type': 'video.other',
     'og:url': window.location.href,
@@ -707,7 +727,7 @@ function updateMetaTags(postData, authorProfile) {
   const twitterTags = {
     'twitter:card': 'summary_large_image',
     'twitter:title': `@${handle} on orbyt`,
-    'twitter:description': caption,
+    'twitter:description': ogDescription,
     'twitter:image': ogImageUrl,
   };
 
