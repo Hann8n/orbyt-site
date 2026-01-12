@@ -670,7 +670,7 @@ function updateMetaTags(postData, authorProfile) {
     'og:title': `@${handle} on orbyt`,
     'og:description': caption,
     'og:image': thumbnail,
-    'og:type': 'video.other',
+    'og:type': 'website',
     'og:url': window.location.href,
   };
 
@@ -683,17 +683,6 @@ function updateMetaTags(postData, authorProfile) {
     }
     tag.setAttribute('content', content);
   });
-
-  // Add video-specific OG tags if video URL exists
-  if (videoData?.url) {
-    let ogVideo = document.querySelector('meta[property="og:video"]');
-    if (!ogVideo) {
-      ogVideo = document.createElement('meta');
-      ogVideo.setAttribute('property', 'og:video');
-      document.head.appendChild(ogVideo);
-    }
-    ogVideo.setAttribute('content', videoData.url);
-  }
 
   // Update Twitter card tags
   const twitterTags = {
