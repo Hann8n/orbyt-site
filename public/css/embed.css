@@ -45,26 +45,9 @@ video {
   object-fit: contain;
 }
 
-/*--- Thumbnail Image ---*/
-#post-thumbnail {
-  width: 100%;
-  height: auto;
-  display: block;
-  z-index: -1;
-  aspect-ratio: 9 / 16;
-  object-fit: contain;
-}
-
 /* Mobile: full width video with 9:16 aspect ratio */
 @media screen and (max-width: 699px) {
   video {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    aspect-ratio: 9 / 16;
-    object-fit: contain;
-  }
-  #post-thumbnail {
     width: 100%;
     height: auto;
     max-width: 100%;
@@ -76,12 +59,6 @@ video {
 /* Desktop: video sizing handled by JS (postResizer), but ensure aspect ratio is maintained */
 @media screen and (min-width: 700px) {
   video {
-    width: auto;
-    height: auto;
-    aspect-ratio: 9 / 16;
-    object-fit: contain;
-  }
-  #post-thumbnail {
     width: auto;
     height: auto;
     aspect-ratio: 9 / 16;
