@@ -26,7 +26,7 @@
 }
 .post-overlay {
   background: linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.2) 43.67%, rgba(0, 0, 0, 0) 96.43%);
-  color: #ffffff;
+  color: #f3f5fe;
   padding: 100px 20px 20px;
   position: absolute;
   bottom: 0;
@@ -73,7 +73,7 @@ video {
 #mute-toggle {
   background: rgba(0,0,0,0.5);
   border-radius: 35px;
-  color: white;
+  color: #f3f5fe;
   display: flex;
   line-height: 1;
   letter-spacing: 1.6px;
@@ -154,7 +154,7 @@ video {
   white-space: nowrap;
 }
 .post-author .username a {
-  color: white;
+  color: #f3f5fe;
   text-decoration: none;
   display: block;
   overflow: hidden;
@@ -163,7 +163,7 @@ video {
 .post-author .username a:active,
 .post-author .username a:hover,
 .post-author .username a:visited {
-  color: white;
+  color: #f3f5fe;
   text-decoration: none;
 }
 .likes {

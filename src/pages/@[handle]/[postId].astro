@@ -1,8 +1,31 @@
 ---
 export const prerender = false; // SSR route (shell-only, lightweight)
 
+import { fetchPost, toAbsoluteUrl } from '../../utils/bluesky-api';
+
 const { handle, postId } = Astro.params;
 // handle is "wsj.com", postId is "3mc3tjpupzo2i"
+
+// Fetch post data for Open Graph metadata
+let postData = null;
+if (handle && postId) {
+  postData = await fetchPost(handle, postId);
+}
+
+// Return 404 if post not found
+if (!postData) {
+  return new Response(null, { status: 404 });
+}
+
+// Extract metadata with fallbacks - all from postData
+const caption = postData?.text || 'Loading post...';
+const authorHandle = postData?.author?.handle || handle;
+const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/Default-avatar.png';
+const ogImage = toAbsoluteUrl(thumbnail);
+const ogTitle = `@${authorHandle} on orbyt`;
+const ogDescription = caption.length > 200 ? caption.substring(0, 200) + '...' : caption;
+const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
+const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 100) + '...' : ogTitle;
 ---
 
 <!doctype html>
@@ -29,78 +52,6 @@ const { handle, postId } = Astro.params;
       html, body {
         overflow-x: hidden;
         overflow-y: hidden;
-      }
-      /* Error screen styling - matches 404 page */
-      #error {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        color: #f3f5fe;
-        text-align: center;
-        padding: 2rem;
-        background: #000000;
-      }
-      .error-title {
-        font-family: 'Figtree', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 900;
-        color: #f3f5fe;
-        margin-bottom: 1rem;
-      }
-      #error-message {
-        font-family: 'Figtree', sans-serif;
-        font-size: 1.25rem;
-        color: #cfd6e8;
-        opacity: 0.9;
-        margin-bottom: 2rem;
-        line-height: 1.6;
-      }
-      .error-nav-button {
-        display: inline-flex;
-        background: #f3f5fe;
-        color: #000000;
-        text-decoration: none;
-        padding: 12px 20px;
-        border-radius: 999px;
-        font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 16px;
-        font-weight: 700;
-        transition: all 0.3s ease;
-        border: 1px solid #f3f5fe;
-        align-items: center;
-        justify-content: center;
-        min-width: 140px;
-      }
-      .error-nav-button:hover {
-        background: #F8F8F8;
-        border-color: #E8E8E8;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      }
-      @media (max-width: 768px) {
-        #error {
-          padding: 1rem;
-        }
-        .error-title {
-          font-size: 2rem;
-        }
-        #error-message {
-          font-size: 1.1rem;
-        }
-        .error-nav-button {
-          width: 100%;
-          max-width: 280px;
-        }
-      }
-      @media (max-width: 480px) {
-        .error-title {
-          font-size: 1.5rem;
-        }
-        #error-message {
-          font-size: 1rem;
-        }
       }
       /* Override embed.css logo img styles - we don't have img tags anymore */
       .logo img,
@@ -305,9 +256,23 @@ const { handle, postId } = Astro.params;
       }
     </style>
 
-    <title>Loading post...</title>
-    <meta name="description" content="Loading post...">
+    <title>{finalOgTitle}</title>
+    <meta name="description" content={ogDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content={finalOgTitle} />
+    <meta property="og:type" content="video.other" />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="orbyt" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:site" content="orbyt_app" />
+    <meta property="twitter:title" content={finalOgTitle} />
+    <meta property="twitter:description" content={ogDescription} />
+    <meta property="twitter:image" content={ogImage} />
 
     <!-- Favicon setup -->
     <!-- iOS apple-touch-icon (iOS doesn't support media queries, use dark icon) -->
@@ -329,27 +294,10 @@ const { handle, postId } = Astro.params;
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon_dark/favicon-32x32.png" media="(prefers-color-scheme: dark)">
     
     <link rel="manifest" href="/favicon_io/site.webmanifest">
-
-    <!-- Meta tags will be updated dynamically by post-view.js -->
-    <meta property="og:title" content="Loading post..." />
-    <meta property="og:type" content="video.other" />
-    <meta property="og:description" content="Loading post..." />
-    <meta property="og:url" content="" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:site" content="orbyt_app" />
-    <meta property="twitter:title" content="Loading post..." />
-    <meta property="twitter:description" content="Loading post..." />
 </head>
 
 <body>
   <div id="background"> </div>
-
-  <!-- Error state -->
-  <div id="error">
-    <h1 class="error-title">Post Not Found</h1>
-    <p id="error-message">Failed to load post</p>
-    <a href="#" onclick="window.history.back(); return false;" class="error-nav-button">Go Back</a>
-  </div>
 
   <!-- Post content (hidden initially) -->
   <div id="post" class="hidden" data-handle={handle} data-post-id={postId}>

@@ -1,8 +1,30 @@
 ---
 export const prerender = false; // SSR route (shell-only, lightweight)
 
+import { fetchProfile, toAbsoluteUrl } from '../utils/bluesky-api';
+
 const { handle } = Astro.params;
 // handle is "wsj.com" (no @ prefix)
+
+// Fetch profile data for Open Graph metadata
+let profileData = null;
+if (handle) {
+  profileData = await fetchProfile(handle);
+}
+
+// Return 404 if profile not found
+if (!profileData) {
+  return new Response(null, { status: 404 });
+}
+
+// Extract metadata with fallbacks
+const displayName = profileData?.displayName || handle || 'Profile';
+const description = profileData?.description || `Profile page for @${handle}`;
+const avatar = profileData?.avatar || '/images/Default-avatar.png';
+const ogImage = toAbsoluteUrl(avatar);
+const ogUrl = `https://getorbyt.com/@${handle}`;
+const ogTitle = `${displayName} on orbyt`;
+const ogDescription = description.length > 200 ? description.substring(0, 200) + '...' : description;
 ---
 
 <!doctype html>
@@ -16,16 +38,20 @@ const { handle } = Astro.params;
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/profile.css">
 
-    <title>Profile</title>
-    <meta name="description" content="Profile page">
-    <meta property="og:title" content="Profile" />
-    <meta property="og:description" content="Profile page" />
-    <meta property="og:image" content="/images/Default-avatar.png" />
+    <title>{ogTitle}</title>
+    <meta name="description" content={ogDescription} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="orbyt" />
+    <meta property="og:locale" content="en_US" />
     <meta property="twitter:card" content="summary" />
     <meta property="twitter:site" content="orbyt_video" />
-    <meta property="twitter:title" content="Profile" />
-    <meta property="twitter:description" content="Profile page" />
-    <meta property="twitter:image" content="/images/Default-avatar.png" />
+    <meta property="twitter:title" content={ogTitle} />
+    <meta property="twitter:description" content={ogDescription} />
+    <meta property="twitter:image" content={ogImage} />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -101,74 +127,6 @@ const { handle } = Astro.params;
           font-size: 32px;
         }
       }
-      /* Profile error styling - simple centered text */
-      .profile-error-container {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 4rem 2rem;
-        text-align: center;
-      }
-      .profile-error-message {
-        font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 3rem;
-        color: #f3f5fe;
-        line-height: 1.5;
-        margin-bottom: 3rem;
-        font-weight: 500;
-      }
-      .profile-error-hints {
-        font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 1.375rem;
-        color: #cfd6e8;
-        line-height: 1.8;
-        max-width: 650px;
-        text-align: left;
-      }
-      .profile-error-hints .hint {
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
-        position: relative;
-      }
-      .profile-error-hints .hint:before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        color: #cfd6e8;
-        font-size: 1.5rem;
-        line-height: 1.4;
-      }
-      .profile-error-hints .hint:last-child {
-        margin-bottom: 0;
-      }
-      .profile-error-hints .hint-text {
-        font-weight: 500;
-        color: #f3f5fe;
-      }
-      .profile-error-hints .hint-example {
-        font-size: 0.95rem;
-        color: #a8b4d0;
-        font-style: italic;
-        font-weight: 400;
-      }
-      @media (max-width: 768px) {
-        .profile-error-container {
-          padding: 2rem 1rem;
-        }
-        .profile-error-message {
-          font-size: 2.25rem;
-          margin-bottom: 2rem;
-        }
-        .profile-error-hints {
-          font-size: 1.125rem;
-          text-align: left;
-        }
-        .profile-error-hints .hint-example {
-          font-size: 0.9rem;
-        }
-      }
     </style>
 </head>
 
@@ -220,19 +178,6 @@ const { handle } = Astro.params;
     </header>
 
     <div class="posts">
-      <div id="profile-error" style="display: none;" class="profile-error-container">
-        <p id="profile-error-message" class="profile-error-message">We couldn't find that account</p>
-        <div class="profile-error-hints">
-          <div class="hint">
-            <span class="hint-text">Make sure to include the @ symbol before the handle</span>
-            <span class="hint-example"> (e.g., getorbyt.com/@example.com)</span>
-          </div>
-          <div class="hint">
-            <span class="hint-text">Use the complete handle including all parts</span>
-            <span class="hint-example"> (e.g., @example.orbyt.video)</span>
-          </div>
-        </div>
-      </div>
       <footer style="display: none;">
         <a id="load-more">Load more</a>
       </footer>

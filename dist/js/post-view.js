@@ -441,100 +441,198 @@ function escapeHtmlAttribute(text) {
 }
 
 /**
- * Convert URLs to clickable abbreviated links
- * @param {string} text - Text containing URLs
- * @returns {string} Text with URLs converted to abbreviated clickable links (HTML)
+ * Convert URLs and email addresses to clickable links
+ * @param {string} text - Text containing URLs and emails
+ * @returns {string} Text with URLs and emails converted to clickable links (HTML)
  */
 function convertUrlsToLinks(text) {
   if (!text) return text;
 
-  // Match URLs (http/https/www patterns)
+  // Email regex pattern - matches standard email addresses
+  // Pattern: local-part@domain
+  const emailRegex =
+    /[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*/g;
+
+  // URL regex pattern - matches URLs (we'll filter out emails manually)
   // This matches: http://example.com, https://example.com, www.example.com, example.com/path
   const urlRegex =
     /(https?:\/\/)?(www\.)?([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}([\/][^\s]*)?/gi;
 
-  const parts = [];
-  let lastIndex = 0;
+  // Collect all matches (emails and URLs) with their positions
+  const matches = [];
   let match;
 
-  // Find all URLs and split text around them
+  // Find all email addresses
+  while ((match = emailRegex.exec(text)) !== null) {
+    matches.push({
+      type: 'email',
+      index: match.index,
+      length: match[0].length,
+      text: match[0],
+    });
+  }
+
+  // Find all URLs (but skip if they're part of an email)
   while ((match = urlRegex.exec(text)) !== null) {
-    // Add text before URL (escaped)
+    const urlStart = match.index;
+    const urlEnd = match.index + match[0].length;
+
+    // Check if this URL overlaps with any email match
+    const isPartOfEmail = matches.some(
+      emailMatch =>
+        emailMatch.type === 'email' &&
+        urlStart >= emailMatch.index &&
+        urlEnd <= emailMatch.index + emailMatch.length
+    );
+
+    // Also check if URL starts right after @ (which would be part of email)
+    const charBefore = urlStart > 0 ? text[urlStart - 1] : '';
+    if (charBefore === '@') {
+      continue; // Skip URLs that follow @ symbol (likely part of email)
+    }
+
+    if (!isPartOfEmail) {
+      matches.push({
+        type: 'url',
+        index: urlStart,
+        length: match[0].length,
+        text: match[0],
+      });
+    }
+  }
+
+  // Sort matches by position
+  matches.sort((a, b) => a.index - b.index);
+
+  // Remove overlapping matches (keep emails over URLs)
+  const filteredMatches = [];
+  for (let i = 0; i < matches.length; i++) {
+    const current = matches[i];
+    let hasOverlap = false;
+
+    for (let j = 0; j < filteredMatches.length; j++) {
+      const existing = filteredMatches[j];
+      const currentEnd = current.index + current.length;
+      const existingEnd = existing.index + existing.length;
+
+      // Check for overlap
+      if (
+        (current.index >= existing.index && current.index < existingEnd) ||
+        (currentEnd > existing.index && currentEnd <= existingEnd) ||
+        (current.index <= existing.index && currentEnd >= existingEnd)
+      ) {
+        // If current is an email and existing is a URL, replace it
+        if (current.type === 'email' && existing.type === 'url') {
+          filteredMatches[j] = current;
+          hasOverlap = true;
+          break;
+        } else {
+          // Otherwise skip current match
+          hasOverlap = true;
+          break;
+        }
+      }
+    }
+
+    if (!hasOverlap) {
+      filteredMatches.push(current);
+    }
+  }
+
+  // Re-sort after filtering
+  filteredMatches.sort((a, b) => a.index - b.index);
+
+  // Build output by processing matches in order
+  const parts = [];
+  let lastIndex = 0;
+
+  for (const match of filteredMatches) {
+    // Add text before match (escaped)
     if (match.index > lastIndex) {
       parts.push(escapeHtml(text.substring(lastIndex, match.index)));
     }
 
-    // Process URL
-    try {
-      let urlString = match[0];
+    // Process match based on type
+    if (match.type === 'email') {
+      // Create mailto link for email
+      const escapedEmail = escapeHtmlAttribute(match.text);
+      const escapedDisplayText = escapeHtml(match.text);
+      parts.push(
+        `<a href="mailto:${escapedEmail}" style="color: inherit; text-decoration: underline;">${escapedDisplayText}</a>`
+      );
+    } else {
+      // Process URL
+      try {
+        let urlString = match.text;
 
-      // If it doesn't have a protocol, add https:// for URL parsing
-      if (!match[0].startsWith('http://') && !match[0].startsWith('https://')) {
-        urlString = 'https://' + match[0];
-      }
+        // If it doesn't have a protocol, add https:// for URL parsing
+        if (!match.text.startsWith('http://') && !match.text.startsWith('https://')) {
+          urlString = 'https://' + match.text;
+        }
 
-      // Try to parse as URL to extract hostname and path
-      const url = new URL(urlString);
-      let domain = url.hostname;
+        // Try to parse as URL to extract hostname and path
+        const url = new URL(urlString);
+        let domain = url.hostname;
 
-      // Remove www prefix
-      if (domain.toLowerCase().startsWith('www.')) {
-        domain = domain.substring(4);
-      }
+        // Remove www prefix
+        if (domain.toLowerCase().startsWith('www.')) {
+          domain = domain.substring(4);
+        }
 
-      // Get pathname (first part after /) for abbreviation
-      const pathname = url.pathname;
-      let displayText = domain;
-      if (pathname && pathname.length > 1) {
-        // Get first segment of path (up to 8 characters) then add ...
-        const pathSegment = pathname.substring(1).split('/')[0];
-        if (pathSegment && pathSegment.length > 0) {
+        // Get pathname (first part after /) for abbreviation
+        const pathname = url.pathname;
+        let displayText = domain;
+        if (pathname && pathname.length > 1) {
+          // Get first segment of path (up to 8 characters) then add ...
+          const pathSegment = pathname.substring(1).split('/')[0];
+          if (pathSegment && pathSegment.length > 0) {
+            const shortPath = pathSegment.length > 8 ? pathSegment.substring(0, 8) : pathSegment;
+            displayText = `${domain}/${shortPath}...`;
+          }
+        }
+
+        // Create link with abbreviated text
+        const finalUrl = match.text.startsWith('http') ? match.text : urlString;
+        const escapedUrl = escapeHtmlAttribute(finalUrl);
+        const escapedDisplayText = escapeHtml(displayText);
+        parts.push(
+          `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${escapedDisplayText}</a>`
+        );
+      } catch (e) {
+        // If URL parsing fails, fall back to manual extraction
+        let cleanMatch = match.text;
+        // Remove protocol
+        cleanMatch = cleanMatch.replace(/^https?:\/\//i, '');
+        // Remove www prefix
+        cleanMatch = cleanMatch.replace(/^www\./i, '');
+        // Extract domain and path parts
+        const parts_match = cleanMatch.split('/');
+        const domain = parts_match[0];
+        let displayText = domain;
+        // Check if there's a path after the domain
+        if (parts_match.length > 1 && parts_match[1]) {
+          const pathSegment = parts_match[1];
           const shortPath = pathSegment.length > 8 ? pathSegment.substring(0, 8) : pathSegment;
           displayText = `${domain}/${shortPath}...`;
         }
+        const urlString = match.text.startsWith('http') ? match.text : 'https://' + match.text;
+        const escapedUrl = escapeHtmlAttribute(urlString);
+        const escapedDisplayText = escapeHtml(displayText);
+        parts.push(
+          `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${escapedDisplayText}</a>`
+        );
       }
-
-      // Create link with abbreviated text
-      const finalUrl = match[0].startsWith('http') ? match[0] : urlString;
-      const escapedUrl = escapeHtmlAttribute(finalUrl);
-      const escapedDisplayText = escapeHtml(displayText);
-      parts.push(
-        `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${escapedDisplayText}</a>`
-      );
-    } catch (e) {
-      // If URL parsing fails, fall back to manual extraction
-      let cleanMatch = match[0];
-      // Remove protocol
-      cleanMatch = cleanMatch.replace(/^https?:\/\//i, '');
-      // Remove www prefix
-      cleanMatch = cleanMatch.replace(/^www\./i, '');
-      // Extract domain and path parts
-      const parts_match = cleanMatch.split('/');
-      const domain = parts_match[0];
-      let displayText = domain;
-      // Check if there's a path after the domain
-      if (parts_match.length > 1 && parts_match[1]) {
-        const pathSegment = parts_match[1];
-        const shortPath = pathSegment.length > 8 ? pathSegment.substring(0, 8) : pathSegment;
-        displayText = `${domain}/${shortPath}...`;
-      }
-      const urlString = match[0].startsWith('http') ? match[0] : 'https://' + match[0];
-      const escapedUrl = escapeHtmlAttribute(urlString);
-      const escapedDisplayText = escapeHtml(displayText);
-      parts.push(
-        `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${escapedDisplayText}</a>`
-      );
     }
 
-    lastIndex = match.index + match[0].length;
+    lastIndex = match.index + match.length;
   }
 
-  // Add remaining text after last URL (escaped)
+  // Add remaining text after last match (escaped)
   if (lastIndex < text.length) {
     parts.push(escapeHtml(text.substring(lastIndex)));
   }
 
-  // If no URLs found, just escape and return the text
+  // If no matches found, just escape and return the text
   if (parts.length === 0) {
     return escapeHtml(text);
   }
@@ -856,7 +954,7 @@ function renderPost(postData, authorProfile) {
     const videoWrapper = document.getElementById('post-media');
     if (videoWrapper) {
       videoWrapper.innerHTML = `
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center; padding: 20px;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #f3f5fe; text-align: center; padding: 20px;">
           <p>No video available for this post</p>
           <a href="/@${encodeURIComponent(handle)}" style="color: #FF876C; text-decoration: underline;">Back to profile</a>
         </div>
