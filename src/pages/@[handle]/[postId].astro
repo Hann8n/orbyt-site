@@ -42,13 +42,27 @@ if (aspectRatio) {
   imageHeight = Math.round((standardWidth * aspectRatio.height) / aspectRatio.width);
 }
 
-// Enhanced description: include caption snippet (truncated to ~150 chars) along with like count
+// Enhanced description: like count first (if > 0), then caption snippet separated by |
 let ogDescription: string;
 if (caption && caption !== 'Loading post...') {
-  const truncatedCaption = caption.length > 150 ? caption.substring(0, 150) + '...' : caption;
-  ogDescription = `${truncatedCaption} ❤️ ${likeCount}`;
+  if (likeCount > 0) {
+    // Reserve space for "❤️ {likeCount} | " (approx 12-18 chars depending on like count)
+    const likeCountPrefix = `❤️ ${likeCount} | `;
+    const maxCaptionLength = 200 - likeCountPrefix.length;
+    const truncatedCaption = caption.length > maxCaptionLength 
+      ? caption.substring(0, maxCaptionLength - 3) + '...' 
+      : caption;
+    ogDescription = `${likeCountPrefix}${truncatedCaption}`;
+  } else {
+    // No like count, just show caption
+    const truncatedCaption = caption.length > 200 
+      ? caption.substring(0, 197) + '...' 
+      : caption;
+    ogDescription = truncatedCaption;
+  }
 } else {
-  ogDescription = `❤️ ${likeCount}`;
+  // No caption, only show like count if > 0
+  ogDescription = likeCount > 0 ? `❤️ ${likeCount}` : '';
 }
 // Ensure description doesn't exceed 200 characters (OG best practice)
 if (ogDescription.length > 200) {
@@ -303,7 +317,6 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={ogUrl} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:type" content={ogImageType} />
     <meta property="og:image:width" content={imageWidth.toString()} />
     <meta property="og:image:height" content={imageHeight.toString()} />
@@ -315,25 +328,35 @@ const finalOgTitle = `post by @${authorHandle}`;
         <meta property="og:video" content={videoUrl} />
         <meta property="og:video:secure_url" content={videoUrl} />
         <meta property="og:video:type" content="application/vnd.apple.mpegurl" />
-        {aspectRatio && (
-          <>
-            <meta property="og:video:width" content={aspectRatio.width.toString()} />
-            <meta property="og:video:height" content={aspectRatio.height.toString()} />
-          </>
-        )}
+        <meta property="og:video:width" content={aspectRatio ? aspectRatio.width.toString() : '1080'} />
+        <meta property="og:video:height" content={aspectRatio ? aspectRatio.height.toString() : '1920'} />
       </>
-    )}
-    {createdAt && (
-      <meta property="video:release_date" content={createdAt} />
     )}
     {indexedAt && (
       <meta property="og:updated_time" content={indexedAt} />
     )}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="orbyt_app" />
-    <meta name="twitter:title" content={finalOgTitle} />
-    <meta name="twitter:description" content={ogDescription} />
-    <meta name="twitter:image" content={ogImage} />
+    {videoUrl ? (
+      <>
+        <meta name="twitter:card" content="player" />
+        <meta name="twitter:site" content="orbyt_app" />
+        <meta name="twitter:title" content={finalOgTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:player" content={ogUrl} />
+        <meta name="twitter:player:width" content={aspectRatio ? Math.max(300, aspectRatio.width).toString() : '1080'} />
+        <meta name="twitter:player:height" content={aspectRatio ? aspectRatio.height.toString() : '1920'} />
+        <meta name="twitter:player:stream" content={videoUrl} />
+        <meta name="twitter:player:stream:content_type" content="application/vnd.apple.mpegurl" />
+      </>
+    ) : (
+      <>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="orbyt_app" />
+        <meta name="twitter:title" content={finalOgTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={ogImage} />
+      </>
+    )}
 
     <!-- Favicon setup -->
     <!-- iOS apple-touch-icon (iOS doesn't support media queries, use dark icon) -->
