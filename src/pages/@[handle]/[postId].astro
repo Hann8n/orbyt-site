@@ -29,10 +29,8 @@ const likeCount = postData?.likeCount || 0;
 const ogImage = toAbsoluteUrl(thumbnail);
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 
-// Use 1.91:1 aspect ratio (1200×630) for iMessage compatibility
-// This is the recommended aspect ratio for Apple Messages rich previews
-const imageWidth: number = 1200;
-const imageHeight: number = 630;
+// Don't specify image dimensions - let platforms use the actual image dimensions
+// Specifying incorrect dimensions causes iMessage display issues
 
 // Enhanced description: like count first (if > 0), then caption snippet separated by |
 let ogDescription: string;
@@ -312,8 +310,6 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:type" content={ogImageType} />
-    <meta property="og:image:width" content={imageWidth.toString()} />
-    <meta property="og:image:height" content={imageHeight.toString()} />
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
@@ -321,7 +317,6 @@ const finalOgTitle = `post by @${authorHandle}`;
       <meta property="og:updated_time" content={indexedAt} />
     )}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="orbyt_app" />
     <meta name="twitter:title" content={finalOgTitle} />
     <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={ogImage} />
