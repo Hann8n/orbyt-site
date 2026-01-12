@@ -25,18 +25,21 @@ const videoUrl = postData?.embed?.videoUrl;
 const aspectRatio = postData?.embed?.aspectRatio;
 const createdAt = postData?.createdAt; // ISO 8601 timestamp
 const indexedAt = postData?.indexedAt; // ISO 8601 timestamp
+const likeCount = postData?.likeCount || 0;
 const ogImage = toAbsoluteUrl(thumbnail);
-const ogDescription = caption.length > 200 ? caption.substring(0, 200) + '...' : caption;
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 
-// Create post-specific title: "Caption... - @handle on orbyt" or fallback to handle
+// Description: ❤️ [like count]
+const ogDescription = `❤️ ${likeCount}`;
+
+// Title: "post by @[handle]: [description]"
 let ogTitle: string;
 if (caption && caption !== 'Loading post...') {
-  // Truncate caption to fit in title (max ~60 chars for OG, leave room for " - @handle on orbyt")
-  const truncatedCaption = caption.length > 40 ? caption.substring(0, 40) + '...' : caption;
-  ogTitle = `${truncatedCaption} - @${authorHandle} on orbyt`;
+  // Truncate caption to fit in title (max ~60 chars for OG, leave room for "post by @handle: ")
+  const truncatedCaption = caption.length > 50 ? caption.substring(0, 50) + '...' : caption;
+  ogTitle = `post by @${authorHandle}: ${truncatedCaption}`;
 } else {
-  ogTitle = `@${authorHandle} on orbyt`;
+  ogTitle = `post by @${authorHandle}`;
 }
 // Ensure title doesn't exceed 100 characters (OG best practice)
 const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : ogTitle;

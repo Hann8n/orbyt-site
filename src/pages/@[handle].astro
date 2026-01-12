@@ -23,7 +23,7 @@ const description = profileData?.description || `Profile page for @${handle}`;
 const avatar = profileData?.avatar || '/images/Default-avatar.png';
 const ogImage = toAbsoluteUrl(avatar);
 const ogUrl = `https://getorbyt.com/@${handle}`;
-const ogTitle = `${displayName} on orbyt`;
+const ogTitle = `@${handle} on orbyt`;
 const ogDescription = description.length > 200 ? description.substring(0, 200) + '...' : description;
 ---
 

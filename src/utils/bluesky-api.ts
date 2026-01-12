@@ -14,6 +14,7 @@ export interface PostData {
   text: string;
   createdAt?: string; // ISO 8601 timestamp from post.record.createdAt
   indexedAt?: string; // ISO 8601 timestamp from post.indexedAt
+  likeCount?: number; // Number of likes
   author: {
     handle: string;
     displayName?: string;
@@ -144,6 +145,7 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
       text: post.record?.text || '',
       createdAt: post.record?.createdAt, // ISO 8601 timestamp
       indexedAt: post.indexedAt, // ISO 8601 timestamp
+      likeCount: post.likeCount || 0,
       author: {
         handle: post.author?.handle || handle,
         displayName: post.author?.displayName,
