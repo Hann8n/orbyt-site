@@ -12,6 +12,8 @@ export interface ProfileData {
 
 export interface PostData {
   text: string;
+  createdAt?: string; // ISO 8601 timestamp from post.record.createdAt
+  indexedAt?: string; // ISO 8601 timestamp from post.indexedAt
   author: {
     handle: string;
     displayName?: string;
@@ -19,6 +21,11 @@ export interface PostData {
   };
   embed?: {
     thumbnail?: string;
+    videoUrl?: string;
+    aspectRatio?: {
+      width: number;
+      height: number;
+    };
   };
 }
 
@@ -87,17 +94,44 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
     
     const post = data.posts[0];
     
-    // Extract thumbnail from embed - handle video embed structure
+    // Extract video data from embed - handle video embed structure
     let thumbnail: string | undefined;
+    let videoUrl: string | undefined;
+    let aspectRatio: { width: number; height: number } | undefined;
+    
     if (post.embed) {
       // Check for video embed (app.bsky.embed.video#view)
-      if (post.embed.$type === 'app.bsky.embed.video#view' && post.embed.thumbnail) {
+      if (post.embed.$type === 'app.bsky.embed.video#view') {
         thumbnail = post.embed.thumbnail;
+        aspectRatio = post.embed.aspectRatio;
+        
+        // Extract video URL - prefer playlist if available, otherwise construct from CID/DID
+        if (post.embed.playlist) {
+          videoUrl = post.embed.playlist;
+        } else if (post.embed.cid && post.uri) {
+          const didMatch = post.uri.match(/did:plc:[^/]+/);
+          const did = didMatch ? didMatch[0] : null;
+          if (did) {
+            videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did)}/${encodeURIComponent(post.embed.cid)}/playlist.m3u8`;
+          }
+        }
       }
       // Check for recordWithMedia format
       else if (post.embed.$type === 'app.bsky.embed.recordWithMedia' && post.embed.media) {
-        if (post.embed.media.$type === 'app.bsky.embed.video#view' && post.embed.media.thumbnail) {
+        if (post.embed.media.$type === 'app.bsky.embed.video#view') {
           thumbnail = post.embed.media.thumbnail;
+          aspectRatio = post.embed.media.aspectRatio;
+          
+          // Extract video URL
+          if (post.embed.media.playlist) {
+            videoUrl = post.embed.media.playlist;
+          } else if (post.embed.media.cid && post.uri) {
+            const didMatch = post.uri.match(/did:plc:[^/]+/);
+            const did = didMatch ? didMatch[0] : null;
+            if (did) {
+              videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did)}/${encodeURIComponent(post.embed.media.cid)}/playlist.m3u8`;
+            }
+          }
         }
       }
       // Check for images embed (fallback)
@@ -108,6 +142,8 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
     
     return {
       text: post.record?.text || '',
+      createdAt: post.record?.createdAt, // ISO 8601 timestamp
+      indexedAt: post.indexedAt, // ISO 8601 timestamp
       author: {
         handle: post.author?.handle || handle,
         displayName: post.author?.displayName,
@@ -115,6 +151,8 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
       },
       embed: {
         thumbnail,
+        videoUrl,
+        aspectRatio,
       },
     };
   } catch {

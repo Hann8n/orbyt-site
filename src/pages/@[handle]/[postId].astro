@@ -21,11 +21,25 @@ if (!postData) {
 const caption = postData?.text || 'Loading post...';
 const authorHandle = postData?.author?.handle || handle;
 const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/Default-avatar.png';
+const videoUrl = postData?.embed?.videoUrl;
+const aspectRatio = postData?.embed?.aspectRatio;
+const createdAt = postData?.createdAt; // ISO 8601 timestamp
+const indexedAt = postData?.indexedAt; // ISO 8601 timestamp
 const ogImage = toAbsoluteUrl(thumbnail);
-const ogTitle = `@${authorHandle} on orbyt`;
 const ogDescription = caption.length > 200 ? caption.substring(0, 200) + '...' : caption;
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
-const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 100) + '...' : ogTitle;
+
+// Create post-specific title: "Caption... - @handle on orbyt" or fallback to handle
+let ogTitle: string;
+if (caption && caption !== 'Loading post...') {
+  // Truncate caption to fit in title (max ~60 chars for OG, leave room for " - @handle on orbyt")
+  const truncatedCaption = caption.length > 40 ? caption.substring(0, 40) + '...' : caption;
+  ogTitle = `${truncatedCaption} - @${authorHandle} on orbyt`;
+} else {
+  ogTitle = `@${authorHandle} on orbyt`;
+}
+// Ensure title doesn't exceed 100 characters (OG best practice)
+const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : ogTitle;
 ---
 
 <!doctype html>
@@ -268,6 +282,25 @@ const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 100) + '...' : 
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
+    {videoUrl && (
+      <>
+        <meta property="og:video" content={videoUrl} />
+        <meta property="og:video:secure_url" content={videoUrl} />
+        <meta property="og:video:type" content="application/vnd.apple.mpegurl" />
+        {aspectRatio && (
+          <>
+            <meta property="og:video:width" content={aspectRatio.width.toString()} />
+            <meta property="og:video:height" content={aspectRatio.height.toString()} />
+          </>
+        )}
+      </>
+    )}
+    {createdAt && (
+      <meta property="video:release_date" content={createdAt} />
+    )}
+    {indexedAt && (
+      <meta property="og:updated_time" content={indexedAt} />
+    )}
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:site" content="orbyt_app" />
     <meta property="twitter:title" content={finalOgTitle} />
