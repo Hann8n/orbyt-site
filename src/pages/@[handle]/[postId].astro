@@ -29,6 +29,19 @@ const likeCount = postData?.likeCount || 0;
 const ogImage = toAbsoluteUrl(thumbnail);
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 
+// Calculate thumbnail image dimensions from aspect ratio
+// Use standard thumbnail width (1080px) for vertical videos to ensure high quality
+// Most vertical video thumbnails are 1080x1920 or similar
+let imageWidth: number | undefined;
+let imageHeight: number | undefined;
+if (aspectRatio) {
+  // Use 1080px as base width for vertical videos (9:16)
+  // This provides high-quality thumbnails that work well for OG images
+  const standardWidth = 1080;
+  imageWidth = standardWidth;
+  imageHeight = Math.round((standardWidth * aspectRatio.height) / aspectRatio.width);
+}
+
 // Description: ❤️ [like count]
 const ogDescription = `❤️ ${likeCount}`;
 
@@ -283,6 +296,12 @@ const finalOgTitle = ogTitle.length > 100 ? ogTitle.substring(0, 97) + '...' : o
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={ogUrl} />
     <meta property="og:image" content={ogImage} />
+    {imageWidth && imageHeight && (
+      <>
+        <meta property="og:image:width" content={imageWidth.toString()} />
+        <meta property="og:image:height" content={imageHeight.toString()} />
+      </>
+    )}
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
     {videoUrl && (
