@@ -29,8 +29,18 @@ const likeCount = postData?.likeCount || 0;
 const ogImage = toAbsoluteUrl(thumbnail);
 const ogUrl = `https://getorbyt.com/@${handle}/${postId}`;
 
-// Don't specify image dimensions - let platforms use the actual image dimensions
-// Specifying incorrect dimensions causes iMessage display issues
+// Calculate thumbnail image dimensions from aspect ratio
+// Use standard thumbnail width (1080px) for vertical videos to ensure high quality
+// Most vertical video thumbnails are 1080x1920 or similar
+let imageWidth: number = 1200; // Default fallback
+let imageHeight: number = 1200; // Default fallback
+if (aspectRatio) {
+  // Use 1080px as base width for vertical videos (9:16)
+  // This provides high-quality thumbnails that work well for OG images
+  const standardWidth = 1080;
+  imageWidth = standardWidth;
+  imageHeight = Math.round((standardWidth * aspectRatio.height) / aspectRatio.width);
+}
 
 // Enhanced description: like count first (if > 0), then caption snippet separated by |
 let ogDescription: string;
@@ -303,16 +313,30 @@ const finalOgTitle = `post by @${authorHandle}`;
 
     <!-- Open Graph meta tags -->
     <meta property="og:title" content={finalOgTitle} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="video.other" />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={ogUrl} />
-    <!-- Primary image: post thumbnail -->
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:type" content={ogImageType} />
+    <meta property="og:image:width" content={imageWidth.toString()} />
+    <meta property="og:image:height" content={imageHeight.toString()} />
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:site_name" content="orbyt" />
     <meta property="og:locale" content="en_US" />
+    {videoUrl && (
+      <>
+        <meta property="og:video" content={videoUrl} />
+        <meta property="og:video:secure_url" content={videoUrl} />
+        <meta property="og:video:type" content="application/vnd.apple.mpegurl" />
+        {aspectRatio && (
+          <>
+            <meta property="og:video:width" content={aspectRatio.width.toString()} />
+            <meta property="og:video:height" content={aspectRatio.height.toString()} />
+          </>
+        )}
+      </>
+    )}
     {indexedAt && (
       <meta property="og:updated_time" content={indexedAt} />
     )}
