@@ -651,7 +651,8 @@ function updateMetaTags(postData, authorProfile) {
   const handle = authorProfile?.handle || '';
   const avatar = authorProfile?.avatar || '';
   const videoData = extractVideoData(postData);
-  const thumbnail = videoData?.thumbnail || avatar;
+  // Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
+  const thumbnail = videoData?.thumbnail || avatar || '/images/post/Orbyt-with-background.png';
 
   // Update title
   document.title = `@${handle} - ${caption.substring(0, 50)}${caption.length > 50 ? '...' : ''}`;
@@ -665,11 +666,18 @@ function updateMetaTags(postData, authorProfile) {
   }
   metaDesc.setAttribute('content', caption);
 
+  // Convert relative thumbnail URL to absolute if needed
+  const ogImageUrl = thumbnail.startsWith('http') 
+    ? thumbnail 
+    : thumbnail.startsWith('/') 
+      ? `https://getorbyt.com${thumbnail}`
+      : `https://getorbyt.com/${thumbnail}`;
+
   // Update OG tags
   const ogTags = {
     'og:title': `@${handle} on orbyt`,
     'og:description': caption,
-    'og:image': thumbnail,
+    'og:image': ogImageUrl,
     'og:type': 'video.other',
     'og:url': window.location.href,
   };
@@ -700,7 +708,7 @@ function updateMetaTags(postData, authorProfile) {
     'twitter:card': 'summary_large_image',
     'twitter:title': `@${handle} on orbyt`,
     'twitter:description': caption,
-    'twitter:image': thumbnail,
+    'twitter:image': ogImageUrl,
   };
 
   Object.entries(twitterTags).forEach(([name, content]) => {
@@ -783,6 +791,8 @@ function renderPost(postData, authorProfile) {
 
   // Setup video player
   const videoEl = document.getElementById('vinit');
+  const thumbnailEl = document.getElementById('video-thumbnail');
+  
   if (videoEl && videoData && videoData.url) {
     console.log('Video data found:', {
       url: videoData.url,
@@ -794,28 +804,67 @@ function renderPost(postData, authorProfile) {
     videoEl.setAttribute('autoplay', '');
     videoEl.setAttribute('loop', '');
     videoEl.setAttribute('playsinline', '');
+    videoEl.setAttribute('preload', 'auto'); // Start loading immediately
     videoEl.muted = true; // Required for autoplay in most browsers
 
-    // Set poster first
-    if (videoData.thumbnail) {
+    // Set thumbnail as background overlay that stays visible
+    // Start video loading immediately, don't wait for thumbnail
+    if (videoData.thumbnail && thumbnailEl) {
+      thumbnailEl.style.backgroundImage = `url(${videoData.thumbnail})`;
+      thumbnailEl.classList.remove('hidden');
+      
+      // Set poster as well for initial display
       videoEl.poster = videoData.thumbnail;
 
-      // Wait for poster to load before initializing responsive sizing (original pattern)
+      // Load thumbnail in parallel, don't block video loading
       const thumb = new Image();
       thumb.onload = function () {
         thumb.onload = null;
-        // Call postResizer after poster loads (matches original pattern)
+        // Re-call postResizer after thumbnail loads to ensure proper sizing
+        // (initial call happens immediately below for faster startup)
         postResizer();
       };
       thumb.onerror = function () {
-        // Even if poster fails to load, still initialize sizing
+        // Even if thumbnail fails to load, still re-initialize sizing
         postResizer();
       };
       thumb.src = videoData.thumbnail;
+      
+      // Initialize sizing immediately, don't wait for thumbnail
+      postResizer();
     } else {
-      // No thumbnail, initialize sizing immediately
+      // No thumbnail, hide thumbnail overlay and initialize sizing immediately
+      if (thumbnailEl) {
+        thumbnailEl.classList.add('hidden');
+      }
       postResizer();
     }
+    
+    // Hide thumbnail when video starts playing (optimized for faster transition)
+    const hideThumbnailWhenReady = () => {
+      if (videoEl.readyState >= 1 && !videoEl.paused) {
+        // Video is playing and has metadata at minimum
+        if (thumbnailEl) {
+          thumbnailEl.classList.add('hidden');
+        }
+      }
+    };
+    
+    // Show thumbnail when video is paused or stopped
+    const showThumbnail = () => {
+      if (thumbnailEl && videoData.thumbnail) {
+        thumbnailEl.classList.remove('hidden');
+      }
+    };
+    
+    // Event listeners to manage thumbnail visibility (optimized for faster playback)
+    videoEl.addEventListener('playing', hideThumbnailWhenReady, { once: true });
+    videoEl.addEventListener('canplay', hideThumbnailWhenReady, { once: true });
+    videoEl.addEventListener('loadeddata', hideThumbnailWhenReady, { once: true });
+    videoEl.addEventListener('pause', showThumbnail);
+    videoEl.addEventListener('ended', showThumbnail);
+    videoEl.addEventListener('waiting', showThumbnail); // Show thumbnail while buffering
+    videoEl.addEventListener('stalled', showThumbnail); // Show thumbnail when stalled
 
     // Setup HLS playback
     if (videoData.url.includes('.m3u8')) {
@@ -825,12 +874,21 @@ function renderPost(postData, authorProfile) {
         videoEl.src = videoData.url;
         videoEl.load();
 
-        // Try to play after loading
-        videoEl.addEventListener('loadedmetadata', () => {
-          videoEl.play().catch(err => {
-            console.warn('Native HLS autoplay prevented:', err);
-          });
-        });
+        // Try to play as soon as we have minimal data for faster startup
+        const tryPlay = () => {
+          if (videoEl.readyState >= 1) { // HAVE_METADATA or better
+            videoEl.play().catch(err => {
+              console.warn('Native HLS autoplay prevented:', err);
+            });
+          }
+        };
+        
+        videoEl.addEventListener('loadedmetadata', tryPlay, { once: true });
+        videoEl.addEventListener('canplay', tryPlay, { once: true });
+        // Also try immediately if already loaded
+        if (videoEl.readyState >= 1) {
+          tryPlay();
+        }
       } else if (typeof Hls !== 'undefined') {
         // Use hls.js for browsers that don't support native HLS
         // Clear any existing src first
@@ -840,19 +898,37 @@ function renderPost(postData, authorProfile) {
           enableWorker: true,
           lowLatencyMode: true,
           autoStartLoad: true,
+          // Optimize for faster startup
+          maxBufferLength: 10, // Reduce buffer for faster initial playback (default: 30)
+          maxMaxBufferLength: 20, // Max buffer length (default: 600)
+          maxBufferSize: 30 * 1000 * 1000, // 30MB buffer (default: 60MB)
+          startLevel: -1, // Auto-select quality for fastest start
+          capLevelToPlayerSize: true,
         });
 
         hls.loadSource(videoData.url);
         hls.attachMedia(videoEl);
 
+        // Try to play as soon as manifest is parsed
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           console.log('HLS manifest parsed, attempting playback');
-          // Try to play after manifest is parsed
+          // Start loading immediately
+          hls.startLoad();
+          // Try to play right away
           videoEl.play().catch(err => {
             console.warn('HLS.js autoplay prevented:', err);
             // Store HLS instance for later manual play
             videoEl.hlsInstance = hls;
           });
+        });
+        
+        // Also try to play when we have enough data
+        hls.on(Hls.Events.LEVEL_LOADED, () => {
+          if (videoEl.paused && videoEl.readyState >= 1) {
+            videoEl.play().catch(() => {
+              // Ignore autoplay errors
+            });
+          }
         });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
@@ -896,12 +972,21 @@ function renderPost(postData, authorProfile) {
       videoEl.src = videoData.url;
       videoEl.load();
 
-      // Try to play after loading
-      videoEl.addEventListener('loadedmetadata', () => {
-        videoEl.play().catch(err => {
-          console.warn('Video autoplay prevented:', err);
-        });
-      });
+      // Try to play as soon as we have minimal data for faster startup
+      const tryPlay = () => {
+        if (videoEl.readyState >= 1) { // HAVE_METADATA or better
+          videoEl.play().catch(err => {
+            console.warn('Video autoplay prevented:', err);
+          });
+        }
+      };
+      
+      videoEl.addEventListener('loadedmetadata', tryPlay, { once: true });
+      videoEl.addEventListener('canplay', tryPlay, { once: true });
+      // Also try immediately if already loaded
+      if (videoEl.readyState >= 1) {
+        tryPlay();
+      }
     }
 
     // Add comprehensive error handling
@@ -1044,6 +1129,7 @@ function initVideoControls() {
  */
 function initResponsiveVideo() {
   const videoEl = document.getElementById('vinit');
+  const thumbnailEl = document.getElementById('video-thumbnail');
   const desktop = document.getElementById('desktop');
   const postOverlay = document.getElementById('post-overlay');
 
@@ -1104,14 +1190,42 @@ function initResponsiveVideo() {
 
       videoEl.style.height = `${videoHeight}px`;
       videoEl.style.width = `${columnWidth}px`;
+      
+      // Match thumbnail overlay size to video - same dimensions
+      if (thumbnailEl) {
+        thumbnailEl.style.height = `${videoHeight}px`;
+        thumbnailEl.style.width = `${columnWidth}px`;
+      }
+      
       // Desktop container width is handled by CSS responsive styles, don't override it
     } else {
       videoEl.style.width = '100%';
       videoEl.style.height = 'auto';
       videoEl.style.verticalAlign = 'middle';
+      
+      // Thumbnail will match video size via CSS on mobile (100% width/height)
+      if (thumbnailEl) {
+        thumbnailEl.style.width = '';
+        thumbnailEl.style.height = '';
+      }
+      
       if (desktop) {
         desktop.style.width = '';
       }
+    }
+    
+    // After resize, sync thumbnail position with video using requestAnimationFrame
+    // This ensures we get the actual rendered position (width/height already set above)
+    if (thumbnailEl) {
+      requestAnimationFrame(() => {
+        const videoRect = videoEl.getBoundingClientRect();
+        const postMediaRect = videoEl.parentElement.getBoundingClientRect();
+        const offsetLeft = videoRect.left - postMediaRect.left;
+        const offsetTop = videoRect.top - postMediaRect.top;
+        
+        thumbnailEl.style.top = `${offsetTop}px`;
+        thumbnailEl.style.left = `${offsetLeft}px`;
+      });
     }
   }
 

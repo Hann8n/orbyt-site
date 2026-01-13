@@ -55,12 +55,34 @@ async function fetchPost(handle, postId) {
     if (!data.posts || data.posts.length === 0) return null;
     const post = data.posts[0];
     let thumbnail;
+    let videoUrl;
+    let aspectRatio;
     if (post.embed) {
-      if (post.embed.$type === "app.bsky.embed.video#view" && post.embed.thumbnail) {
+      if (post.embed.$type === "app.bsky.embed.video#view") {
         thumbnail = post.embed.thumbnail;
+        aspectRatio = post.embed.aspectRatio;
+        if (post.embed.playlist) {
+          videoUrl = post.embed.playlist;
+        } else if (post.embed.cid && post.uri) {
+          const didMatch = post.uri.match(/did:plc:[^/]+/);
+          const did2 = didMatch ? didMatch[0] : null;
+          if (did2) {
+            videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did2)}/${encodeURIComponent(post.embed.cid)}/playlist.m3u8`;
+          }
+        }
       } else if (post.embed.$type === "app.bsky.embed.recordWithMedia" && post.embed.media) {
-        if (post.embed.media.$type === "app.bsky.embed.video#view" && post.embed.media.thumbnail) {
+        if (post.embed.media.$type === "app.bsky.embed.video#view") {
           thumbnail = post.embed.media.thumbnail;
+          aspectRatio = post.embed.media.aspectRatio;
+          if (post.embed.media.playlist) {
+            videoUrl = post.embed.media.playlist;
+          } else if (post.embed.media.cid && post.uri) {
+            const didMatch = post.uri.match(/did:plc:[^/]+/);
+            const did2 = didMatch ? didMatch[0] : null;
+            if (did2) {
+              videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did2)}/${encodeURIComponent(post.embed.media.cid)}/playlist.m3u8`;
+            }
+          }
         }
       } else if (post.embed.$type === "app.bsky.embed.images#view" && post.embed.images && post.embed.images[0]) {
         thumbnail = post.embed.images[0].thumb || post.embed.images[0].fullsize;
@@ -68,24 +90,48 @@ async function fetchPost(handle, postId) {
     }
     return {
       text: post.record?.text || "",
+      createdAt: post.record?.createdAt,
+      // ISO 8601 timestamp
+      indexedAt: post.indexedAt,
+      // ISO 8601 timestamp
+      likeCount: post.likeCount || 0,
       author: {
         handle: post.author?.handle || handle,
         displayName: post.author?.displayName,
         avatar: post.author?.avatar
       },
       embed: {
-        thumbnail
+        thumbnail,
+        videoUrl,
+        aspectRatio
       }
     };
   } catch {
     return null;
   }
 }
-function toAbsoluteUrl(url, fallback = "/images/Default-avatar.png") {
+function toAbsoluteUrl(url, fallback = "/images/post/Orbyt-with-background.png") {
   if (!url) return `${SITE_URL}${fallback}`;
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   if (url.startsWith("/")) return `${SITE_URL}${url}`;
   return `${SITE_URL}/${url}`;
 }
+function getImageMimeType(url) {
+  if (!url) return "image/jpeg";
+  const urlLower = url.toLowerCase();
+  if (urlLower.includes(".png") || urlLower.endsWith("png")) {
+    return "image/png";
+  }
+  if (urlLower.includes(".webp") || urlLower.endsWith("webp")) {
+    return "image/webp";
+  }
+  if (urlLower.includes(".gif") || urlLower.endsWith("gif")) {
+    return "image/gif";
+  }
+  if (urlLower.includes(".jpg") || urlLower.includes(".jpeg") || urlLower.endsWith("jpg") || urlLower.endsWith("jpeg")) {
+    return "image/jpeg";
+  }
+  return "image/jpeg";
+}
 
-export { fetchProfile as a, fetchPost as f, toAbsoluteUrl as t };
+export { fetchProfile as a, fetchPost as f, getImageMimeType as g, toAbsoluteUrl as t };

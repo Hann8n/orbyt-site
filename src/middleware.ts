@@ -64,8 +64,11 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     // Redirect to the proper URL, preserving query params and hash
     // This ensures the browser URL changes and proper 404 handling works
     // Using Cloudflare's Response.redirect() with absolute URL and 301 status
-    const absoluteUrl = `${context.url.origin}${newPath}${context.url.search}${context.url.hash}`;
-    return Response.redirect(absoluteUrl, 301);
+    // Construct URL properly using URL constructor to ensure validity
+    const redirectUrl = new URL(newPath, context.url.origin);
+    redirectUrl.search = context.url.search;
+    redirectUrl.hash = context.url.hash;
+    return Response.redirect(redirectUrl.toString(), 301);
   }
 
   // No match, continue normal routing
