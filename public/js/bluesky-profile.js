@@ -114,6 +114,88 @@ async function fetchVideoPostsQuery({ handle, cursor = null, limit = 30 }) {
 }
 
 /**
+ * Apply profile colors from Orbyt API
+ * Reads color data from the profile element's data attribute
+ * Only changes color values, does not modify layout
+ */
+function applyProfileColors() {
+  const profileEl = document.getElementById('profile');
+  if (!profileEl) return;
+
+  const colorDataStr = profileEl.dataset.colorData;
+  if (!colorDataStr) return;
+
+  try {
+    const colorData = JSON.parse(colorDataStr);
+    if (!colorData) return;
+
+    const textColor = colorData.textColor;
+    const backgroundColor = colorData.backgroundColor;
+
+    if (textColor) {
+      // Apply text color to username and bio
+      const usernameEl = document.querySelector('.author h1.username');
+      const bioEl = document.querySelector('.author .bio');
+      const avatarEl = document.querySelector('.author .avatar');
+
+      if (usernameEl) {
+        usernameEl.style.color = textColor;
+      }
+      if (bioEl) {
+        bioEl.style.color = textColor;
+      }
+      if (avatarEl) {
+        avatarEl.style.borderColor = textColor;
+      }
+
+      // Apply text color to beta icon (uses currentColor)
+      const betaIconEl = document.querySelector('.beta-icon');
+      if (betaIconEl) {
+        betaIconEl.style.color = textColor;
+      }
+
+      // Apply text color to orbyt logo
+      const logoTextEl = document.querySelector('.logo-text');
+      if (logoTextEl) {
+        logoTextEl.style.color = textColor;
+      }
+
+      // Apply text color to squiggle hr lines
+      const hrPaths = document.querySelectorAll('.hr-inline path');
+      hrPaths.forEach(path => {
+        path.setAttribute('stroke', textColor);
+      });
+    }
+
+    if (backgroundColor) {
+      // Apply background color to header
+      const headerEl = document.querySelector('header');
+      if (headerEl) {
+        headerEl.style.backgroundColor = backgroundColor;
+      }
+    }
+
+    // Apply colors to waitlist/install buttons (textColor bg, backgroundColor text)
+    if (textColor && backgroundColor) {
+      const installButtons = document.querySelectorAll('.install-button');
+      installButtons.forEach(btn => {
+        btn.style.backgroundColor = textColor;
+        btn.style.color = backgroundColor;
+      });
+
+      // Apply colors to load more button
+      const loadMoreBtn = document.getElementById('load-more');
+      if (loadMoreBtn) {
+        loadMoreBtn.style.backgroundColor = textColor;
+        loadMoreBtn.style.color = backgroundColor;
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to parse color data:', error);
+  }
+}
+
+/**
  * Update DOM elements with profile data
  * @param {Object} profile - Profile data from Bluesky API
  */
@@ -150,6 +232,9 @@ function updateProfileDisplay(profile) {
       bioEl.innerHTML = ''; // Clear if no description
     }
   }
+
+  // Apply profile colors from Orbyt API
+  applyProfileColors();
 
   // Update page title
   const displayName = profile.displayName || profile.handle;
@@ -778,7 +863,7 @@ async function initProfile() {
 // Export functions for ES6 module imports
 // Note: initProfile should be called explicitly from the HTML file
 // This allows it to be called when navigating back to a profile page
-export { populateVideoGrid, getUserHandleFromURL, initProfile };
+export { populateVideoGrid, getUserHandleFromURL, initProfile, applyProfileColors };
 export function getCurrentCursor() {
   return currentVideoCursor;
 }

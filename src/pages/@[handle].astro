@@ -2,6 +2,7 @@
 export const prerender = false; // SSR route (shell-only, lightweight)
 
 import { fetchProfile, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
+import { getColor } from '../utils/orbyt-api';
 
 const { handle } = Astro.params;
 // handle is "wsj.com" (no @ prefix)
@@ -15,6 +16,12 @@ if (handle) {
 // Return 404 if profile not found
 if (!profileData) {
   return new Response(null, { status: 404 });
+}
+
+// Fetch profile colors from Orbyt API
+let colorData = null;
+if (profileData.did) {
+  colorData = await getColor(profileData.did);
 }
 
 // Extract metadata with fallbacks
@@ -31,6 +38,11 @@ const ogImageWidth = 1200;
 const ogImageHeight = 1200;
 const ogImageType = getImageMimeType(avatar);
 const ogImageAlt = description.length > 200 ? description.substring(0, 200) : description;
+
+// Format join date for beta badge tooltip
+const joinDate = colorData?.joinedAt 
+  ? new Date(colorData.joinedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  : null;
 ---
 
 <!doctype html>
@@ -105,8 +117,8 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
         color: #ccd7e9;
       }
       .install-button {
-        background-color: #ccd7e9 !important;
-        color: black !important;
+        background-color: #ccd7e9;
+        color: black;
       }
       .install-button .svg-button {
         display: inline-block;
@@ -120,7 +132,6 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
         transform: translateX(2px);
       }
       .install-button .svg-button path {
-        stroke: black !important;
         fill: none;
         stroke-linecap: round;
         stroke-linejoin: round;
@@ -134,7 +145,7 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
 </head>
 
 <body>
-  <div id="profile" data-handle={handle}>
+  <div id="profile" data-handle={handle} data-color-data={colorData ? JSON.stringify(colorData) : ''}>
     <header class="hidden">
       <div class="links">
         <a href='/' class="logo-wordmark">
@@ -143,8 +154,8 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
         <a class='install-button mobile' href="/beta">
           Waitlist
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.93892 19.9988L18.9736 2.96362" stroke="black" stroke-width="3.993"/>
-          <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="black" stroke-width="3.993"/>
+          <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
+          <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
           </svg>
         </a>
       </div>
@@ -161,7 +172,16 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
 
       <div class="author">
         <img class='avatar' src="/images/Default-avatar.png" alt="Avatar">
-        <h1 class="username"></h1>
+        <div class="username-row">
+          <h1 class="username"></h1>
+          {colorData?.isBeta && (
+            <svg class="beta-icon" width="20" height="20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <title>{joinDate ? `Joined ${joinDate}` : 'Beta user'}</title>
+              <polygon points="62.5,25 62.5,130 153.43,77.5" fill="currentColor" fill-opacity="0.5"/>
+              <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
+            </svg>
+          )}
+        </div>
         <div class="bio"></div>
       </div>
 
@@ -173,8 +193,8 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
         <a class='install-button' href="/beta">
           Waitlist
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.93892 19.9988L18.9736 2.96362" stroke="black" stroke-width="3.993"/>
-          <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="black" stroke-width="3.993"/>
+          <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
+          <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
           </svg>
         </a>
       </div>
@@ -188,7 +208,10 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
   </div>
 
 <script type="module">
-  import { populateVideoGrid, getUserHandleFromURL, getCurrentCursor, initProfile } from '/js/bluesky-profile.js';
+  import { populateVideoGrid, getUserHandleFromURL, getCurrentCursor, initProfile, applyProfileColors } from '/js/bluesky-profile.js';
+  
+  // Apply profile colors immediately if available (from server-side data)
+  applyProfileColors();
   
   // Explicitly initialize profile when this HTML loads
   // This ensures profile loads when navigating back from other pages

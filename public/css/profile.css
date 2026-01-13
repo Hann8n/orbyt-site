@@ -50,6 +50,20 @@ header.hidden {
   font-size: 30px;
   letter-spacing: 0.6px
 }
+.author .username-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.author .username-row h1 {
+  margin: 0;
+}
+.author .beta-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: inherit;
+}
 .author .bio {
   white-space: pre-wrap;
   line-height: 1.35;
