@@ -1,6 +1,12 @@
 const API_BASE_URL = 'https://api.getorbyt.com';
-const API_TOKEN = 'REDACTED';
 const API_TIMEOUT = 5000; // 5 seconds
+
+function getApiToken(): string {
+  // Access environment variable (Astro/Cloudflare Pages)
+  // Type assertion needed because TypeScript doesn't know about Astro's env vars
+  const env = (import.meta as any).env;
+  return env?.ORBYT_API_TOKEN || '';
+}
 
 export interface ColorData {
   textColor: string;
@@ -18,7 +24,11 @@ async function apiRequest<T>(
 ): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
-  headers.set('Authorization', `Bearer ${API_TOKEN}`);
+  
+  const token = getApiToken();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
   
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
