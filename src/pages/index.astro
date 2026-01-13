@@ -11,6 +11,19 @@ export const prerender = true;
     <meta name="description" content="a new video app for bluesky">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Critical: Inline font-face for immediate availability (no network delay) -->
+    <style>
+      @font-face {
+        font-family: 'Figtree';
+        src: url('/fonts/Figtree/Figtree-VariableFont_wght.woff2') format('woff2');
+        font-weight: 300 900;
+        font-style: normal;
+        font-display: fallback; /* Short block window, then swap - prevents FOUT for logo */
+      }
+    </style>
+    <!-- Preload Figtree font to start download early -->
+    <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
+
     <meta property="og:title" content="orbyt - video communities"/>
     <meta property="og:description" content="a new video app for bluesky"/>
     <meta property="og:type" content="website"/>
@@ -35,13 +48,6 @@ export const prerender = true;
     <link rel="manifest" href="/favicon_io/site.webmanifest">
 
     <style>
-      @font-face {
-        font-family: 'Figtree';
-        src: url('/fonts/Figtree/Figtree-VariableFont_wght.ttf') format('truetype');
-        font-weight: 300 900;
-        font-style: normal;
-        font-display: swap;
-      }
     a:hover {
         color: #f3f5fe;
     }

@@ -86,6 +86,19 @@ const finalOgTitle = `post by @${authorHandle}`;
 <head>
     <meta charset="utf-8">
 
+    <!-- Critical: Inline font-face for immediate availability (no network delay) -->
+    <style>
+      @font-face {
+        font-family: 'Figtree';
+        src: url('/fonts/Figtree/Figtree-VariableFont_wght.woff2') format('woff2');
+        font-weight: 300 900;
+        font-style: normal;
+        font-display: fallback; /* Short block window, then swap - prevents FOUT for logo */
+      }
+    </style>
+    <!-- Preload Figtree font to start download early -->
+    <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
+
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="/css/skeleton.css">
     <link rel="stylesheet" href="/css/shared.css">
@@ -93,13 +106,6 @@ const finalOgTitle = `post by @${authorHandle}`;
     <link rel="stylesheet" href="/css/post.css"> 
 
     <style>
-      @font-face {
-        font-family: 'Figtree';
-        src: url('/fonts/Figtree/Figtree-VariableFont_wght.ttf') format('truetype');
-        font-weight: 300 900;
-        font-style: normal;
-        font-display: swap;
-      }
       /* Prevent scrollbars */
       html, body {
         overflow-x: hidden;
