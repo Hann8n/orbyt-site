@@ -21,7 +21,8 @@ if (!profileData) {
 // Fetch profile colors from Orbyt API
 let colorData = null;
 if (profileData.did) {
-  colorData = await getColor(profileData.did);
+  // Pass Astro.env to access environment variables in Cloudflare runtime
+  colorData = await getColor(profileData.did, Astro.env);
 }
 
 // Extract metadata with fallbacks

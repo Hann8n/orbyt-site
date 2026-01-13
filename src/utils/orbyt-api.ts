@@ -1,11 +1,15 @@
 const API_BASE_URL = 'https://api.getorbyt.com';
 const API_TIMEOUT = 5000; // 5 seconds
 
-function getApiToken(): string {
+function getApiToken(env?: { ORBYT_API_TOKEN?: string }): string {
+  // Try passed env first (from Astro context), then fallback to import.meta.env
+  if (env?.ORBYT_API_TOKEN) {
+    return env.ORBYT_API_TOKEN;
+  }
   // Access environment variable (Astro/Cloudflare Pages)
   // Type assertion needed because TypeScript doesn't know about Astro's env vars
-  const env = (import.meta as any).env;
-  return env?.ORBYT_API_TOKEN || '';
+  const metaEnv = (import.meta as any).env;
+  return metaEnv?.ORBYT_API_TOKEN || '';
 }
 
 export interface ColorData {
@@ -20,12 +24,13 @@ export interface ColorData {
  */
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  env?: { ORBYT_API_TOKEN?: string }
 ): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
   
-  const token = getApiToken();
+  const token = getApiToken(env);
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
@@ -65,9 +70,12 @@ async function apiRequest<T>(
 /**
  * Get color data for a single DID
  */
-export async function getColor(did: string): Promise<ColorData | null> {
+export async function getColor(
+  did: string,
+  env?: { ORBYT_API_TOKEN?: string }
+): Promise<ColorData | null> {
   try {
-    return await apiRequest<ColorData>(`/v1/colors/${encodeURIComponent(did)}`);
+    return await apiRequest<ColorData>(`/v1/colors/${encodeURIComponent(did)}`, {}, env);
   } catch (error) {
     // Return null if profile not found (404) or other errors
     // This allows the page to render with default colors
