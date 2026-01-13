@@ -25,6 +25,20 @@
   width: 100%;
   z-index: 10;
 }
+@media screen and (max-width: 699px) {
+  .logo-overlay {
+    align-items: center;
+    padding: 14px 0;
+  }
+  .logo-overlay .logo {
+    margin-top: 0;
+    margin-left: 14px;
+  }
+  .logo-overlay .install-button {
+    margin-top: 6px;
+    margin-right: 14px;
+  }
+}
 .post-overlay {
   background: linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.2) 43.67%, rgba(0, 0, 0, 0) 96.43%);
   color: #f3f5fe;
