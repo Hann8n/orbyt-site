@@ -21,8 +21,12 @@ if (!profileData) {
 // Fetch profile colors from Orbyt API
 let colorData = null;
 if (profileData.did) {
-  // Pass Astro.env to access environment variables in Cloudflare runtime
-  colorData = await getColor(profileData.did, Astro.env);
+  // Access environment variable from Cloudflare runtime (production)
+  // Fallback to import.meta.env for local development
+  const apiToken = Astro.locals.runtime?.env?.ORBYT_API_TOKEN 
+    || (import.meta.env as any).ORBYT_API_TOKEN 
+    || '';
+  colorData = await getColor(profileData.did, apiToken);
 }
 
 // Extract metadata with fallbacks
