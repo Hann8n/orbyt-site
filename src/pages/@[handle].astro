@@ -280,9 +280,20 @@ const joinDate = colorData?.joinedAt
     }, 1000);
   }
 
-  // Initialize on both initial load and view transitions
-  // astro:page-load fires on initial load too, so we can use it for both
+  // Initialize on multiple events to ensure it always runs
+  // astro:page-load fires on initial load and some navigations
+  // astro:after-swap fires after DOM swap in view transitions
+  // DOMContentLoaded is a fallback for cases where view transition events don't fire
   document.addEventListener('astro:page-load', initializeProfile);
+  document.addEventListener('astro:after-swap', initializeProfile);
+  
+  // Fallback for cases where view transition events don't fire (e.g., browser back after refresh)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeProfile);
+  } else {
+    // DOM already loaded, initialize immediately
+    initializeProfile();
+  }
 </script>
 
 </body>

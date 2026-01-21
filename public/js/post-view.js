@@ -778,8 +778,14 @@ function renderPost(postData, authorProfile) {
   }
 
   const relativeTime = formatRelativeTime(createdAt);
-  if (timeMobile) timeMobile.textContent = relativeTime;
-  if (timeDesktop) timeDesktop.textContent = relativeTime;
+  if (timeMobile) {
+    timeMobile.textContent = relativeTime;
+    timeMobile.style.display = relativeTime ? 'block' : 'none';
+  }
+  if (timeDesktop) {
+    timeDesktop.textContent = relativeTime;
+    timeDesktop.style.display = relativeTime ? 'block' : 'none';
+  }
 
   // Update likes count
   const likesCountMobile = document.getElementById('likes-count-mobile');
@@ -800,6 +806,22 @@ function renderPost(postData, authorProfile) {
       aspectRatio: videoData.aspectRatio,
     });
 
+    // Clean up any existing HLS instance from previous page
+    if (videoEl.hlsInstance) {
+      try {
+        videoEl.hlsInstance.destroy();
+        videoEl.hlsInstance = null;
+      } catch (e) {
+        console.warn('Error destroying previous HLS instance:', e);
+      }
+    }
+
+    // Reset video element completely before setting up new video
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.removeAttribute('src');
+    videoEl.load(); // Reset video element state
+
     // Set video attributes for autoplay and looping (TikTok style)
     videoEl.setAttribute('autoplay', '');
     videoEl.setAttribute('loop', '');
@@ -810,6 +832,9 @@ function renderPost(postData, authorProfile) {
     // Set thumbnail image src that stays visible
     // Start video loading immediately, don't wait for thumbnail
     if (videoData.thumbnail && thumbnailEl) {
+      // Ensure thumbnail maintains aspect ratio and proper sizing
+      thumbnailEl.style.objectFit = 'contain';
+      thumbnailEl.style.objectPosition = 'center';
       thumbnailEl.src = videoData.thumbnail;
       thumbnailEl.classList.remove('hidden');
       
@@ -873,22 +898,6 @@ function renderPost(postData, authorProfile) {
         // Native HLS support
         videoEl.src = videoData.url;
         videoEl.load();
-
-        // Try to play as soon as we have minimal data for faster startup
-        const tryPlay = () => {
-          if (videoEl.readyState >= 1) { // HAVE_METADATA or better
-            videoEl.play().catch(err => {
-              console.warn('Native HLS autoplay prevented:', err);
-            });
-          }
-        };
-        
-        videoEl.addEventListener('loadedmetadata', tryPlay, { once: true });
-        videoEl.addEventListener('canplay', tryPlay, { once: true });
-        // Also try immediately if already loaded
-        if (videoEl.readyState >= 1) {
-          tryPlay();
-        }
       } else if (typeof Hls !== 'undefined') {
         // Use hls.js for browsers that don't support native HLS
         // Clear any existing src first
@@ -909,26 +918,10 @@ function renderPost(postData, authorProfile) {
         hls.loadSource(videoData.url);
         hls.attachMedia(videoEl);
 
-        // Try to play as soon as manifest is parsed
+        // Start playback when manifest is parsed
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          console.log('HLS manifest parsed, attempting playback');
-          // Start loading immediately
           hls.startLoad();
-          // Try to play right away
-          videoEl.play().catch(err => {
-            console.warn('HLS.js autoplay prevented:', err);
-            // Store HLS instance for later manual play
-            videoEl.hlsInstance = hls;
-          });
-        });
-        
-        // Also try to play when we have enough data
-        hls.on(Hls.Events.LEVEL_LOADED, () => {
-          if (videoEl.paused && videoEl.readyState >= 1) {
-            videoEl.play().catch(() => {
-              // Ignore autoplay errors
-            });
-          }
+          videoEl.play();
         });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
@@ -954,39 +947,14 @@ function renderPost(postData, authorProfile) {
         // Store HLS instance on video element for later access
         videoEl.hlsInstance = hls;
       } else {
-        // Fallback: try to load directly (might work in some browsers)
-        console.warn(
-          'HLS.js not available, attempting direct HLS load (may not work in all browsers)'
-        );
+        // Fallback: try to load directly
         videoEl.src = videoData.url;
         videoEl.load();
-
-        videoEl.addEventListener('loadedmetadata', () => {
-          videoEl.play().catch(err => {
-            console.warn('Direct HLS autoplay prevented:', err);
-          });
-        });
       }
     } else {
       // Regular video file (mp4, etc.)
       videoEl.src = videoData.url;
       videoEl.load();
-
-      // Try to play as soon as we have minimal data for faster startup
-      const tryPlay = () => {
-        if (videoEl.readyState >= 1) { // HAVE_METADATA or better
-          videoEl.play().catch(err => {
-            console.warn('Video autoplay prevented:', err);
-          });
-        }
-      };
-      
-      videoEl.addEventListener('loadedmetadata', tryPlay, { once: true });
-      videoEl.addEventListener('canplay', tryPlay, { once: true });
-      // Also try immediately if already loaded
-      if (videoEl.readyState >= 1) {
-        tryPlay();
-      }
     }
 
     // Add comprehensive error handling
@@ -1003,31 +971,14 @@ function renderPost(postData, authorProfile) {
       });
     });
 
-    // Add click handler to video element to play/pause (only if clicking directly on video)
+    // Add click handler to video element to play/pause
     videoEl.addEventListener('click', e => {
       e.stopPropagation();
       if (videoEl.paused) {
-        videoEl.play().catch(err => console.warn('Play failed:', err));
+        videoEl.play();
       } else {
         videoEl.pause();
       }
-    });
-
-    // Ensure video plays when user interacts with the page (for browsers that block autoplay)
-    const handleUserInteraction = () => {
-      if (videoEl.paused && videoEl.readyState >= 2) {
-        videoEl.play().catch(err => {
-          // Ignore autoplay errors - user will need to click to play
-          if (err.name !== 'NotAllowedError') {
-            console.warn('Play attempt failed:', err);
-          }
-        });
-      }
-    };
-
-    // Listen for user interaction on the document
-    ['click', 'touchstart', 'keydown'].forEach(eventType => {
-      document.addEventListener(eventType, handleUserInteraction, { once: true, passive: true });
     });
   } else if (videoEl) {
     // No video available - show message
@@ -1053,9 +1004,6 @@ function renderPost(postData, authorProfile) {
   updateMetaTags(postData, authorProfile);
 }
 
-/**
- * Initialize video player controls
- */
 function initVideoControls() {
   const videoEl = document.getElementById('vinit');
   const muteToggle = document.getElementById('mute-toggle');
@@ -1063,28 +1011,18 @@ function initVideoControls() {
 
   if (!videoEl) return;
 
-  // Ensure video is muted initially (required for autoplay)
   videoEl.muted = true;
+  if (muteText) muteText.textContent = 'TAP TO UNMUTE';
 
-  // Update mute text based on initial state
-  if (muteText) {
-    muteText.textContent = 'TAP TO UNMUTE';
-  }
-
-  // Mute toggle
-  if (muteToggle) {
+  if (muteToggle && !muteToggle.dataset.listenerAttached) {
+    muteToggle.dataset.listenerAttached = 'true';
     muteToggle.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
 
       if (videoEl.muted) {
         videoEl.muted = false;
-        // Try to play if paused (user interaction allows unmuted playback)
-        if (videoEl.paused) {
-          videoEl.play().catch(err => {
-            console.warn('Unmuted play failed:', err);
-          });
-        }
+        if (videoEl.paused) videoEl.play().catch(() => {});
         if (muteText) muteText.textContent = 'TAP TO MUTE';
       } else {
         videoEl.muted = true;
@@ -1093,37 +1031,12 @@ function initVideoControls() {
     });
   }
 
-  // Ensure video plays when it can
-  const ensurePlayback = () => {
-    if (videoEl.readyState >= 2) {
-      // HAVE_CURRENT_DATA
-      videoEl.play().catch(err => {
-        // Autoplay was prevented - this is expected in some browsers
-        if (err.name !== 'NotAllowedError') {
-          console.warn('Playback error:', err);
-        }
-      });
-    }
-  };
-
-  // Try to play when video is ready
-  videoEl.addEventListener('canplay', ensurePlayback);
-  videoEl.addEventListener('loadeddata', ensurePlayback);
-  videoEl.addEventListener('loadedmetadata', ensurePlayback);
-
-  // Also try after a short delay to handle async loading
-  setTimeout(ensurePlayback, 500);
-
-  // Handle video ended event to restart (for looping)
   videoEl.addEventListener('ended', () => {
     videoEl.currentTime = 0;
-    videoEl.play().catch(err => {
-      console.warn('Loop play failed:', err);
-    });
+    videoEl.play();
   });
 }
 
-// Module-level flag to track if listeners are set up
 let responsiveVideoInitialized = false;
 
 /**
@@ -1357,17 +1270,6 @@ async function initPostView() {
     // Initialize responsive video sizing (sets up event listeners)
     initResponsiveVideo();
     
-    // Ensure video plays after view transition - explicit play() needed for client-side navigation
-    const videoEl = document.getElementById('vinit');
-    if (videoEl && videoEl.readyState >= 1) {
-      videoEl.play().catch(err => {
-        // Autoplay might be blocked - this is expected in some browsers
-        if (err.name !== 'NotAllowedError') {
-          console.warn('Video play failed:', err);
-        }
-      });
-    }
-    
     // Note: CSS handles desktop sizing natively, JS only needed for window resize events
   } catch (error) {
     console.error('Failed to initialize post view:', error);
@@ -1375,12 +1277,39 @@ async function initPostView() {
   }
 }
 
-// Initialize on both initial load and view transitions
-// astro:page-load fires on initial load too, so we can use it for both
-// Reset initialization flag on each navigation since DOM is replaced
+document.addEventListener('astro:before-swap', () => {
+  const videoEl = document.getElementById('vinit');
+  const muteToggle = document.getElementById('mute-toggle');
+  if (videoEl && videoEl.hlsInstance) {
+    try {
+      videoEl.hlsInstance.destroy();
+      videoEl.hlsInstance = null;
+    } catch (e) {
+      console.warn('Error cleaning up HLS instance before swap:', e);
+    }
+    videoEl.pause();
+    videoEl.src = '';
+  }
+  if (muteToggle) muteToggle.removeAttribute('data-listener-attached');
+  responsiveVideoInitialized = false;
+});
+
+// Initialize on multiple events to ensure it always runs
+// astro:page-load fires on initial load and some navigations
+// astro:after-swap fires after DOM swap in view transitions
+// DOMContentLoaded is a fallback for cases where view transition events don't fire
 function initializePostView() {
   responsiveVideoInitialized = false;
   initPostView();
 }
 
 document.addEventListener('astro:page-load', initializePostView);
+document.addEventListener('astro:after-swap', initializePostView);
+
+// Fallback for cases where view transition events don't fire (e.g., browser back after refresh)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePostView);
+} else {
+  // DOM already loaded, initialize immediately
+  initializePostView();
+}

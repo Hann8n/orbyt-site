@@ -80,6 +80,14 @@ video {
   opacity: 0;
 }
 
+/* Ensure thumbnail maintains aspect ratio during view transitions */
+::view-transition-old(video-*),
+::view-transition-new(video-*) {
+  object-fit: contain;
+  object-position: center;
+  aspect-ratio: 9 / 16;
+}
+
 /* Mobile: full width video with 9:16 aspect ratio */
 @media screen and (max-width: 699px) {
   video {
@@ -145,7 +153,9 @@ video {
   border: none;
 }
 #mute-toggle span {
-  flex: auto;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  display: inline-block;
 }
 #mute-toggle img {
   margin-right: 12px;

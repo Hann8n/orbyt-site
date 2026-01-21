@@ -21,6 +21,8 @@ if (!postData) {
 // Extract metadata with fallbacks - all from postData
 const caption = postData?.text || 'Loading post...';
 const authorHandle = postData?.author?.handle || handle;
+const authorDisplayName = postData?.author?.displayName || authorHandle;
+const authorAvatar = postData?.author?.avatar || '/images/Default-avatar.png';
 // Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
 const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/post/Orbyt-with-background.png';
 const videoUrl = postData?.embed?.videoUrl;
@@ -219,6 +221,13 @@ const finalOgTitle = `post by @${authorHandle}`;
       .avatar {
         border-color: #FF876C;
       }
+      /* Ensure thumbnail maintains aspect ratio during view transitions */
+      ::view-transition-old(video-*),
+      ::view-transition-new(video-*) {
+        object-fit: contain !important;
+        object-position: center !important;
+        aspect-ratio: 9 / 16 !important;
+      }
       /* Desktop logo sizing */
       @media screen and (min-width: 700px) {
         /* Ensure desktop-title displays as flex row with logo on left and button on right */
@@ -393,11 +402,11 @@ const finalOgTitle = `post by @${authorHandle}`;
       <div id="post-overlay" class="post-overlay">
 
         <div class='mute-toggle-wrapper'>
-          <a id="mute-toggle">
+          <button id="mute-toggle" aria-label="Toggle mute">
             <span id="mute-text">
               LOADING...
             </span>
-          </a>
+          </button>
         </div>
 
         <div id="post-caption-mobile" class="post-content mobile-overlay">Loading...</div>
@@ -405,11 +414,11 @@ const finalOgTitle = `post by @${authorHandle}`;
         <div class="post-author mobile-overlay">
 
           <span class='avatar-wrapper'>
-            <img id="author-avatar-mobile" class='avatar' src="/images/Default-avatar.png" alt="avatar">
+            <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
             <div class="username">
-              <a id="author-link-mobile" href={`/@${handle}`}>Loading...</a>
+              <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorDisplayName}</a>
             </div>
-            <div id="post-time-mobile">Loading...</div>
+            <div id="post-time-mobile" style="display: none;"></div>
           </span>
 
           <span class='likes'>
@@ -425,7 +434,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       </div>
 
-      <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" transition:name={`video-${postId}`} transition:animate="initial" />
+      <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" transition:name={`video-${postId}`} transition:animate="none" />
       <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
       </video>
 
@@ -463,11 +472,11 @@ const finalOgTitle = `post by @${authorHandle}`;
 
         <div class="post-author">
           <span class='avatar-wrapper'>
-            <img id="author-avatar-desktop" class='avatar' src="/images/Default-avatar.png" alt="avatar">
+            <img id="author-avatar-desktop" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
             <div class="username">
-              <a id="author-link-desktop" href={`/@${handle}`}>Loading...</a>
+              <a id="author-link-desktop" href={`/@${authorHandle}`}>{authorDisplayName}</a>
             </div>
-            <div id="post-time-desktop">Loading...</div>
+            <div id="post-time-desktop" style="display: none;"></div>
           </span>
 
           <span class='likes'>

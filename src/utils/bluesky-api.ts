@@ -81,6 +81,8 @@ export async function resolveHandle(handle: string): Promise<string | null> {
 
 export async function fetchPost(handle: string, postId: string): Promise<PostData | null> {
   try {
+    // getPosts requires AT-URI format which needs DID, not handle
+    // So we must resolve handle to DID first
     const did = await resolveHandle(handle);
     if (!did) return null;
     
