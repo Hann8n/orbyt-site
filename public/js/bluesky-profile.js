@@ -451,7 +451,7 @@ function renderVideoPost(post, handle) {
         src="/images/post/placeholder.png"
         alt=""
       />
-      <img class="post-thumb" src="${escapedThumbnail}" alt="" />
+      <img class="post-thumb" src="${escapedThumbnail}" alt="" style="view-transition-name: video-${escapedPostId}" />
     </div>
 
     <a href="/@${escapedHandle}/${escapedPostId}">

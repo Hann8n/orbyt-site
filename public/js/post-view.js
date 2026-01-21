@@ -807,10 +807,10 @@ function renderPost(postData, authorProfile) {
     videoEl.setAttribute('preload', 'auto'); // Start loading immediately
     videoEl.muted = true; // Required for autoplay in most browsers
 
-    // Set thumbnail as background overlay that stays visible
+    // Set thumbnail image src that stays visible
     // Start video loading immediately, don't wait for thumbnail
     if (videoData.thumbnail && thumbnailEl) {
-      thumbnailEl.style.backgroundImage = `url(${videoData.thumbnail})`;
+      thumbnailEl.src = videoData.thumbnail;
       thumbnailEl.classList.remove('hidden');
       
       // Set poster as well for initial display
@@ -1123,11 +1123,13 @@ function initVideoControls() {
   });
 }
 
+// Module-level flag to track if listeners are set up
+let responsiveVideoInitialized = false;
+
 /**
- * Initialize responsive video sizing
- * This matches the original postResizer() function pattern
+ * Resize video and adjust overlay (called multiple times, no listeners)
  */
-function initResponsiveVideo() {
+function resizeVideoAndOverlay() {
   const videoEl = document.getElementById('vinit');
   const thumbnailEl = document.getElementById('video-thumbnail');
   const desktop = document.getElementById('desktop');
@@ -1191,41 +1193,15 @@ function initResponsiveVideo() {
       videoEl.style.height = `${videoHeight}px`;
       videoEl.style.width = `${columnWidth}px`;
       
-      // Match thumbnail overlay size to video - same dimensions
-      if (thumbnailEl) {
-        thumbnailEl.style.height = `${videoHeight}px`;
-        thumbnailEl.style.width = `${columnWidth}px`;
-      }
-      
       // Desktop container width is handled by CSS responsive styles, don't override it
     } else {
       videoEl.style.width = '100%';
       videoEl.style.height = 'auto';
       videoEl.style.verticalAlign = 'middle';
       
-      // Thumbnail will match video size via CSS on mobile (100% width/height)
-      if (thumbnailEl) {
-        thumbnailEl.style.width = '';
-        thumbnailEl.style.height = '';
-      }
-      
       if (desktop) {
         desktop.style.width = '';
       }
-    }
-    
-    // After resize, sync thumbnail position with video using requestAnimationFrame
-    // This ensures we get the actual rendered position (width/height already set above)
-    if (thumbnailEl) {
-      requestAnimationFrame(() => {
-        const videoRect = videoEl.getBoundingClientRect();
-        const postMediaRect = videoEl.parentElement.getBoundingClientRect();
-        const offsetLeft = videoRect.left - postMediaRect.left;
-        const offsetTop = videoRect.top - postMediaRect.top;
-        
-        thumbnailEl.style.top = `${offsetTop}px`;
-        thumbnailEl.style.left = `${offsetLeft}px`;
-      });
     }
   }
 
@@ -1240,22 +1216,34 @@ function initResponsiveVideo() {
     postOverlay.style.bottom = `${overlayOffset}px`;
   }
 
-  // Initial resize
   resizeVideo();
   adjustOverlay();
+}
+
+/**
+ * Initialize responsive video sizing and set up event listeners (called once)
+ */
+function initResponsiveVideo() {
+  if (responsiveVideoInitialized) {
+    // Already initialized, just resize
+    resizeVideoAndOverlay();
+    return;
+  }
+
+  responsiveVideoInitialized = true;
+
+  // Initial resize
+  resizeVideoAndOverlay();
 
   // Resize on window resize
-  window.addEventListener('resize', () => {
-    resizeVideo();
-    adjustOverlay();
-  });
+  window.addEventListener('resize', resizeVideoAndOverlay);
 
   // Adjust overlay on scroll (throttled)
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        adjustOverlay();
+        resizeVideoAndOverlay();
         ticking = false;
       });
       ticking = true;
@@ -1265,9 +1253,10 @@ function initResponsiveVideo() {
 
 /**
  * postResizer function - alias for compatibility with original pattern
+ * Just resizes without setting up listeners
  */
 function postResizer() {
-  initResponsiveVideo();
+  resizeVideoAndOverlay();
 }
 
 /**
@@ -1357,22 +1346,41 @@ async function initPostView() {
       }
     }
 
-    // Render post (this will handle video loading and call postResizer after poster loads)
+    // Render post (this will handle video loading)
     renderPost(postData, authorProfile);
+    
     showPostContent();
 
     // Initialize video controls
     initVideoControls();
-    // Note: initResponsiveVideo/postResizer is called after poster loads in renderPost()
+    
+    // Initialize responsive video sizing (sets up event listeners)
+    initResponsiveVideo();
+    
+    // Ensure video plays after view transition - explicit play() needed for client-side navigation
+    const videoEl = document.getElementById('vinit');
+    if (videoEl && videoEl.readyState >= 1) {
+      videoEl.play().catch(err => {
+        // Autoplay might be blocked - this is expected in some browsers
+        if (err.name !== 'NotAllowedError') {
+          console.warn('Video play failed:', err);
+        }
+      });
+    }
+    
+    // Note: CSS handles desktop sizing natively, JS only needed for window resize events
   } catch (error) {
     console.error('Failed to initialize post view:', error);
     showError(error.message || 'Failed to load post. Please check the URL and try again.');
   }
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initPostView);
-} else {
+// Initialize on both initial load and view transitions
+// astro:page-load fires on initial load too, so we can use it for both
+// Reset initialization flag on each navigation since DOM is replaced
+function initializePostView() {
+  responsiveVideoInitialized = false;
   initPostView();
 }
+
+document.addEventListener('astro:page-load', initializePostView);

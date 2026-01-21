@@ -3,6 +3,7 @@ export const prerender = false; // SSR route (shell-only, lightweight)
 
 import { fetchProfile, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
 import { getColor } from '../utils/orbyt-api';
+import { ClientRouter } from 'astro:transitions';
 
 const { handle } = Astro.params;
 // handle is "wsj.com" (no @ prefix)
@@ -95,6 +96,9 @@ const joinDate = colorData?.joinedAt
     <meta name="twitter:image" content={ogImage} />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- View Transitions -->
+    <ClientRouter />
 
     <!-- Favicon setup -->
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
@@ -215,13 +219,6 @@ const joinDate = colorData?.joinedAt
 <script type="module">
   import { populateVideoGrid, getUserHandleFromURL, getCurrentCursor, initProfile, applyProfileColors } from '/js/bluesky-profile.js';
   
-  // Apply profile colors immediately if available (from server-side data)
-  applyProfileColors();
-  
-  // Explicitly initialize profile when this HTML loads
-  // This ensures profile loads when navigating back from other pages
-  initProfile();
-  
   const loadingHTML = '<div class="loading"><p>Fetching videos&hellip;</p></div>';
 
   async function loadMore() {
@@ -258,17 +255,34 @@ const joinDate = colorData?.joinedAt
     }
   }
 
-  document.getElementById('load-more')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    loadMore();
-  });
-
-  // Auto-load more if needed after initial load
-  setTimeout(() => {
-    if (document.querySelectorAll('.post').length < 6 && getCurrentCursor()) {
-      loadMore();
+  function initializeProfile() {
+    // Apply profile colors immediately if available (from server-side data)
+    applyProfileColors();
+    
+    // Initialize profile (works on both initial load and navigation)
+    initProfile();
+    
+    // Setup load more button event listener
+    // With view transitions, DOM is replaced so we can safely add listeners
+    const loadMoreBtn = document.getElementById('load-more');
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadMore();
+      });
     }
-  }, 1000);
+
+    // Auto-load more if needed after initial load
+    setTimeout(() => {
+      if (document.querySelectorAll('.post').length < 6 && getCurrentCursor()) {
+        loadMore();
+      }
+    }, 1000);
+  }
+
+  // Initialize on both initial load and view transitions
+  // astro:page-load fires on initial load too, so we can use it for both
+  document.addEventListener('astro:page-load', initializeProfile);
 </script>
 
 </body>
