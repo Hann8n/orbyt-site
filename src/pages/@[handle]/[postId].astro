@@ -224,13 +224,6 @@ const finalOgTitle = `post by @${authorHandle}`;
       .avatar {
         border-color: #FF876C;
       }
-      /* Ensure thumbnail maintains aspect ratio during view transitions */
-      ::view-transition-old(video-*),
-      ::view-transition-new(video-*) {
-        object-fit: contain !important;
-        object-position: center !important;
-        aspect-ratio: 9 / 16 !important;
-      }
       /* Desktop logo sizing */
       @media screen and (min-width: 700px) {
         /* Ensure desktop-title displays as flex row with logo on left and button on right */

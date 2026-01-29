@@ -98,15 +98,7 @@ function initVideoPlayer(videoUrl, thumbnail) {
   videoEl.setAttribute('preload', 'auto');
   videoEl.muted = true;
 
-  // Set thumbnail (don't set video.poster - it causes doubled image during view transition)
-  if (thumbnail && thumbnailEl) {
-    thumbnailEl.style.objectFit = 'contain';
-    thumbnailEl.style.objectPosition = 'center';
-    thumbnailEl.src = thumbnail;
-    thumbnailEl.classList.remove('hidden');
-  }
-
-  // Thumbnail visibility handlers
+  // Thumbnail visibility handlers (thumbnail is rendered in HTML, no need to set src)
   const hideThumbnail = () => {
     if (thumbnailEl) {
       thumbnailEl.classList.add('hidden');
@@ -368,6 +360,20 @@ function initPostView() {
   // Show post content
   postEl.classList.remove('hidden');
 }
+
+// Show thumbnail before view transition captures snapshot (for back navigation)
+document.addEventListener('astro:before-preparation', () => {
+  const videoEl = document.getElementById('vinit');
+  const thumbnailEl = document.getElementById('video-thumbnail');
+  
+  // Pause video and show thumbnail so view transition can capture it
+  if (videoEl) {
+    videoEl.pause();
+  }
+  if (thumbnailEl) {
+    thumbnailEl.classList.remove('hidden');
+  }
+});
 
 // Cleanup before page swap
 document.addEventListener('astro:before-swap', () => {
