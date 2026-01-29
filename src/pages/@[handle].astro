@@ -203,16 +203,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 
       <div class="author">
         <img class='avatar' src={avatar} alt={`${displayName}'s avatar`} style={`border-color: ${textColor};`} />
-        <div class="username-row">
-          <h1 class="username" style={`color: ${textColor};`}>{displayName}</h1>
-          {colorData?.isBeta && (
-            <svg class="beta-icon" width="20" height="20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style={`color: ${textColor};`}>
-              <title>{joinDate ? `Beta Tester | Joined on ${joinDate}` : 'Beta Tester'}</title>
-              <polygon points="62.5,25 62.5,130 153.43,77.5" fill="currentColor" fill-opacity="0.5"/>
-              <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
-            </svg>
-          )}
-        </div>
+        <h1 class="username" style={`color: ${textColor};`}>{displayName}{colorData?.isBeta && (
+          <span class="beta-badge">&#8288;<svg class="beta-icon" viewBox="28 24 160 160" xmlns="http://www.w3.org/2000/svg" style={`color: ${textColor};`}>
+            <title>{joinDate ? `Beta Tester | Joined on ${joinDate}` : 'Beta Tester'}</title>
+            <polygon points="62.5,25 62.5,130 153.43,77.5" fill="currentColor" fill-opacity="0.5"/>
+            <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
+          </svg></span>
+        )}</h1>
         <div class="bio" style={`color: ${textColor};`} set:html={description}></div>
       </div>
 

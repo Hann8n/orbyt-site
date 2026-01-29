@@ -48,20 +48,17 @@ header.hidden {
 .author h1 {
   font-weight: 900;
   font-size: 30px;
-  letter-spacing: 0.6px
+  letter-spacing: 0.6px;
 }
-.author .username-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.author .username-row h1 {
-  margin: 0;
+.author .beta-badge {
+  white-space: nowrap;
 }
 .author .beta-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  vertical-align: 0.1em;
+  margin-left: 0.15em;
   color: inherit;
 }
 .author .bio {
