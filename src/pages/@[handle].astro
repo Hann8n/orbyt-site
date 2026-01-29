@@ -1,34 +1,35 @@
 ---
-export const prerender = false; // SSR route (shell-only, lightweight)
+export const prerender = false; // SSR route
 
-import { fetchProfile, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
+import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
 import { getColor } from '../utils/orbyt-api';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle } = Astro.params;
-// handle is "wsj.com" (no @ prefix)
 
-// Fetch profile data for Open Graph metadata
-let profileData = null;
-if (handle) {
-  profileData = await fetchProfile(handle);
+if (!handle) {
+  return new Response(null, { status: 404 });
 }
+
+// Fetch profile and videos in parallel (both only need handle)
+const [profileData, videoFeed] = await Promise.all([
+  fetchProfile(handle),
+  fetchVideoPosts(handle, undefined, 30),
+]);
 
 // Return 404 if profile not found
 if (!profileData) {
   return new Response(null, { status: 404 });
 }
 
-// Fetch profile colors from Orbyt API
-let colorData = null;
-if (profileData.did) {
-  // Access environment variable from Cloudflare runtime (production)
-  // Fallback to import.meta.env for local development
-  const apiToken = Astro.locals.runtime?.env?.ORBYT_API_TOKEN 
-    || (import.meta.env as any).ORBYT_API_TOKEN 
-    || '';
-  colorData = await getColor(profileData.did, apiToken);
-}
+const videoPosts = videoFeed.posts;
+const nextCursor = videoFeed.cursor;
+
+// Fetch profile colors (needs DID from profile, so must be sequential)
+const apiToken = Astro.locals.runtime?.env?.ORBYT_API_TOKEN 
+  || (import.meta.env as any).ORBYT_API_TOKEN 
+  || '';
+const colorData = profileData.did ? await getColor(profileData.did, apiToken) : null;
 
 // Extract metadata with fallbacks
 const displayName = profileData?.displayName || handle || 'Profile';
@@ -39,7 +40,7 @@ const ogUrl = `https://getorbyt.com/@${handle}`;
 const ogTitle = `@${handle} on orbyt`;
 const ogDescription = description.length > 200 ? description.substring(0, 200) + '...' : description;
 
-// OG image properties - avatars are typically square, default to 1200x1200
+// OG image properties
 const ogImageWidth = 1200;
 const ogImageHeight = 1200;
 const ogImageType = getImageMimeType(avatar);
@@ -49,6 +50,13 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
 const joinDate = colorData?.joinedAt 
   ? new Date(colorData.joinedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
   : null;
+
+// Color styles
+const textColor = colorData?.textColor || '#ccd7e9';
+const backgroundColor = colorData?.backgroundColor || '#0e141b';
+
+// Cache at Cloudflare edge: 60s fresh, serve stale up to 5min while revalidating
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 ---
 
 <!doctype html>
@@ -154,13 +162,13 @@ const joinDate = colorData?.joinedAt
 </head>
 
 <body>
-  <div id="profile" data-handle={handle} data-color-data={colorData ? JSON.stringify(colorData) : ''}>
-    <header class="hidden">
+  <div id="profile" data-handle={handle} data-cursor={nextCursor || ''}>
+    <header style={`background-color: ${backgroundColor};`}>
       <div class="links">
         <a href='/' class="logo-wordmark">
-          <span class="logo-text">orbyt</span>
+          <span class="logo-text" style={`color: ${textColor}; view-transition-name: orbyt-logo;`}>orbyt</span>
         </a>
-        <a class='install-button mobile' href="/beta">
+        <a class='install-button mobile' href="/beta" style={`background-color: ${textColor}; color: ${backgroundColor}; view-transition-name: orbyt-beta;`}>
           Get the beta
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
@@ -172,34 +180,33 @@ const joinDate = colorData?.joinedAt
       <svg class="hr-inline mobile" height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="squigglePattern" width="374" height="7" patternUnits="userSpaceOnUse">
-            <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke="#f3f5fe" stroke-width="2" stroke-miterlimit="10"/>
+            <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke={textColor} stroke-width="2" stroke-miterlimit="10"/>
           </pattern>
         </defs>
-
         <rect fill="url(#squigglePattern)" width="100%" height="100%"/>
       </svg>
 
       <div class="author">
-        <img class='avatar' src="/images/Default-avatar.png" alt="Avatar">
+        <img class='avatar' src={avatar} alt={`${displayName}'s avatar`} style={`border-color: ${textColor};`} />
         <div class="username-row">
-          <h1 class="username"></h1>
+          <h1 class="username" style={`color: ${textColor};`}>{displayName}</h1>
           {colorData?.isBeta && (
-            <svg class="beta-icon" width="20" height="20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <svg class="beta-icon" width="20" height="20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style={`color: ${textColor};`}>
               <title>{joinDate ? `Joined ${joinDate}` : 'Beta user'}</title>
               <polygon points="62.5,25 62.5,130 153.43,77.5" fill="currentColor" fill-opacity="0.5"/>
               <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
             </svg>
           )}
         </div>
-        <div class="bio"></div>
+        <div class="bio" style={`color: ${textColor};`} set:html={description}></div>
       </div>
 
       <svg class="hr-inline desktop" width="374" height="7" viewBox="0 0 374 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke="#f3f5fe" stroke-width="2" stroke-miterlimit="10"/>
+        <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke={textColor} stroke-width="2" stroke-miterlimit="10"/>
       </svg>
 
       <div class="install-button-wrapper desktop">
-        <a class='install-button' href="/beta">
+        <a class='install-button' href="/beta" style={`background-color: ${textColor}; color: ${backgroundColor};`}>
           Get the beta
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
@@ -210,90 +217,107 @@ const joinDate = colorData?.joinedAt
     </header>
 
     <div class="posts">
-      <footer style="display: none;">
-        <a id="load-more">Load more</a>
-      </footer>
+      {videoPosts.map((post) => (
+        <div class="post">
+          <div class="post-image-container">
+            <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
+            <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
+          </div>
+          <a href={`/@${handle}/${post.postId}`}>
+            <img class="play-button" src="/images/post/play.svg" alt="" />
+          </a>
+          <div class="post-overlay">
+            <div class="caption">{post.caption}</div>
+          </div>
+        </div>
+      ))}
+      {nextCursor && (
+        <footer>
+          <a id="load-more" style={`background-color: ${textColor}; color: ${backgroundColor};`}>Load more</a>
+        </footer>
+      )}
     </div>
   </div>
 
-<script type="module">
-  import { populateVideoGrid, getUserHandleFromURL, getCurrentCursor, initProfile, applyProfileColors } from '/js/bluesky-profile.js';
+<script>
+  // Minimal client-side JS for load more pagination only
+  const BLUESKY_FEED_API = 'https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed';
   
-  const loadingHTML = '<div class="loading"><p>Fetching videos&hellip;</p></div>';
-
-  async function loadMore() {
-    const cursor = getCurrentCursor();
-    const footer = document.querySelector('footer');
+  function setupLoadMore() {
+    const profileEl = document.getElementById('profile');
     const loadMoreBtn = document.getElementById('load-more');
+    if (!profileEl || !loadMoreBtn) return;
     
-    if (!footer || !loadMoreBtn || !cursor) {
-      if (footer) footer.style.display = 'none';
-      return;
-    }
-
-    loadMoreBtn.remove();
-    footer.insertAdjacentHTML('beforeend', loadingHTML);
-
-    try {
-      const handle = getUserHandleFromURL();
-      if (!handle) return;
+    const handle = profileEl.dataset.handle;
+    let cursor = profileEl.dataset.cursor;
+    
+    loadMoreBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!cursor) return;
       
-      const nextCursor = await populateVideoGrid(handle, cursor);
-      footer.querySelector('.loading')?.remove();
+      loadMoreBtn.textContent = 'Loading...';
       
-      if (nextCursor) {
-        footer.style.display = 'flex';
-        footer.appendChild(loadMoreBtn);
-      } else {
-        footer.style.display = 'none';
+      try {
+        const url = `${BLUESKY_FEED_API}?actor=${encodeURIComponent(handle)}&filter=posts_with_video&limit=30&cursor=${encodeURIComponent(cursor)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!data.feed || data.feed.length === 0) {
+          loadMoreBtn.parentElement?.remove();
+          return;
+        }
+        
+        const postsContainer = document.querySelector('.posts');
+        const footer = document.querySelector('footer');
+        
+        for (const item of data.feed) {
+          const post = item.post;
+          if (!post?.embed || post.embed.$type !== 'app.bsky.embed.video#view') continue;
+          
+          const postId = post.uri.split('/').pop();
+          const thumbnail = post.embed.thumbnail || '';
+          let caption = post.record?.text || '';
+          if (caption.length > 90) caption = caption.substring(0, 90).trim() + '...';
+          
+          const postDiv = document.createElement('div');
+          postDiv.className = 'post';
+          postDiv.innerHTML = `
+            <div class="post-image-container">
+              <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
+              <img class="post-thumb" src="${thumbnail}" alt="" style="view-transition-name: video-${postId}" />
+            </div>
+            <a href="/@${handle}/${postId}">
+              <img class="play-button" src="/images/post/play.svg" alt="" />
+            </a>
+            <div class="post-overlay">
+              <div class="caption">${caption}</div>
+            </div>
+          `;
+          
+          if (footer) {
+            postsContainer?.insertBefore(postDiv, footer);
+          } else {
+            postsContainer?.appendChild(postDiv);
+          }
+        }
+        
+        cursor = data.cursor || null;
+        profileEl.dataset.cursor = cursor || '';
+        
+        if (cursor) {
+          loadMoreBtn.textContent = 'Load more';
+        } else {
+          loadMoreBtn.parentElement?.remove();
+        }
+      } catch (error) {
+        console.error('Error loading more:', error);
+        loadMoreBtn.textContent = 'Load more';
       }
-    } catch (error) {
-      console.error('Error loading more posts:', error);
-      footer.querySelector('.loading')?.remove();
-      footer.style.display = 'flex';
-      footer.appendChild(loadMoreBtn);
-    }
+    });
   }
-
-  function initializeProfile() {
-    // Apply profile colors immediately if available (from server-side data)
-    applyProfileColors();
-    
-    // Initialize profile (works on both initial load and navigation)
-    initProfile();
-    
-    // Setup load more button event listener
-    // With view transitions, DOM is replaced so we can safely add listeners
-    const loadMoreBtn = document.getElementById('load-more');
-    if (loadMoreBtn) {
-      loadMoreBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        loadMore();
-      });
-    }
-
-    // Auto-load more if needed after initial load
-    setTimeout(() => {
-      if (document.querySelectorAll('.post').length < 6 && getCurrentCursor()) {
-        loadMore();
-      }
-    }, 1000);
-  }
-
-  // Initialize on multiple events to ensure it always runs
-  // astro:page-load fires on initial load and some navigations
-  // astro:after-swap fires after DOM swap in view transitions
-  // DOMContentLoaded is a fallback for cases where view transition events don't fire
-  document.addEventListener('astro:page-load', initializeProfile);
-  document.addEventListener('astro:after-swap', initializeProfile);
   
-  // Fallback for cases where view transition events don't fire (e.g., browser back after refresh)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeProfile);
-  } else {
-    // DOM already loaded, initialize immediately
-    initializeProfile();
-  }
+  // Run on page load and view transitions
+  document.addEventListener('astro:page-load', setupLoadMore);
 </script>
 
 </body>

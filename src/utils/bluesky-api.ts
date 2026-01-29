@@ -65,7 +65,7 @@ export async function fetchProfile(handle: string): Promise<ProfileData | null> 
   }
 }
 
-export async function resolveHandle(handle: string): Promise<string | null> {
+async function resolveHandle(handle: string): Promise<string | null> {
   try {
     const url = `${BLUESKY_API_BASE}/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(handle)}`;
     const response = await fetchWithTimeout(url);
@@ -161,6 +161,91 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
     };
   } catch {
     return null;
+  }
+}
+
+export interface VideoPost {
+  uri: string;
+  postId: string;
+  thumbnail: string;
+  caption: string;
+}
+
+export interface VideoFeedResult {
+  posts: VideoPost[];
+  cursor: string | null;
+}
+
+/**
+ * Extract post ID from AT Protocol URI
+ */
+function extractPostId(uri: string): string | null {
+  if (!uri) return null;
+  const parts = uri.split('/');
+  return parts[parts.length - 1] || null;
+}
+
+/**
+ * Truncate text to a maximum length with ellipsis
+ */
+function truncateText(text: string, maxLength: number = 90): string {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength).trim() + '...';
+}
+
+/**
+ * Fetch video posts from a user's feed
+ */
+export async function fetchVideoPosts(handle: string, cursor?: string, limit: number = 30): Promise<VideoFeedResult> {
+  try {
+    let url = `${BLUESKY_API_BASE}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&filter=posts_with_video&limit=${limit}`;
+    if (cursor) {
+      url += `&cursor=${encodeURIComponent(cursor)}`;
+    }
+
+    const response = await fetchWithTimeout(url);
+    
+    if (!response.ok) {
+      return { posts: [], cursor: null };
+    }
+
+    const data = await response.json();
+    
+    if (data.error || !data.feed) {
+      return { posts: [], cursor: null };
+    }
+
+    // Filter and map video posts
+    const posts: VideoPost[] = [];
+    
+    for (const item of data.feed) {
+      const post = item.post;
+      if (!post) continue;
+      
+      const embed = post.embed;
+      if (!embed) continue;
+      
+      // Only include video posts
+      if (embed.$type !== 'app.bsky.embed.video#view') continue;
+      
+      const postId = extractPostId(post.uri);
+      if (!postId) continue;
+      
+      posts.push({
+        uri: post.uri,
+        postId,
+        thumbnail: embed.thumbnail || '',
+        caption: truncateText(post.record?.text || ''),
+      });
+    }
+
+    return {
+      posts,
+      cursor: data.cursor || null,
+    };
+  } catch {
+    return { posts: [], cursor: null };
   }
 }
 

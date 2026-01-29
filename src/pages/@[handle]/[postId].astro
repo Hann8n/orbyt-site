@@ -18,6 +18,9 @@ if (!postData) {
   return new Response(null, { status: 404 });
 }
 
+// Cache at Cloudflare edge: 60s fresh, serve stale up to 5min while revalidating
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+
 // Extract metadata with fallbacks - all from postData
 const caption = postData?.text || 'Loading post...';
 const authorHandle = postData?.author?.handle || handle;
@@ -377,7 +380,17 @@ const finalOgTitle = `post by @${authorHandle}`;
   <div id="background"> </div>
 
   <!-- Post content -->
-  <div id="post" data-handle={handle} data-post-id={postId}>
+  <div id="post" 
+    data-handle={handle} 
+    data-post-id={postId}
+    data-video-url={videoUrl || ''}
+    data-thumbnail={thumbnail}
+    data-caption={caption}
+    data-author-handle={authorHandle}
+    data-author-name={authorDisplayName}
+    data-author-avatar={authorAvatar}
+    data-like-count={likeCount.toString()}
+    data-created-at={createdAt || ''}>
 
     <div id="post-media">
 
@@ -385,11 +398,11 @@ const finalOgTitle = `post by @${authorHandle}`;
 
         <div class="logo">
           <a href='/' class="logo-wordmark">
-            <span class="logo-text">orbyt</span>
+            <span class="logo-text" style="view-transition-name: orbyt-logo;">orbyt</span>
           </a>
         </div>
 
-        <a class='install-button' href="/beta">
+        <a class='install-button' href="/beta" style="view-transition-name: orbyt-beta;">
           Get the beta
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
@@ -434,9 +447,11 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       </div>
 
-      <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" transition:name={`video-${postId}`} transition:animate="none" />
-      <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
-      </video>
+      <div class="video-container">
+        <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
+        </video>
+        <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" style={`view-transition-name: video-${postId}`} />
+      </div>
 
     </div>
 

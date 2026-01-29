@@ -51,12 +51,16 @@
 }
 
 /*--- Video ---*/
+.video-container {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
 video {
   width: 100%;
   height: auto;
   display: block;
-  position: relative;
-  z-index: -1;
   aspect-ratio: 9 / 16;
   object-fit: contain;
   background-color: transparent;
@@ -64,51 +68,27 @@ video {
 
 .video-thumbnail {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-  object-position: center;
-  z-index: -2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
   pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  aspect-ratio: 9 / 16;
 }
 
 .video-thumbnail.hidden {
-  opacity: 0;
+  visibility: hidden;
 }
 
-/* Ensure thumbnail maintains aspect ratio during view transitions */
-::view-transition-old(video-*),
-::view-transition-new(video-*) {
-  object-fit: contain;
-  object-position: center;
-  aspect-ratio: 9 / 16;
-}
-
-/* Mobile: full width video with 9:16 aspect ratio */
-@media screen and (max-width: 699px) {
-  video {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    aspect-ratio: 9 / 16;
-    object-fit: contain;
+/* Desktop: video sizing using CSS viewport units */
+@media screen and (min-width: 700px) {
+  .video-container {
+    width: auto;
+    display: inline-block;
   }
   
-  .video-thumbnail {
-    width: 100%;
-    height: auto;
-  }
-}
-
-/* Desktop: video sizing using CSS viewport units - browser-native, no JS needed */
-@media screen and (min-width: 700px) {
   video {
-    /* Height: constrained by viewport height AND available width */
-    /* Take the smaller of: (viewport height - 60px clamped 400-1200px) or (available width * 16/9) */
     height: min(
       clamp(400px, calc(100vh - 60px), 1200px),
       calc((100vw - 540px) * 16 / 9)
@@ -119,13 +99,7 @@ video {
     border-radius: 10px;
   }
   
-  /* Thumbnail matches video dimensions */
   .video-thumbnail {
-    height: min(
-      clamp(400px, calc(100vh - 60px), 1200px),
-      calc((100vw - 540px) * 16 / 9)
-    );
-    width: auto;
     border-radius: 10px;
   }
 }
