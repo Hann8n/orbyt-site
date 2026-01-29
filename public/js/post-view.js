@@ -114,15 +114,12 @@ function initVideoPlayer(videoUrl, thumbnail) {
   };
   
   const showThumbnail = () => {
-    if (thumbnailEl && thumbnail && videoEl.paused) {
+    if (thumbnailEl && thumbnail) {
       thumbnailEl.classList.remove('hidden');
     }
   };
 
-  // Hide thumbnail when video is playing (not once - needs to re-hide after buffering)
-  videoEl.addEventListener('playing', hideThumbnail);
-  videoEl.addEventListener('canplay', hideThumbnail);
-  // Only show thumbnail when actually paused by user, not during buffering
+  videoEl.addEventListener('playing', hideThumbnail, { once: true });
   videoEl.addEventListener('pause', showThumbnail);
 
   // Setup HLS playback
