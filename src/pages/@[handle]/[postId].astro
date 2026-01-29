@@ -224,98 +224,18 @@ const finalOgTitle = `post by @${authorHandle}`;
       .avatar {
         border-color: #FF876C;
       }
-      /* Desktop logo sizing */
+      /* Desktop-specific logo text styling */
       @media screen and (min-width: 700px) {
-        /* Ensure desktop-title displays as flex row with logo on left and button on right */
-        .desktop-title {
-          display: flex !important;
-          flex-direction: row !important;
-          flex-wrap: nowrap !important;
-          justify-content: space-between !important;
-          align-items: center !important;
-          width: 100% !important;
-          box-sizing: border-box;
-        }
-        .desktop-title .logo {
-          flex-shrink: 0;
-          margin-left: 0 !important;
-          margin-top: 0 !important;
-        }
-        .desktop-title .logo-wordmark {
-          line-height: 0;
-          margin: 0 !important;
-        }
         .desktop-title .logo-text {
           font-size: 42px;
-          color: #f3f5fe !important;
-          margin: 0 !important;
-          padding: 0 !important;
+          color: #f3f5fe;
+          margin: 0;
+          padding: 0;
         }
-        /* Ensure desktop title button is aligned correctly with proper spacing */
         .desktop-title .install-button {
-          margin-right: 0 !important;
-          margin-top: 0 !important;
-          margin-left: 0 !important;
-          align-items: center !important;
-          display: flex !important;
-          flex-shrink: 0;
-          font-size: 16px !important;
-          height: 42px !important;
-        }
-        /* Ensure desktop-title and horizontal-rule align at the same left position */
-        .desktop-title {
-          margin-left: 0 !important;
-          padding-left: 0 !important;
-        }
-        .horizontal-rule {
-          margin-left: 0 !important;
-          padding-left: 0 !important;
-          width: 100% !important;
-          overflow: hidden;
-        }
-        /* Ensure desktop layout matches original structure */
-        #desktop > div:last-child {
           display: flex;
-          flex-direction: column;
-          min-width: 0;
-          flex-shrink: 1;
-          max-width: 374px;
-          width: 100%;
-        }
-        #desktop #post-caption-desktop {
-          min-width: 0;
-          flex-shrink: 1;
-        }
-        /* Add right padding to desktop container to prevent heart icon from touching screen edge */
-        #desktop {
-          padding-right: 60px !important;
-          min-width: 0;
-        }
-        /* Allow post-author to collapse and stack */
-        #desktop .post-author {
-          flex-wrap: wrap !important;
-          min-width: 0;
-          overflow: visible;
-          gap: 8px;
           align-items: center;
-        }
-        #desktop .post-author .avatar-wrapper {
-          flex-shrink: 1;
-          min-width: 0;
-          overflow: hidden;
-          flex: 0 1 auto;
-        }
-        #desktop .post-author .avatar-wrapper .username {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          min-width: 0;
-        }
-        #desktop .post-author .likes {
-          flex-shrink: 0;
-          white-space: nowrap;
-          margin-left: auto;
-          flex-basis: auto;
+          height: 42px;
         }
       }
     </style>

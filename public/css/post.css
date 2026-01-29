@@ -9,61 +9,121 @@
   .mobile-overlay {
     display: none;
   }
+  
+  /* Main post container */
   #post {
     padding: 30px;
     display: flex;
     justify-content: center;
+    max-width: 100vw;
+    overflow: hidden;
+    box-sizing: border-box;
   }
+  
+  /* Video - don't collapse, respect available space */
+  #post-media {
+    flex-shrink: 0;
+    max-width: calc(100vw - 290px);
+  }
+  
+  /* Desktop sidebar - allow collapsing */
   #desktop {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     padding-left: 30px;
-    padding-right: 60px;
+    padding-right: 0;
     justify-content: flex-end;
+    flex-shrink: 1;
+    min-width: 0;
   }
+  
+  /* Desktop title row - logo and button */
+  .desktop-title {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 24px;
+    width: auto;
+    margin-left: 0;
+    padding-left: 0;
+  }
+  
+  .desktop-title .logo {
+    flex-shrink: 0;
+    margin-left: 0;
+    margin-top: 0;
+    line-height: 0;
+  }
+  
+  .desktop-title .install-button {
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 16px;
+  }
+  
+  /* Horizontal rule */
   .horizontal-rule {
     height: 10px;
     width: 100%;
     background-repeat: repeat-x;
     background-position: center;
     margin: 20px 0 30px;
+    overflow: hidden;
   }
-  .desktop-title {
+  
+  /* Content container */
+  #desktop > div:last-child {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    min-width: 0;
+    flex-shrink: 1;
+    max-width: 374px;
+    width: auto;
   }
-  .logo {
-    margin-left: -10px;
-    margin-top: 0;
-    line-height: 0;
+  
+  #post-caption-desktop {
+    max-width: 374px;
+    min-width: 0;
+    flex-shrink: 1;
   }
-  .logo a img {
-    width: 159px;
-    position: relative;
-  }
-  .post-author {
+  
+  /* Post author row */
+  #desktop .post-author {
     flex-wrap: wrap;
     margin-bottom: 0;
     max-width: 374px;
+    min-width: 0;
+    gap: 8px;
+    align-items: center;
   }
-  #post-caption-desktop {
-    max-width: 374px;
+  
+  #desktop .post-author .avatar-wrapper {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    flex: 0 1 auto;
   }
-  .install-button {
-    margin-right: 0;
-    margin-top: 0;
-    font-size: 12px;
+  
+  #desktop .post-author .avatar-wrapper .username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
   }
+  
+  #desktop .post-author .likes {
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  
   video {
     border-radius: 10px;
-  }
-}
-@media screen and (min-width: 800px) {
-  .install-button {
-    font-size: 16px;
   }
 }
