@@ -415,7 +415,7 @@ const finalOgTitle = `post by @${authorHandle}`;
           </button>
         </div>
 
-        <div id="post-caption-mobile" class="post-content mobile-overlay">Loading...</div>
+        <div id="post-caption-mobile" class="post-content mobile-overlay" style={`view-transition-name: caption-${postId}`}>Loading...</div>
 
         <div class="post-author mobile-overlay">
 
@@ -476,7 +476,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       <div>
 
-        <div id="post-caption-desktop" class="post-content">Loading...</div>
+        <div id="post-caption-desktop" class="post-content" style={`view-transition-name: caption-${postId}-desktop`}>Loading...</div>
 
         <div class="post-author">
           <span class='avatar-wrapper'>

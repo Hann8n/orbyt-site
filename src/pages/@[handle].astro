@@ -136,6 +136,21 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       .install-button {
         background-color: #ccd7e9;
         color: black;
+        border: none;
+        text-transform: none;
+        letter-spacing: 0.6px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        padding: 0 18px;
+      }
+      .install-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .install-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       }
       .install-button .svg-button {
         display: inline-block;
@@ -222,13 +237,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           <div class="post-image-container">
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
             <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
+            <div class="post-overlay">
+              <div class="caption" style={`view-transition-name: caption-${post.postId}`}>{post.caption}</div>
+            </div>
           </div>
           <a href={`/@${handle}/${post.postId}`}>
             <img class="play-button" src="/images/post/play.svg" alt="" />
           </a>
-          <div class="post-overlay">
-            <div class="caption">{post.caption}</div>
-          </div>
         </div>
       ))}
       {nextCursor && (
@@ -285,13 +300,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <div class="post-image-container">
               <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
               <img class="post-thumb" src="${thumbnail}" alt="" style="view-transition-name: video-${postId}" />
+              <div class="post-overlay">
+                <div class="caption" style="view-transition-name: caption-${postId}">${caption}</div>
+              </div>
             </div>
             <a href="/@${handle}/${postId}">
               <img class="play-button" src="/images/post/play.svg" alt="" />
             </a>
-            <div class="post-overlay">
-              <div class="caption">${caption}</div>
-            </div>
           `;
           
           if (footer) {
