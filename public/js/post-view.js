@@ -108,21 +108,22 @@ function initVideoPlayer(videoUrl, thumbnail) {
 
   // Thumbnail visibility handlers
   const hideThumbnail = () => {
-    if (videoEl.readyState >= 1 && !videoEl.paused && thumbnailEl) {
+    if (thumbnailEl) {
       thumbnailEl.classList.add('hidden');
     }
   };
   
   const showThumbnail = () => {
-    if (thumbnailEl && thumbnail) {
+    if (thumbnailEl && thumbnail && videoEl.paused) {
       thumbnailEl.classList.remove('hidden');
     }
   };
 
-  videoEl.addEventListener('playing', hideThumbnail, { once: true });
-  videoEl.addEventListener('canplay', hideThumbnail, { once: true });
+  // Hide thumbnail when video is playing (not once - needs to re-hide after buffering)
+  videoEl.addEventListener('playing', hideThumbnail);
+  videoEl.addEventListener('canplay', hideThumbnail);
+  // Only show thumbnail when actually paused by user, not during buffering
   videoEl.addEventListener('pause', showThumbnail);
-  videoEl.addEventListener('waiting', showThumbnail);
 
   // Setup HLS playback
   if (videoUrl.includes('.m3u8')) {
