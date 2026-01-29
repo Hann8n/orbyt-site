@@ -1,0 +1,16 @@
+name = "orbyt-site"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-01-29"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+binding = "ASSETS"
+directory = "./dist"
+
+# Service Binding: direct Worker-to-Worker calls (no public internet)
+[[services]]
+binding = "ORBYT_API"
+service = "orbyt-api"
+
+[observability]
+enabled = true
