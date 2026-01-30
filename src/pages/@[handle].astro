@@ -25,10 +25,13 @@ if (!profileData) {
 const videoPosts = videoFeed.posts;
 const nextCursor = videoFeed.cursor;
 
-// Fetch profile colors via Service Binding (direct Worker-to-Worker)
+// Fetch profile colors via Service Binding
 const { env } = Astro.locals.runtime;
-const colorData = profileData.did && env.ORBYT_API 
-  ? await getColor(profileData.did, env.ORBYT_API) 
+if (!env.ORBYT_API) {
+  console.error('ORBYT_API binding not found in env:', Object.keys(env));
+}
+const colorData = profileData.did && env.ORBYT_API
+  ? await getColor(profileData.did, env.ORBYT_API)
   : null;
 
 // Extract metadata with fallbacks
