@@ -64,6 +64,9 @@ header.hidden {
 .author .bio {
   white-space: pre-wrap;
   line-height: 1.35;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow: hidden;
 }
 
 /* Profile posts */
