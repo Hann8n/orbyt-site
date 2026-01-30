@@ -426,7 +426,9 @@ const finalOgTitle = `post by @${authorHandle}`;
   <!-- HLS.js library for cross-browser HLS playback support -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-  <script type="module" src="/js/post-view.js"></script>
+  <!-- Rich text parsing for mentions and links -->
+  <script is:inline src="/js/richtext.js"></script>
+  <script is:inline src="/js/post-view.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157537168-1"></script>

@@ -26,42 +26,7 @@ function formatRelativeTime(createdAt) {
   return 'now';
 }
 
-/**
- * Escape HTML for safe display
- */
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-/**
- * Convert URLs to clickable links
- */
-function convertUrlsToLinks(text) {
-  if (!text) return '';
-  
-  const urlRegex = /(https?:\/\/[^\s]+)/gi;
-  let result = escapeHtml(text);
-  
-  // Replace URLs with links
-  result = result.replace(urlRegex, (url) => {
-    try {
-      const urlObj = new URL(url);
-      let display = urlObj.hostname.replace(/^www\./, '');
-      if (urlObj.pathname.length > 1) {
-        const path = urlObj.pathname.substring(1).split('/')[0];
-        display += '/' + (path.length > 8 ? path.substring(0, 8) + '...' : path);
-      }
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${display}</a>`;
-    } catch {
-      return url;
-    }
-  });
-  
-  return result;
-}
+// Note: escapeHtml and parseRichText are loaded from /js/richtext.js
 
 /**
  * Initialize video player with HLS support
@@ -300,7 +265,7 @@ function updateDisplay(data) {
   // Update captions
   const captionMobile = document.getElementById('post-caption-mobile');
   const captionDesktop = document.getElementById('post-caption-desktop');
-  const captionHtml = convertUrlsToLinks(data.caption);
+  const captionHtml = parseRichText(data.caption);
   if (captionMobile) captionMobile.innerHTML = captionHtml;
   if (captionDesktop) captionDesktop.innerHTML = captionHtml;
 

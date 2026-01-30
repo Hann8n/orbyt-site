@@ -3,6 +3,7 @@ export const prerender = false; // SSR route
 
 import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
 import { getColor } from '../utils/orbyt-api';
+import { parseRichText, parseRichTextTruncated } from '../utils/richtext';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle } = Astro.params;
@@ -213,7 +214,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
           </svg></span>
         )}</h1>
-        <div class="bio" style={`color: ${textColor};`} set:html={description}></div>
+        <div class="bio" style={`color: ${textColor};`} set:html={parseRichText(description)}></div>
       </div>
 
       <div class="hr-inline-wrapper desktop">
@@ -240,7 +241,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
             <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
             <div class="post-overlay">
-              <div class="caption" style={`view-transition-name: caption-${post.postId}`}>{post.caption}</div>
+              <div class="caption" style={`view-transition-name: caption-${post.postId}`} set:html={parseRichText(post.caption)}></div>
             </div>
           </div>
           <a href={`/@${handle}/${post.postId}`}>
@@ -256,8 +257,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </div>
   </div>
 
+<!-- Rich text parsing for mentions and links -->
+<script is:inline src="/js/richtext.js"></script>
+
 <script>
   // Minimal client-side JS for load more pagination only
+  // Note: escapeHtml and parseRichText are loaded from /js/richtext.js
   const BLUESKY_FEED_API = 'https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed';
   
   function setupLoadMore() {
@@ -295,6 +300,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           const thumbnail = post.embed.thumbnail || '';
           let caption = post.record?.text || '';
           if (caption.length > 90) caption = caption.substring(0, 90).trim() + '...';
+          const captionHtml = parseRichText(caption);
           
           const postDiv = document.createElement('div');
           postDiv.className = 'post';
@@ -303,7 +309,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
               <img class="post-thumb" src="${thumbnail}" alt="" style="view-transition-name: video-${postId}" />
               <div class="post-overlay">
-                <div class="caption" style="view-transition-name: caption-${postId}">${caption}</div>
+                <div class="caption" style="view-transition-name: caption-${postId}">${captionHtml}</div>
               </div>
             </div>
             <a href="/@${handle}/${postId}">

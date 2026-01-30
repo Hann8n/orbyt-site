@@ -21,11 +21,11 @@ export async function getColor(
   
   try {
     const response = await binding.fetch(`https://orbyt-api${endpoint}`);
-    if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    if (!response.ok) return null;
     return response.json();
   } catch (error) {
-    console.error('Failed to fetch color data:', error);
-    throw error; // Re-throw so we can see the actual error
+    // Gracefully handle binding failures (e.g., local dev without service binding)
+    console.warn('Color API unavailable:', error instanceof Error ? error.message : error);
+    return null;
   }
 }

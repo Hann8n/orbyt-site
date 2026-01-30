@@ -38,3 +38,50 @@ body {
   background-position: center;
   margin: 20px 0 30px;
 }
+
+/* Rich text link styles */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s ease;
+  /* Reset any inherited positioning */
+  position: static;
+  display: inline;
+  width: auto;
+  height: auto;
+}
+.link:hover {
+  color: inherit;
+  opacity: 0.8;
+}
+.link:visited {
+  color: inherit;
+}
+.link:active {
+  color: inherit;
+}
+
+.mention {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  /* Reset any inherited positioning */
+  position: static;
+  display: inline;
+  width: auto;
+  height: auto;
+}
+.mention:hover {
+  color: inherit;
+  opacity: 0.8;
+}
+.mention:visited {
+  color: inherit;
+}
+.mention:active {
+  color: inherit;
+}
+.mention-handle {
+  font-weight: 600;
+}
