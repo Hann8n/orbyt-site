@@ -141,6 +141,8 @@ const finalOgTitle = `post by @${authorHandle}`;
         font-size: 42px;
         letter-spacing: -0.02em;
         line-height: 1;
+        text-box-trim: trim-start;
+        text-box-edge: cap alphabetic;
       }
       @media screen and (max-width: 699px) {
         .logo-overlay.mobile-overlay .logo-text {
@@ -212,6 +214,7 @@ const finalOgTitle = `post by @${authorHandle}`;
         transition: all 0.2s ease !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         padding: 0 18px !important;
+        margin-top: 0 !important;
       }
       .install-button:hover {
         background-color: #e8eefc !important;
@@ -227,16 +230,30 @@ const finalOgTitle = `post by @${authorHandle}`;
       }
       /* Desktop-specific logo text styling */
       @media screen and (min-width: 700px) {
+        .desktop-title {
+          align-items: center;
+        }
+        .desktop-title .logo {
+          display: flex;
+          align-items: center;
+          line-height: 1;
+        }
+        .desktop-title .logo-wordmark {
+          display: flex;
+          align-items: center;
+          line-height: 1;
+        }
         .desktop-title .logo-text {
           font-size: 42px;
           color: #f3f5fe;
           margin: 0;
           padding: 0;
+          text-box-trim: trim-both;
+          text-box-edge: cap alphabetic;
         }
         .desktop-title .install-button {
           display: flex;
           align-items: center;
-          height: 42px;
         }
       }
     </style>

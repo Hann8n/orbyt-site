@@ -57,8 +57,8 @@ export const prerender = true;
 
         .header {
             text-align: left;
-            margin-bottom: 1.5rem;
-            padding-bottom: 2rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
         }
 
         .header a {
@@ -67,10 +67,10 @@ export const prerender = true;
         }
 
         .logo-icon {
-            width: 65px;
+            width: 100px;
             height: auto;
             display: block;
-            margin: 0 auto 2px auto;
+            margin: 0;
         }
 
         .logo-text {
@@ -79,6 +79,8 @@ export const prerender = true;
             font-size: 32px;
             color: #f3f5fe;
             text-align: center;
+            text-box-trim: trim-start;
+            text-box-edge: cap alphabetic;
             display: block;
         }
 
@@ -197,8 +199,7 @@ export const prerender = true;
     <div class="container">
         <div class="header">
             <a href="/">
-                <img src="/TV-Raw.webp" alt="orbyt logo" class="logo-icon"/>
-                <div class="logo-text">orbyt</div>
+                <img src="/images/orbyt-logo.svg" alt="orbyt logo" class="logo-icon"/>
             </a>
         </div>
 
