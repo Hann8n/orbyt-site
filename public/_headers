@@ -1,0 +1,20 @@
+# Cloudflare Pages headers configuration
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# Font caching - 1 year with immutable (fonts never change once deployed)
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# Early Hints for homepage - Cloudflare sends HTTP 103 before HTML
+# Browser starts downloading font before HTML parsing begins
+/
+  Link: </fonts/Figtree/Figtree-VariableFont_wght.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin
+
+# Early Hints for profile pages
+/@:handle
+  Link: </fonts/Figtree/Figtree-VariableFont_wght.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin
+
+# Early Hints for post pages
+/@:handle/:postId
+  Link: </fonts/Figtree/Figtree-VariableFont_wght.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin
