@@ -2,6 +2,7 @@
 export const prerender = false; // SSR route (shell-only, lightweight)
 
 import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-api';
+import { parseRichText } from '../../utils/richtext';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle, postId } = Astro.params;
@@ -298,7 +299,6 @@ const finalOgTitle = `post by @${authorHandle}`;
     data-post-id={postId}
     data-video-url={videoUrl || ''}
     data-thumbnail={thumbnail}
-    data-caption={caption}
     data-author-handle={authorHandle}
     data-author-name={authorDisplayName}
     data-author-avatar={authorAvatar}
@@ -335,7 +335,7 @@ const finalOgTitle = `post by @${authorHandle}`;
           </button>
         </div>
 
-        <div id="post-caption-mobile" class="post-content mobile-overlay" style={`view-transition-name: caption-${postId}`}>Loading...</div>
+        <div id="post-caption-mobile" class="post-content mobile-overlay" style={`view-transition-name: caption-${postId}`} set:html={parseRichText(caption)}></div>
 
         <div class="post-author mobile-overlay">
 
@@ -396,7 +396,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       <div>
 
-        <div id="post-caption-desktop" class="post-content" style={`view-transition-name: caption-${postId}-desktop`}>Loading...</div>
+        <div id="post-caption-desktop" class="post-content" style={`view-transition-name: caption-${postId}-desktop`} set:html={parseRichText(caption)}></div>
 
         <div class="post-author">
           <span class='avatar-wrapper'>
@@ -426,8 +426,7 @@ const finalOgTitle = `post by @${authorHandle}`;
   <!-- HLS.js library for cross-browser HLS playback support -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-  <!-- Rich text parsing for mentions and links -->
-  <script is:inline src="/js/richtext.js"></script>
+  <!-- Video player initialization -->
   <script is:inline src="/js/post-view.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->

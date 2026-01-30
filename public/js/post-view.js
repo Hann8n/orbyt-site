@@ -26,8 +26,6 @@ function formatRelativeTime(createdAt) {
   return 'now';
 }
 
-// Note: escapeHtml and parseRichText are loaded from /js/richtext.js
-
 /**
  * Initialize video player with HLS support
  */
@@ -260,16 +258,10 @@ function initResizeListeners() {
 
 /**
  * Update display elements with SSR data
+ * Note: Captions are now rendered server-side via set:html
  */
 function updateDisplay(data) {
-  // Update captions
-  const captionMobile = document.getElementById('post-caption-mobile');
-  const captionDesktop = document.getElementById('post-caption-desktop');
-  const captionHtml = parseRichText(data.caption);
-  if (captionMobile) captionMobile.innerHTML = captionHtml;
-  if (captionDesktop) captionDesktop.innerHTML = captionHtml;
-
-  // Update time
+  // Update time (computed client-side for accurate relative time)
   const relativeTime = formatRelativeTime(data.createdAt);
   const timeMobile = document.getElementById('post-time-mobile');
   const timeDesktop = document.getElementById('post-time-desktop');
@@ -297,12 +289,12 @@ function initPostView() {
   if (!postEl) return;
 
   // Get SSR data from data attributes
+  // Note: caption is now rendered server-side, not needed here
   const data = {
     handle: postEl.dataset.handle,
     postId: postEl.dataset.postId,
     videoUrl: postEl.dataset.videoUrl,
     thumbnail: postEl.dataset.thumbnail,
-    caption: postEl.dataset.caption,
     authorHandle: postEl.dataset.authorHandle,
     authorName: postEl.dataset.authorName,
     authorAvatar: postEl.dataset.authorAvatar,

@@ -95,11 +95,23 @@ export function parseRichText(text: string, options?: {
   // Sort matches by position
   matches.sort((a, b) => a.start - b.start);
   
+  // Filter out URLs that are part of mentions (e.g., user.bsky.social in @user.bsky.social)
+  const filteredMatches = matches.filter((match, index) => {
+    if (match.type === 'url') {
+      // Check if this URL is contained within a mention
+      return !matches.some(m => 
+        m.type === 'mention' && 
+        match.start >= m.start && match.end <= m.end
+      );
+    }
+    return true;
+  });
+  
   // Build the result string
   let result = '';
   let lastIndex = 0;
   
-  for (const match of matches) {
+  for (const match of filteredMatches) {
     // Add text before this match (escaped)
     if (match.start > lastIndex) {
       result += escapeHtml(text.slice(lastIndex, match.start));
