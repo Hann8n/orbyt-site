@@ -1,8 +1,6 @@
 ---
-const url = Astro.url;
-
 // All users see this landing page with QR code
-const appUrl = `${url.origin}/app`;
+const appUrl = 'https://getorbyt.com/app';
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
 ---
 <!doctype html>
