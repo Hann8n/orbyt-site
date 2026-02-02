@@ -3,29 +3,27 @@
 const ua = Astro.request.headers.get('user-agent') || '';
 const url = Astro.url;
 
-// Skip redirect if ?preview is in URL (for styling/testing)
-if (!url.searchParams.has('preview')) {
-    // Detect Android FIRST - "Android" is always reliably in Android UA strings
-    const isAndroid = /android/i.test(ua);
-    
-    // Detect iOS: iPhone, iPad, iPod explicitly in UA
-    // Note: iPad in desktop mode (iOS 13+) shows "Macintosh" - we can't reliably
-    // detect touch capability server-side, so those users go to home page
-    // where they can manually choose. iPhones always report "iPhone".
-    const isIOS = /iphone|ipad|ipod/i.test(ua);
-    
-    // Mobile Safari on iOS always has "Mobile" and "Safari" - catches most iOS browsers
-    // since all iOS browsers use WebKit and report similarly
-    const isMobileSafari = /mobile.*safari/i.test(ua) && !isAndroid;
-    
-    if (isAndroid) {
-        return Astro.redirect('/beta', 302);
-    } else if (isIOS || isMobileSafari) {
-        return Astro.redirect('https://testflight.apple.com/join/FRKef1HA', 302);
-    } else {
-        return Astro.redirect('/', 302);
-    }
+// Detect Android FIRST - "Android" is always reliably in Android UA strings
+const isAndroid = /android/i.test(ua);
+
+// Detect iOS: iPhone, iPad, iPod explicitly in UA
+// Note: iPad in desktop mode (iOS 13+) shows "Macintosh" - we can't reliably
+// detect touch capability server-side, so those users see the landing page
+const isIOS = /iphone|ipad|ipod/i.test(ua);
+
+// Mobile Safari on iOS always has "Mobile" and "Safari" - catches most iOS browsers
+const isMobileSafari = /mobile.*safari/i.test(ua) && !isAndroid;
+
+// Redirect mobile users automatically
+if (isAndroid) {
+    return Astro.redirect('/beta', 302);
+} else if (isIOS || isMobileSafari) {
+    return Astro.redirect('https://testflight.apple.com/join/FRKef1HA', 302);
 }
+
+// Desktop users (and iPads in desktop mode) see this landing page with QR code
+const appUrl = `${url.origin}/app`;
+const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -33,6 +31,7 @@ if (!url.searchParams.has('preview')) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get the App - orbyt</title>
+    
     <style>
         @font-face {
             font-family: 'Figtree';
@@ -41,63 +40,242 @@ if (!url.searchParams.has('preview')) {
             font-style: normal;
             font-display: fallback;
         }
+    </style>
+    <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
         html, body {
             margin: 0;
             padding: 0;
-            background: #000;
-            color: #fff;
-            height: 100vh;
+            height: 100%;
+            min-height: 100vh;
         }
         body {
+            --bg-color: #000;
+            --fg-color: #f3f5fe;
+            background: var(--bg-color);
+            font-family: 'Figtree', sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
         .container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
-        }
-        .emojis {
-            font-size: 70px;
-            line-height: 1;
-        }
-        .text {
-            font-family: 'Figtree', sans-serif;
-            font-weight: 300;
-            font-size: 20px;
-            color: #fff;
+            text-align: center;
         }
         .logo-icon {
-            width: 80px;
+            width: 120px;
             height: auto;
-            position: absolute;
-            bottom: 40px;
+            display: block;
+            margin: 0 auto;
         }
         .logo-icon .logo-fg {
-            fill: #f3f5fe;
-            stroke: #f3f5fe;
+            fill: var(--fg-color);
+            stroke: var(--fg-color);
+        }
+        .logo {
+            display: block;
+            transition: opacity 0.2s ease;
+        }
+        .logo:hover {
+            opacity: 0.8;
+        }
+        .subtitle {
+            font-family: 'Figtree', sans-serif;
+            font-weight: 600;
+            font-size: 28px;
+            color: var(--fg-color);
+            text-align: center;
+            display: block;
+            margin: 20px auto 0;
+        }
+        .qr-section {
+            margin: 40px 0;
+            text-align: center;
+        }
+        .qr-container {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid #333;
+            display: inline-block;
+        }
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        .qr-label {
+            font-size: 14px;
+            color: #888;
+            margin-top: 16px;
+            letter-spacing: 0.05em;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .download-button {
+            background: #551DEF;
+            border: 2px solid #000000;
+            border-radius: 30px;
+            height: 60px;
+            font-weight: bold;
+            font-size: 20px;
+            line-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #E0EBFF;
+            width: 100%;
+            margin: 0 auto 12px auto;
+        }
+        .download-button:hover {
+            opacity: 0.9;
+        }
+        .separator {
+            height: 7px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .separator svg {
+            width: 100%;
+            height: 7px;
+        }
+        .footer {
+            text-align: left;
+            white-space: nowrap;
+            display: block;
+            margin-top: auto;
+            margin-bottom: 40px;
+        }
+        .footer a {
+            margin: 0 20px 0 0;
+            display: inline-block;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 13px;
+            text-align: left;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ccc;
+        }
+        .footer a:hover {
+            color: #f3f5fe;
+        }
+        
+        @media (max-width: 500px) {
+            .logo-icon {
+                width: 90px;
+            }
+            .subtitle {
+                font-size: 22px;
+            }
+            .qr-section {
+                margin: 30px 0;
+            }
+            .qr-code {
+                width: 180px;
+                height: 180px;
+            }
+            .download-button {
+                height: 50px;
+                font-size: 18px;
+            }
+            .separator {
+                margin-bottom: 40px;
+            }
+            .footer {
+                white-space: normal;
+                margin-bottom: 40px;
+                text-align: center;
+            }
+            .footer a {
+                display: block;
+                margin: 8px 0 8px 0;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="emojis">🚙💨</div>
-        <div class="text">routing you to the app...</div>
+        <div class="main-content">
+            <a href="/" class="logo">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
+                    <defs>
+                        <mask id="cutout-mask">
+                            <rect x="65" y="65" width="894" height="894" fill="white"/>
+                            <path fill="black" fill-rule="evenodd" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3m249.3 243.2C752 381.3 773.8 399.3 781.1 523c5.8 98.9-9.4 168.3-41.5 189.8-59.5 39.8-394.7 39.8-454.2 0-32.1-21.5-47.3-90.9-41.5-189.8 7.7-130.5 28.8-144.8 226.1-152.4 19.3-.8 104.3.5 128.3 1.9Z"/>
+                            <rect fill="black" x="372" y="482" width="82" height="136" rx="41" ry="41"/>
+                            <rect fill="black" x="570" y="482" width="82" height="136" rx="41" ry="41"/>
+                        </mask>
+                    </defs>
+                    <path class="logo-fg" mask="url(#cutout-mask)" stroke-width="65" stroke-linejoin="round" stroke-linecap="round" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3Z"/>
+                </svg>
+            </a>
+            
+            <div class="subtitle">scan to get the app</div>
+            
+            <div class="qr-section">
+                <div class="qr-container">
+                    <img class="qr-code" src={qrCodeUrl} alt="QR code to download orbyt app" />
+                </div>
+                <div class="qr-label">or download directly below</div>
+            </div>
+            
+            <div class="buttons">
+                <a href="https://testflight.apple.com/join/FRKef1HA" class="download-button">iOS Beta</a>
+                <a href="/beta" class="download-button">Android Waitlist</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="separator">
+                <svg height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="squigglePattern" width="374" height="7" patternUnits="userSpaceOnUse">
+                            <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke="#551DEF" stroke-width="2" stroke-miterlimit="10"/>
+                        </pattern>
+                    </defs>
+                    <rect fill="url(#squigglePattern)" width="100%" height="100%"/>
+                </svg>
+            </div>
+            <a href="https://bsky.app/profile/getorbyt.com">bluesky</a>
+            <a href="https://discord.gg/8gNQPFygnF">discord</a>
+            <a href="/terms">terms</a>
+            <a href="/privacy">privacy</a>
+            <a href="/contact">contact</a>
+        </div>
     </div>
-    <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
-        <defs>
-            <mask id="cutout-mask">
-                <rect x="65" y="65" width="894" height="894" fill="white"/>
-                <path fill="black" fill-rule="evenodd" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3m249.3 243.2C752 381.3 773.8 399.3 781.1 523c5.8 98.9-9.4 168.3-41.5 189.8-59.5 39.8-394.7 39.8-454.2 0-32.1-21.5-47.3-90.9-41.5-189.8 7.7-130.5 28.8-144.8 226.1-152.4 19.3-.8 104.3.5 128.3 1.9Z"/>
-                <rect fill="black" x="372" y="482" width="82" height="136" rx="41" ry="41"/>
-                <rect fill="black" x="570" y="482" width="82" height="136" rx="41" ry="41"/>
-            </mask>
-        </defs>
-        <path class="logo-fg" mask="url(#cutout-mask)" stroke-width="65" stroke-linejoin="round" stroke-linecap="round" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3Z"/>
-    </svg>
 </body>
 </html>
