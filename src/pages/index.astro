@@ -174,7 +174,7 @@ export const prerender = true;
 
     .separator {
         height: 7px;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
         position: relative;
         overflow: hidden;
         display: flex;
@@ -189,16 +189,15 @@ export const prerender = true;
     }
 
     .footer {
-        text-align: left;
-        white-space: nowrap;
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 12px 32px;
         margin-top: auto;
         margin-bottom: 40px;
     }
 
     .footer a {
-        margin: 0 20px 0 0;
-        display: inline-block;
         font-style: normal;
         font-weight: bold;
         font-size: 13px;
@@ -250,21 +249,6 @@ export const prerender = true;
             margin-bottom: 15px;
         }
 
-        .separator {
-            margin-bottom: 40px;
-        }
-
-        .footer {
-            white-space: normal;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .footer a {
-            display: block;
-            margin: 8px 0 8px 0;
-            text-align: center;
-        }
     }
 
     @media (min-width: 1500px) {
@@ -316,7 +300,7 @@ export const prerender = true;
             </div>
         </div>
 
-        <div class="footer">
+        <footer class="footer">
             <div class="separator">
                 <svg height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -332,7 +316,7 @@ export const prerender = true;
             <a href="/terms">terms</a>
             <a href="/privacy">privacy</a>
             <a href="/contact">contact</a>
-        </div>
+        </footer>
     </div>
 </body>
 </html>

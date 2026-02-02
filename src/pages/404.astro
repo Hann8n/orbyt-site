@@ -35,19 +35,16 @@ export const prerender = true;
             font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #000000;
             min-height: 100vh;
+            min-height: 100dvh;
             color: #f3f5fe;
-            position: relative;
             overflow-x: hidden;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+            width: min(100% - clamp(2rem, 5vw, 4rem), 800px);
+            margin-inline: auto;
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
         }
@@ -58,69 +55,90 @@ export const prerender = true;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            gap: clamp(0.75rem, 2vw, 1rem);
+            padding-block: clamp(2rem, 8vh, 6rem);
         }
 
-        .error-number {
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 8rem;
-            font-weight: 900;
-            color: #f3f5fe;
-            margin-bottom: 1rem;
-            line-height: 1;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        /* Hero element - TV static is the focal point */
+        .tv-static {
+            width: clamp(120px, 20vw, 160px);
+            aspect-ratio: 1;
+            background-image: url('/images/tv-static-sprite-sheet.png');
+            background-size: 500% 500%;
+            animation: tv-static-animation 0.8s steps(1) infinite;
         }
 
+        @keyframes tv-static-animation {
+            0%    { background-position: 0% 0%; }
+            4%    { background-position: 25% 0%; }
+            8%    { background-position: 50% 0%; }
+            12%   { background-position: 75% 0%; }
+            16%   { background-position: 100% 0%; }
+            20%   { background-position: 0% 25%; }
+            24%   { background-position: 25% 25%; }
+            28%   { background-position: 50% 25%; }
+            32%   { background-position: 75% 25%; }
+            36%   { background-position: 100% 25%; }
+            40%   { background-position: 0% 50%; }
+            44%   { background-position: 25% 50%; }
+            48%   { background-position: 50% 50%; }
+            52%   { background-position: 75% 50%; }
+            56%   { background-position: 100% 50%; }
+            60%   { background-position: 0% 75%; }
+            64%   { background-position: 25% 75%; }
+            68%   { background-position: 50% 75%; }
+            72%   { background-position: 75% 75%; }
+            76%   { background-position: 100% 75%; }
+            80%   { background-position: 0% 100%; }
+            84%   { background-position: 25% 100%; }
+            88%   { background-position: 50% 100%; }
+            92%   { background-position: 75% 100%; }
+            96%   { background-position: 100% 100%; }
+        }
+
+        /* Primary text - the error code */
         .error-title {
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 2.5rem);
             font-weight: 900;
-            color: #f3f5fe;
-            margin-bottom: 1rem;
+            line-height: 1;
+            letter-spacing: -0.02em;
         }
 
+        /* Supporting text - explains the error */
         .error-message {
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 1.25rem;
-            color: #cfd6e8;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            font-size: clamp(1rem, 2vw, 1.125rem);
+            color: #9ca3af;
+            max-width: 32ch;
+            line-height: 1.5;
         }
 
-        .navigation-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
+        /* Action - clear call to action */
         .nav-button {
             display: inline-flex;
             background: #f3f5fe;
             color: #000000;
             text-decoration: none;
-            padding: 12px 20px;
+            padding: 0.625rem 1.25rem;
             border-radius: 999px;
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
+            font-size: 0.875rem;
             font-weight: 700;
-            transition: all 0.3s ease;
-            border: 1px solid #f3f5fe;
-            align-items: center;
-            justify-content: center;
-            min-width: 140px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 0.5rem;
         }
 
         .nav-button:hover {
-            background: #F8F8F8;
-            border-color: #E8E8E8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
         }
 
         .separator {
             height: 7px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -135,16 +153,15 @@ export const prerender = true;
         }
 
         .footer {
-            text-align: left;
-            white-space: nowrap;
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 12px 32px;
             margin-top: auto;
             margin-bottom: 40px;
         }
 
         .footer a {
-            margin: 0 20px 0 0;
-            display: inline-block;
             font-style: normal;
             font-weight: bold;
             font-size: 13px;
@@ -158,74 +175,18 @@ export const prerender = true;
         .footer a:hover {
             color: #f3f5fe;
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .error-number {
-                font-size: 6rem;
-            }
-
-            .error-title {
-                font-size: 2rem;
-            }
-
-            .error-message {
-                font-size: 1.1rem;
-            }
-
-            .navigation-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-button {
-                width: 100%;
-                max-width: 280px;
-            }
-
-            .footer {
-                white-space: normal;
-                margin-bottom: 40px;
-                text-align: center;
-            }
-
-            .footer a {
-                display: block;
-                margin: 8px 0 8px 0;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .error-number {
-                font-size: 4rem;
-            }
-
-            .error-title {
-                font-size: 1.5rem;
-            }
-
-            .error-message {
-                font-size: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="main-content">
-            <div class="error-number">404</div>
-            <h1 class="error-title">Page Not Found</h1>
-            <p class="error-message">There's nothing to see here...</p>
-            <div class="navigation-buttons">
-                <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
-            </div>
+            <div class="tv-static" aria-hidden="true"></div>
+            <h1 class="error-title">No Signal</h1>
+            <p class="error-message">This page doesn't exist or has been moved.</p>
+            <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
         </div>
 
-        <div class="footer">
+        <footer class="footer">
             <div class="separator">
                 <svg height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -241,7 +202,7 @@ export const prerender = true;
             <a href="/terms">terms</a>
             <a href="/privacy">privacy</a>
             <a href="/contact">contact</a>
-        </div>
+        </footer>
     </div>
 </body>
 </html>

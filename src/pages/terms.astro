@@ -142,7 +142,7 @@ export const prerender = true;
 
         .separator {
             height: 7px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -157,16 +157,15 @@ export const prerender = true;
         }
 
         .footer {
-            text-align: left;
-            white-space: nowrap;
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 12px 32px;
             margin-top: 80px;
             margin-bottom: 40px;
         }
 
         .footer a {
-            margin: 0 20px 0 0;
-            display: inline-block;
             font-style: normal;
             font-weight: bold;
             font-size: 13px;
@@ -198,21 +197,6 @@ export const prerender = true;
                 font-size: 1.2rem;
             }
 
-            .separator {
-                margin-bottom: 40px;
-            }
-
-            .footer {
-                white-space: normal;
-                margin-bottom: 40px;
-                text-align: center;
-            }
-
-            .footer a {
-                display: block;
-                margin: 8px 0 8px 0;
-                text-align: center;
-            }
         }
     </style>
 </head>
@@ -225,7 +209,7 @@ export const prerender = true;
                 <img src="/images/orbyt-logo.svg" alt="Orbyt">
             </a>
             <h1>Terms of Use</h1>
-            <p class="subtitle">Last Updated: December 8, 2025</p>
+            <p class="subtitle">Last Updated: February 2, 2026</p>
         </div>
 
         <div class="content">
@@ -247,13 +231,23 @@ export const prerender = true;
                 <li>When we say "Orbyt," "we," "us," and "our" in these Terms, we mean Orbyt.</li>
             </ul>
 
+            <h2>Relationship to Bluesky and the AT Protocol</h2>
+            <p>Orbyt is a third-party client application that connects to the Bluesky network via the AT Protocol. When you use Orbyt to post content, interact with other users, or access the social network, your activity occurs on the decentralized AT Protocol network operated by Bluesky Social, PBC and other services.</p>
+            <p><strong>Important:</strong> By using Orbyt, you also agree to comply with:</p>
+            <ul>
+                <li><a href="https://bsky.social/about/support/tos" target="_blank" rel="noopener">Bluesky's Terms of Service</a></li>
+                <li><a href="https://bsky.social/about/support/community-guidelines" target="_blank" rel="noopener">Bluesky's Community Guidelines</a></li>
+                <li><a href="https://bsky.social/about/support/privacy-policy" target="_blank" rel="noopener">Bluesky's Privacy Policy</a></li>
+            </ul>
+            <p>Orbyt is not affiliated with, endorsed by, or sponsored by Bluesky Social, PBC. Bluesky is not responsible for Orbyt's content, practices, or any actions taken by Orbyt. If you have issues specific to the Bluesky network or AT Protocol, you should contact Bluesky directly.</p>
+
             <h2>Who Can Use Orbyt</h2>
             
             <h3>Eligibility</h3>
             <p>To use Orbyt, you must be at least 13 years old and legally permitted to use Orbyt based on the laws in your country. If you are not yet an adult according to the laws of your country, your parent or legal guardian must read these Terms on your behalf. If you're a parent or legal guardian, and you allow your child (who meets the minimum age for your country) to use the services, then these terms also apply to you, and you're responsible for your child's activity on the services.</p>
 
             <h3>Accounts</h3>
-            <p>To use Orbyt, you must create an account ("Account"). Don't share your Account with others, because you're responsible for all activities under your Account, whether or not you know about them. If you're using Orbyt on behalf of a company or organization, you confirm that you have the authority to represent your company or organization. If you believe your Account created through Orbyt has been compromised, report it to us at <a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
+            <p>To use Orbyt, you must create an account ("Account"). Don't share your Account with others, because you're responsible for all activities under your Account, whether or not you know about them. If you're using Orbyt on behalf of a company or organization, you confirm that you have the authority to represent your company or organization. If you believe your Account created through Orbyt has been compromised, <a href="/contact">report it to us</a>.</p>
 
             <h2>User Content</h2>
             
@@ -275,6 +269,12 @@ export const prerender = true;
                 <li>Remove or modify User Content for any reason, including User Content that we believe violates these Terms or other policies.</li>
             </ul>
 
+            <h3>Public Nature of Content</h3>
+            <p>Orbyt operates on the AT Protocol, a decentralized social networking protocol where most user activity is public by design. This includes your posts, profile information, likes, follows, and blocks. You should have no expectation of privacy for content you post publicly through Orbyt.</p>
+
+            <h3>Content Deletion and the Decentralized Network</h3>
+            <p>If you delete content or your account, we will use reasonable efforts to remove your content from Orbyt and notify other services on the AT Protocol of the deletion. However, due to the decentralized nature of the AT Protocol, we cannot control or force other services and applications on the AT Protocol to delete your content. Some posts and data may continue to exist on other services outside our control. Complete deletion across the entire network may not always be possible.</p>
+
             <h2>General Prohibitions and Enforcement</h2>
             <p>You agree not to use Orbyt to:</p>
             <ul>
@@ -289,6 +289,7 @@ export const prerender = true;
             
             <h3>Your Right to Termination</h3>
             <p>If you want to delete your Account, you can do so through your account settings. If your account was terminated by Orbyt, we retain the right to keep a copy of your data for trust and safety purposes. These Terms will survive termination of your Account.</p>
+            <p><strong>Important:</strong> Due to the decentralized nature of the AT Protocol, deleting your Orbyt account does not guarantee removal of your content from other services on the AT Protocol network. We will notify other services of your account deletion, but we cannot force them to delete your data. To request removal from those services, you must contact them directly.</p>
 
             <h3>Our Right to Termination</h3>
             <p>We reserve the right to suspend or terminate your account and/or specific services offered within Orbyt without notice, at our discretion, for the following reasons:</p>
@@ -299,7 +300,7 @@ export const prerender = true;
             </ul>
 
             <h2>Appeals</h2>
-            <p>You can appeal any enforcement decision from these Terms, including suspension or termination, by emailing <a href="mailto:support@getorbyt.com">support@getorbyt.com</a>.</p>
+            <p>You can appeal any enforcement decision from these Terms, including suspension or termination, by <a href="/contact">contacting us</a>.</p>
 
             <h2>Updates</h2>
             <p>We update our terms from time to time, and will either post the updated Terms or send other communications to let you know about any changes. If you keep using Orbyt, you agree to the updated Terms. If you don't agree, you must stop using Orbyt.</p>
@@ -313,14 +314,13 @@ export const prerender = true;
             <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, ORBYT WILL NOT BE LIABLE FOR ANY INCIDENTAL, SPECIAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES, OR DAMAGES FOR LOST PROFITS, LOST REVENUES, LOST SAVINGS, LOST BUSINESS OPPORTUNITY, LOSS OF DATA OR GOODWILL, SERVICE INTERRUPTION, COMPUTER OR MOBILE DEVICE DAMAGE OR SYSTEM FAILURE OR THE COST OF SUBSTITUTE SERVICES OF ANY KIND ARISING OUT OF OR IN CONNECTION WITH THESE TERMS OR FROM THE USE OF OR INABILITY TO USE ORBYT OR FOR ANY ERROR OR DEFECT IN ORBYT.</p>
 
             <h2>Governing Law</h2>
-            <p>These Terms and any action related thereto will be governed by the laws of the State of California, without regard to conflict of laws provisions.</p>
+            <p>These Terms and any action related thereto will be governed by the laws of the State of New Jersey, without regard to conflict of laws provisions.</p>
 
             <h2>Contact Information</h2>
-            <p>If you have any questions about these Terms or Orbyt, please contact us:</p>
-            <p>Email: <a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
+            <p>If you have any questions about these Terms or Orbyt, visit our <a href="/contact">contact page</a>.</p>
         </div>
 
-        <div class="footer">
+        <footer class="footer">
             <div class="separator">
                 <svg height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -336,7 +336,7 @@ export const prerender = true;
             <a href="/terms">terms</a>
             <a href="/privacy">privacy</a>
             <a href="/contact">contact</a>
-        </div>
+        </footer>
     </div>
 
 </body>
