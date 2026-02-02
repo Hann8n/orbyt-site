@@ -1,5 +1,31 @@
 ---
-export const prerender = true;
+// Server-side device detection - faster and more reliable than client-side JS
+const ua = Astro.request.headers.get('user-agent') || '';
+const url = Astro.url;
+
+// Skip redirect if ?preview is in URL (for styling/testing)
+if (!url.searchParams.has('preview')) {
+    // Detect Android FIRST - "Android" is always reliably in Android UA strings
+    const isAndroid = /android/i.test(ua);
+    
+    // Detect iOS: iPhone, iPad, iPod explicitly in UA
+    // Note: iPad in desktop mode (iOS 13+) shows "Macintosh" - we can't reliably
+    // detect touch capability server-side, so those users go to home page
+    // where they can manually choose. iPhones always report "iPhone".
+    const isIOS = /iphone|ipad|ipod/i.test(ua);
+    
+    // Mobile Safari on iOS always has "Mobile" and "Safari" - catches most iOS browsers
+    // since all iOS browsers use WebKit and report similarly
+    const isMobileSafari = /mobile.*safari/i.test(ua) && !isAndroid;
+    
+    if (isAndroid) {
+        return Astro.redirect('/beta', 302);
+    } else if (isIOS || isMobileSafari) {
+        return Astro.redirect('https://testflight.apple.com/join/FRKef1HA', 302);
+    } else {
+        return Astro.redirect('/', 302);
+    }
+}
 ---
 <!doctype html>
 <html lang="en">
@@ -7,29 +33,6 @@ export const prerender = true;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get the App - orbyt</title>
-    <script>
-        (function() {
-            // Skip redirect if ?preview is in URL (for styling)
-            if (window.location.search.includes('preview')) return;
-            
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            
-            // Detect iOS: iPhone, iPad, iPod, or Mac with touch (iPad with desktop UA)
-            const isIOS = /iPad|iPhone|iPod/.test(ua) || 
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            
-            // Detect Android
-            const isAndroid = /Android/i.test(ua);
-            
-            if (isIOS) {
-                window.location.href = "https://testflight.apple.com/join/FRKef1HA";
-            } else if (isAndroid) {
-                window.location.href = "/beta";
-            } else {
-                window.location.href = "/";
-            }
-        })();
-    </script>
     <style>
         @font-face {
             font-family: 'Figtree';
