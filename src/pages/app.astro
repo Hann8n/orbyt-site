@@ -1,27 +1,7 @@
 ---
-// Server-side device detection - faster and more reliable than client-side JS
-const ua = Astro.request.headers.get('user-agent') || '';
 const url = Astro.url;
 
-// Detect Android FIRST - "Android" is always reliably in Android UA strings
-const isAndroid = /android/i.test(ua);
-
-// Detect iOS: iPhone, iPad, iPod explicitly in UA
-// Note: iPad in desktop mode (iOS 13+) shows "Macintosh" - we can't reliably
-// detect touch capability server-side, so those users see the landing page
-const isIOS = /iphone|ipad|ipod/i.test(ua);
-
-// Mobile Safari on iOS always has "Mobile" and "Safari" - catches most iOS browsers
-const isMobileSafari = /mobile.*safari/i.test(ua) && !isAndroid;
-
-// Redirect mobile users automatically
-if (isAndroid) {
-    return Astro.redirect('/beta', 302);
-} else if (isIOS || isMobileSafari) {
-    return Astro.redirect('https://testflight.apple.com/join/FRKef1HA', 302);
-}
-
-// Desktop users (and iPads in desktop mode) see this landing page with QR code
+// All users see this landing page with QR code
 const appUrl = `${url.origin}/app`;
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
 ---
