@@ -61,28 +61,14 @@ export const prerender = true;
             padding-bottom: 2rem;
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            color: #cfd6e8;
-            text-decoration: none;
-            font-size: 1rem;
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 700;
+        .logo {
+            display: block;
             margin-bottom: 2rem;
-            transition: color 0.3s ease;
         }
 
-        .back-link:hover {
-            color: #f3f5fe;
-        }
-
-        .back-link svg {
-            width: 20px;
-            height: 20px;
-            margin-right: 0.5rem;
-            fill: currentColor;
-            transition: color 0.3s ease;
+        .logo img {
+            width: 80px;
+            height: 80px;
         }
 
         h1 {
@@ -235,6 +221,9 @@ export const prerender = true;
 
     <div class="container">
         <div class="header">
+            <a href="/" class="logo">
+                <img src="/images/orbyt-logo.svg" alt="Orbyt">
+            </a>
             <h1>Privacy Policy</h1>
             <p class="subtitle">Last Updated: December 8, 2025</p>
         </div>
