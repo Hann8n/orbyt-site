@@ -6,11 +6,29 @@ export const prerender = true;
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Discord - orbyt</title>
-    <meta http-equiv="refresh" content="0; url=https://discord.gg/8gNQPFygnF">
-    <link rel="canonical" href="https://discord.gg/8gNQPFygnF">
+    <title>Get the App - orbyt</title>
     <script>
-        window.location.href = "https://discord.gg/8gNQPFygnF";
+        (function() {
+            // Skip redirect if ?preview is in URL (for styling)
+            if (window.location.search.includes('preview')) return;
+            
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Detect iOS: iPhone, iPad, iPod, or Mac with touch (iPad with desktop UA)
+            const isIOS = /iPad|iPhone|iPod/.test(ua) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            // Detect Android
+            const isAndroid = /Android/i.test(ua);
+            
+            if (isIOS) {
+                window.location.href = "https://testflight.apple.com/join/FRKef1HA";
+            } else if (isAndroid) {
+                window.location.href = "/beta";
+            } else {
+                window.location.href = "/";
+            }
+        })();
     </script>
     <style>
         @font-face {
@@ -65,7 +83,7 @@ export const prerender = true;
 <body>
     <div class="container">
         <div class="emojis">🚙💨</div>
-        <div class="text">routing you to discord...</div>
+        <div class="text">routing you to the app...</div>
     </div>
     <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
         <defs>
