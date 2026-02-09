@@ -1,0 +1,12 @@
+# Allow all crawlers to access public pages
+User-agent: *
+Allow: /
+
+# Block API endpoints (JSON data, not meant for indexing)
+Disallow: /api/
+
+# Block OAuth callback page (not meant for indexing)
+Disallow: /callback.html
+
+# Sitemap location
+Sitemap: https://getorbyt.com/sitemap.xml

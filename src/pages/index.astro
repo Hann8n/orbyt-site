@@ -37,6 +37,39 @@ export const prerender = true;
     <meta name="twitter:description" content="a new video app for bluesky"/>
     <meta name="twitter:image" content="https://getorbyt.com/images/orbyt-logotype.png"/>
 
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "orbyt",
+      "url": "https://getorbyt.com",
+      "logo": "https://getorbyt.com/images/orbyt-logotype.png",
+      "description": "a new video app for bluesky",
+      "sameAs": [
+        "https://bsky.app/profile/getorbyt.com",
+        "https://discord.gg/8gNQPFygnF"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "orbyt",
+      "url": "https://getorbyt.com",
+      "description": "a new video app for bluesky",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://getorbyt.com/@{search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
 
