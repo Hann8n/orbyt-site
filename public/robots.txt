@@ -8,5 +8,5 @@ Disallow: /api/
 # Block OAuth callback page (not meant for indexing)
 Disallow: /callback.html
 
-# Sitemap location
+# Sitemap location (sitemaps.org protocol)
 Sitemap: https://getorbyt.com/sitemap.xml
