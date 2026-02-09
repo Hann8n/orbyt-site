@@ -3,6 +3,8 @@ html, body {
 }
 body {
   width: 100%;
+  background-color: #0e141b;
+  color: #ccd7e9;
 }
 header {
   padding: 20px;
@@ -81,7 +83,7 @@ header.hidden {
   width: 50%;
   margin-bottom: 2px;
   box-sizing: border-box;
-  color: #f3f5fe;
+  color: #ccd7e9;
   align-items: flex-end;
   padding: 0;
   overflow: hidden;
@@ -155,7 +157,7 @@ footer {
 #load-more {
   background: #888;
   border-radius: 30px;
-  color: #f3f5fe;
+  color: #ccd7e9;
   cursor: pointer;
   padding: 5px 20px;
   text-decoration: none;
@@ -163,14 +165,14 @@ footer {
 #load-more:hover,
 #load-more:active,
 #load-more:visited {
-  color: #f3f5fe;
+  color: #ccd7e9;
   text-decoration: none;
 }
 
 .loading {
   padding: 20px;
   text-align: center;
-  color: #B1BACF;
+  color: #ccd7e9;
 }
 
 /*--- Responsive styles ---*/
