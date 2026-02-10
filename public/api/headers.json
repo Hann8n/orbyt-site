@@ -39,11 +39,11 @@
   },
   "headers": [
     {
-      "id": "discord-header",
+      "id": "community-header",
       "imageUrl": "banners/3053370.png",
-      "destinationUrl": "https://discord.gg/8gNQPFygnF",
+      "destinationUrl": "https://community.getorbyt.com",
       "title": null,
-      "subtitle": "join the discord",
+      "subtitle": "join the community",
       "titleColor": "#000000",
       "subtitleColor": "#ffffff",
       "titleFontFamily": "Figtree-Bold",
