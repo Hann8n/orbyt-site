@@ -40,7 +40,7 @@
   "headers": [
     {
       "id": "community-header",
-      "imageUrl": "banners/community-forum.png",
+      "imageUrl": "../banners/community-forum.png",
       "destinationUrl": "https://community.getorbyt.com",
       "title": null,
       "subtitle": null,
