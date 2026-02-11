@@ -40,10 +40,10 @@
   "headers": [
     {
       "id": "community-header",
-      "imageUrl": "banners/3053370.png",
+      "imageUrl": "banners/community-forum.png",
       "destinationUrl": "https://community.getorbyt.com",
       "title": null,
-      "subtitle": "join the community",
+      "subtitle": null,
       "titleColor": "#000000",
       "subtitleColor": "#ffffff",
       "titleFontFamily": "Figtree-Bold",
