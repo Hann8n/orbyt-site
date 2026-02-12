@@ -1,12 +1,15 @@
 ---
 export const prerender = true;
+
+// Use default profile grey for avatar border
+const avatarBorderColor = '#ccd7e9';
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - Orbyt</title>
+    <title>About - Orbyt</title>
     
     <!-- Critical: Inline font-face for immediate availability (no network delay) -->
     <style>
@@ -31,6 +34,20 @@ export const prerender = true;
     <!-- Theme colors for mobile browsers -->
     <meta name="theme-color" content="#f3f5fe">
     <meta name="msapplication-TileColor" content="#f3f5fe">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="About - Orbyt"/>
+    <meta property="og:description" content="Learn about Orbyt, a video social networking application for Bluesky"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://getorbyt.com/about/"/>
+    <meta property="og:image" content="https://getorbyt.com/images/orbyt-logotype.png"/>
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="About - Orbyt"/>
+    <meta name="twitter:description" content="Learn about Orbyt, a video social networking application for Bluesky"/>
+    <meta name="twitter:image" content="https://getorbyt.com/images/orbyt-logotype.png"/>
+    
     <style>
         * {
             margin: 0;
@@ -81,6 +98,65 @@ export const prerender = true;
             margin-bottom: 1rem;
         }
 
+        .personal-intro {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+        }
+
+        .personal-intro-content {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-photo {
+            flex-shrink: 0;
+        }
+
+        .profile-photo a {
+            display: block;
+        }
+
+        .profile-photo img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid;
+            display: block;
+        }
+
+        .personal-text {
+            flex: 1;
+        }
+
+        .personal-text p {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.1rem;
+            color: #cfd6e8;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .personal-links {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .personal-links a {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.95rem;
+            color: #01f5b3;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .personal-links a:hover {
+            opacity: 0.8;
+        }
+
         .content {
             line-height: 1.6;
             flex: 1;
@@ -92,6 +168,16 @@ export const prerender = true;
             color: #f3f5fe;
             margin: 2rem 0 1rem 0;
             font-weight: 900;
+        }
+
+        .content h3 {
+            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.2rem;
+            color: #cfd6e8;
+            margin: 2rem 0 0.5rem 0;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .content p {
@@ -163,6 +249,24 @@ export const prerender = true;
             .content h2 {
                 font-size: 1.5rem;
             }
+
+            .personal-intro-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .profile-photo {
+                align-self: center;
+            }
+
+            .profile-photo img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .personal-text p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -173,22 +277,34 @@ export const prerender = true;
             <a href="/" class="logo">
                 <img src="/images/orbyt-logo.svg" alt="Orbyt">
             </a>
-            <h1>Contact Us</h1>
+        </div>
+
+        <div class="personal-intro">
+            <div class="personal-intro-content">
+                <div class="profile-photo">
+                    <a href="/@jack.orbyt.video">
+                        <img src="/images/profile-photo.webp" alt="Profile photo" style={`border-color: ${avatarBorderColor};`}>
+                    </a>
+                </div>
+                <div class="personal-text">
+                    <p>Hi! I'm Jack. The person behind orbyt. I'm passionate about building tools that make video communities more connected and fun.</p>
+                    <div class="personal-links">
+                        <a href="https://jackhannon.net" target="_blank" rel="noopener noreferrer">jackhannon.net</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="content">
+            <h3>Questions</h3>
+            <h2>Where did the idea for Orbyt come from?</h2>
+            <p>I loved Byte, a video app that shut down a few years ago. When Bluesky launched, I wondered if I could bring that same interface to the open AT Protocol. So I started building a prototype. Orbyt's frontend is similar to Byte, but it's built from scratch and runs on a decentralized network instead of a closed platform.</p>
             
-            <h2>For general inquiries</h2>
-            <p><a href="mailto:hello@getorbyt.com">hello@getorbyt.com</a></p>
+            <h2>How is Orbyt built?</h2>
+            <p>Orbyt is a third-party client for Bluesky. It connects to the Authenticated Transfer Protocol (AT Protocol), which means when you post videos through Orbyt, they're part of the broader Bluesky network. Your content isn't stuck in one place.</p>
             
-            <h2>Press &amp; media requests</h2>
-            <p><a href="mailto:hello@getorbyt.com">hello@getorbyt.com</a></p>
-            
-            <h2>Bug reports</h2>
-            <p><a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
-            
-            <h2>Copyright and content issues</h2>
-            <p>Orbyt is a third-party client for Bluesky. Content is hosted on the AT Protocol network, not by Orbyt. For copyright takedowns or content-related legal issues, please contact <a href="https://bsky.social/about/support" target="_blank" rel="noopener">Bluesky Support</a> directly.</p>
+            <h2>What's next for Orbyt?</h2>
+            <p>I'm still building and learning. If you want to follow along or share feedback, you can find us on <a href="https://bsky.app/profile/getorbyt.com">Bluesky</a> or visit our <a href="https://community.getorbyt.com">community forum</a>. Have questions? <a href="/contact">Say hello</a>.</p>
         </div>
 
         <footer class="footer">
