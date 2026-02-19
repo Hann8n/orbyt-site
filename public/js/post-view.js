@@ -125,15 +125,24 @@ function initVideoPlayer(videoUrl, thumbnail) {
     videoEl.load();
   }
 
-  // Play/pause on click
-  videoEl.addEventListener('click', (e) => {
+  // Mute/unmute on tap/click anywhere on video (video keeps playing)
+  const videoContainer = thumbnailEl?.closest('.video-container');
+  const handleVideoAreaClick = (e) => {
     e.stopPropagation();
-    if (videoEl.paused) {
-      videoEl.play();
+    e.preventDefault();
+    const muteText = document.getElementById('mute-text');
+    if (videoEl.muted) {
+      videoEl.muted = false;
+      if (videoEl.paused) videoEl.play().catch(() => {});
+      if (muteText) muteText.textContent = 'TAP TO MUTE';
     } else {
-      videoEl.pause();
+      videoEl.muted = true;
+      if (muteText) muteText.textContent = 'TAP TO UNMUTE';
     }
-  });
+  };
+  if (videoContainer) {
+    videoContainer.addEventListener('click', handleVideoAreaClick);
+  }
 
   // Initialize sizing
   resizeVideoAndOverlay();
