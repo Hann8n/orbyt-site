@@ -82,6 +82,18 @@ video {
   visibility: hidden;
 }
 
+/* View transition: only the visible caption participates (matches profile's caption-{postId}) */
+@media (min-width: 700px) {
+  #post-caption-mobile {
+    view-transition-name: none !important;
+  }
+}
+@media (max-width: 699px) {
+  #post-caption-desktop {
+    view-transition-name: none !important;
+  }
+}
+
 /* Desktop: video sizing using CSS viewport units */
 @media screen and (min-width: 700px) {
   .video-container {
