@@ -1,6 +1,6 @@
 # orbyt-site
 
-Website for orbyt, a video app for Bluesky. Browse profiles and posts at getorbyt.com.
+Website for orbyt, a video app for Bluesky.
 
 <p align="center">
   <a href="https://github.com/Hann8n/orbyt-site">GitHub</a> · <a href="https://tangled.org/jack.orbyt.video/orbyt-site">Tangled</a> · <a href="https://getorbyt.com">Live site</a> · <a href="https://bsky.app/profile/getorbyt.com">Bluesky</a> · <a href="https://community.getorbyt.com">Community</a>
