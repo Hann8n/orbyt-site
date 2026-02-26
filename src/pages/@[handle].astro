@@ -28,9 +28,6 @@ const nextCursor = videoFeed.cursor;
 
 // Fetch profile colors via Service Binding
 const { env } = Astro.locals.runtime;
-if (!env.ORBYT_API) {
-  console.error('ORBYT_API binding not found in env:', Object.keys(env));
-}
 const colorData = profileData.did && env.ORBYT_API
   ? await getColor(profileData.did, env.ORBYT_API)
   : null;

@@ -1,6 +1,9 @@
 /README_LOCAL_TESTING.md
 /test-server.py
 node_modules
+.env
+.env.*
+!.env.example
 dist/
 .astro/
 .DS_Store
