@@ -272,9 +272,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               <div class="caption" style={`view-transition-name: caption-${post.postId}`} set:html={parseRichText(post.caption)}></div>
             </div>
           </div>
-          <a href={`/@${handle}/${post.postId}`}>
-            <img class="play-button" src="/images/post/play.svg" alt="" />
-          </a>
+          <a href={`/@${handle}/${post.postId}`} aria-label="View post"></a>
         </div>
       ))}
       {nextCursor && (
@@ -326,9 +324,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
                 <div class="caption" style="view-transition-name: caption-${post.postId}">${post.captionHtml}</div>
               </div>
             </div>
-            <a href="/@${handle}/${post.postId}">
-              <img class="play-button" src="/images/post/play.svg" alt="" />
-            </a>
+            <a href="/@${handle}/${post.postId}" aria-label="View post"></a>
           `;
           
           if (footer) {
