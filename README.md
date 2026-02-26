@@ -104,9 +104,9 @@ npm run dev
 - **Skeleton** CSS by Dave Gamache — MIT
 - **normalize.css** — MIT
 
-## License
+## License (MIT)
 
-This project is licensed under the [MIT License](LICENSE).
+See [LICENSE](LICENSE) for the full license.
 
 ---
 
