@@ -97,6 +97,13 @@ npm run dev
 3. Make your changes
 4. Open a PR against `main`
 
+## Attributions
+
+- **Figtree** font by [Erik Kennedy](https://fonts.google.com/specimen/Figtree) — [SIL Open Font License](https://scripts.sil.org/OFL)
+- **HLS.js** — [Apache 2.0](https://github.com/video-dev/hls.js/blob/master/LICENSE)
+- **Skeleton** CSS by Dave Gamache — MIT
+- **normalize.css** — MIT
+
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full text.
