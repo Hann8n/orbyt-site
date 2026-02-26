@@ -81,6 +81,22 @@ orbyt-site/
 - **Astro** 5.x — SSG/SSR
 - **@astrojs/cloudflare** — adapter, image service, platform proxy
 
+## Clone & Run
+
+```bash
+git clone https://github.com/Hann8n/orbyt-site.git
+cd orbyt-site
+npm install
+npm run dev
+```
+
+## Contributing
+
+1. Fork the repo
+2. Create a branch (`git checkout -b fix/something` or `git checkout -b feature/something`)
+3. Make your changes
+4. Open a PR against `main`
+
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full text.
