@@ -34,7 +34,8 @@ const colorData = profileData.did && env.ORBYT_API
 
 // Extract metadata with fallbacks
 const displayName = profileData?.displayName || handle || 'Profile';
-const description = profileData?.description || `Profile page for @${handle}`;
+const bio = profileData?.description?.trim() || '';
+const description = bio || `${displayName} on orbyt`;
 const avatar = profileData?.avatar || '/images/Default-avatar.png';
 const ogImage = toAbsoluteUrl(avatar);
 const ogUrl = `https://getorbyt.com/@${handle}`;
@@ -242,7 +243,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
           </svg></span>
         )}</h1>
-        <div class="bio" style={`color: ${textColor};`} set:html={parseRichText(description)}></div>
+        {bio && (
+          <div class="bio" style={`color: ${textColor};`} set:html={parseRichText(bio)}></div>
+        )}
       </div>
 
       <div class="hr-inline-wrapper desktop">
@@ -263,7 +266,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </header>
 
     <div class="posts">
-      {videoPosts.map((post) => (
+      {videoPosts.length > 0 ? videoPosts.map((post) => (
         <div class="post">
           <div class="post-image-container">
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
@@ -274,7 +277,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           </div>
           <a href={`/@${handle}/${post.postId}`} aria-label="View post"></a>
         </div>
-      ))}
+      )) : (
+        <div class="empty-feed">
+          <div class="tv-static" aria-hidden="true"></div>
+          <p class="empty-feed-message">nothing here, yet...</p>
+        </div>
+      )}
       {nextCursor && (
         <footer>
           <a id="load-more" style={`background-color: ${textColor}; color: ${backgroundColor};`}>Load more</a>
