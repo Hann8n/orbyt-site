@@ -6,9 +6,9 @@
   Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 
-# Image caching - 1 year with immutable (fingerprinted deploy URLs)
+# Image caching - 1 year with revalidation (non-fingerprinted filenames)
 /images/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, must-revalidate
 
 # Early Hints for homepage - Cloudflare sends HTTP 103 before HTML
 # Browser starts downloading font before HTML parsing begins
