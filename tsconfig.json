@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "stores/*": ["src/stores/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "worker-configuration.d.ts", "**/*"],
+  "exclude": ["dist", "public"]
+}

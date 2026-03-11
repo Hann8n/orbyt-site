@@ -30,6 +30,56 @@ export interface PostData {
   };
 }
 
+// Raw API response shapes (AT Protocol / app.bsky.*)
+interface BskyProfileResponse {
+  handle?: string;
+  displayName?: string;
+  description?: string;
+  avatar?: string;
+  did?: string;
+  error?: string;
+}
+
+interface BskyVideoEmbed {
+  $type?: string;
+  thumbnail?: string;
+  playlist?: string;
+  cid?: string;
+  aspectRatio?: { width: number; height: number };
+  media?: BskyVideoEmbed;
+  images?: { thumb?: string; fullsize?: string }[];
+}
+
+interface BskyPostRecord {
+  text?: string;
+  createdAt?: string;
+}
+
+interface BskyPostAuthor {
+  handle?: string;
+  displayName?: string;
+  avatar?: string;
+}
+
+interface BskyApiPost {
+  uri?: string;
+  record?: BskyPostRecord;
+  author?: BskyPostAuthor;
+  embed?: BskyVideoEmbed;
+  indexedAt?: string;
+  likeCount?: number;
+}
+
+interface BskyGetPostsResponse {
+  posts?: BskyApiPost[];
+}
+
+interface BskyFeedResponse {
+  error?: string;
+  feed?: { post: BskyApiPost }[];
+  cursor?: string;
+}
+
 async function fetchWithTimeout(url: string, timeout: number = API_TIMEOUT): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -50,9 +100,9 @@ export async function fetchProfile(handle: string): Promise<ProfileData | null> 
     
     if (!response.ok) return null;
     
-    const data = await response.json();
-    if (data.error || !data.handle) return null;
-    
+    const data = (await response.json()) as BskyProfileResponse;
+    if (data.error || !data.handle || !data.did) return null;
+
     return {
       handle: data.handle,
       displayName: data.displayName,
@@ -72,7 +122,7 @@ async function resolveHandle(handle: string): Promise<string | null> {
     
     if (!response.ok) return null;
     
-    const data = await response.json();
+    const data = (await response.json()) as { did?: string };
     return data.did || null;
   } catch {
     return null;
@@ -92,10 +142,11 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
     
     if (!response.ok) return null;
     
-    const data = await response.json();
-    if (!data.posts || data.posts.length === 0) return null;
-    
-    const post = data.posts[0];
+    const data = (await response.json()) as BskyGetPostsResponse;
+    const posts = data.posts;
+    if (!posts || posts.length === 0) return null;
+
+    const post = posts[0]!;
     
     // Extract video data from embed - handle video embed structure
     let thumbnail: string | undefined;
@@ -113,9 +164,9 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
           videoUrl = post.embed.playlist;
         } else if (post.embed.cid && post.uri) {
           const didMatch = post.uri.match(/did:plc:[^/]+/);
-          const did = didMatch ? didMatch[0] : null;
-          if (did) {
-            videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did)}/${encodeURIComponent(post.embed.cid)}/playlist.m3u8`;
+          const videoDid = didMatch ? didMatch[0] : null;
+          if (videoDid) {
+            videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(videoDid)}/${encodeURIComponent(post.embed.cid)}/playlist.m3u8`;
           }
         }
       }
@@ -130,9 +181,9 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
             videoUrl = post.embed.media.playlist;
           } else if (post.embed.media.cid && post.uri) {
             const didMatch = post.uri.match(/did:plc:[^/]+/);
-            const did = didMatch ? didMatch[0] : null;
-            if (did) {
-              videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(did)}/${encodeURIComponent(post.embed.media.cid)}/playlist.m3u8`;
+            const videoDid = didMatch ? didMatch[0] : null;
+            if (videoDid) {
+              videoUrl = `https://video.bsky.app/watch/${encodeURIComponent(videoDid)}/${encodeURIComponent(post.embed.media.cid)}/playlist.m3u8`;
             }
           }
         }
@@ -210,30 +261,31 @@ export async function fetchVideoPosts(handle: string, cursor?: string, limit: nu
       return { posts: [], cursor: null };
     }
 
-    const data = await response.json();
-    
+    const data = (await response.json()) as BskyFeedResponse;
+
     if (data.error || !data.feed) {
       return { posts: [], cursor: null };
     }
 
     // Filter and map video posts
     const posts: VideoPost[] = [];
-    
+
     for (const item of data.feed) {
       const post = item.post;
       if (!post) continue;
-      
+
       const embed = post.embed;
       if (!embed) continue;
-      
+
       // Only include video posts
       if (embed.$type !== 'app.bsky.embed.video#view') continue;
-      
-      const postId = extractPostId(post.uri);
+
+      const postUri = post.uri;
+      const postId = postUri ? extractPostId(postUri) : null;
       if (!postId) continue;
-      
+
       posts.push({
-        uri: post.uri,
+        uri: postUri || '',
         postId,
         thumbnail: embed.thumbnail || '',
         caption: truncateText(post.record?.text || ''),

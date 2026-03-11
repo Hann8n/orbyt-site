@@ -58,7 +58,7 @@ export function parseRichText(text: string, options?: {
   const matches: Match[] = [];
   
   // Find all URLs
-  let urlMatch;
+  let urlMatch: RegExpExecArray | null;
   while ((urlMatch = urlPattern.exec(text)) !== null) {
     matches.push({
       type: 'url',
@@ -69,7 +69,7 @@ export function parseRichText(text: string, options?: {
   }
   
   // Find all mentions
-  let mentionMatch;
+  let mentionMatch: RegExpExecArray | null;
   while ((mentionMatch = mentionPattern.exec(text)) !== null) {
     const handle = mentionMatch[1];
     // Skip if this mention overlaps with a URL (e.g., @example.com in https://example.com/@user)
@@ -96,7 +96,7 @@ export function parseRichText(text: string, options?: {
   matches.sort((a, b) => a.start - b.start);
   
   // Filter out URLs that are part of mentions (e.g., user.bsky.social in @user.bsky.social)
-  const filteredMatches = matches.filter((match, index) => {
+  const filteredMatches = matches.filter((match, _index) => {
     if (match.type === 'url') {
       // Check if this URL is contained within a mention
       return !matches.some(m => 

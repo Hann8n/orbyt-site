@@ -2,6 +2,7 @@
 /TANGLED-REPO-SETUP-GUIDE.md
 /test-server.py
 node_modules
+.wrangler/
 .env
 .env.*
 !.env.example

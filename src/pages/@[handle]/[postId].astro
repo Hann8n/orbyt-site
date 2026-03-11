@@ -23,7 +23,7 @@ if (!postData) {
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 
 // Extract metadata with fallbacks - all from postData
-const caption = postData?.text || 'Loading post...';
+const caption = postData?.text ?? '';
 const authorHandle = postData?.author?.handle || handle;
 const authorDisplayName = postData?.author?.displayName || authorHandle;
 const authorAvatar = postData?.author?.avatar || '/images/Default-avatar.png';
@@ -52,7 +52,7 @@ if (aspectRatio) {
 
 // Enhanced description: like count first (if > 0), then caption snippet separated by |
 let ogDescription: string;
-if (caption && caption !== 'Loading post...') {
+if (caption) {
   if (likeCount > 0) {
     // Reserve space for "❤️ {likeCount} | " (approx 12-18 chars depending on like count)
     const likeCountPrefix = `❤️ ${likeCount} | `;
@@ -79,7 +79,7 @@ if (ogDescription.length > 200) {
 
 // Image metadata
 const ogImageType = getImageMimeType(thumbnail);
-const ogImageAlt = caption && caption !== 'Loading post...' 
+const ogImageAlt = caption 
   ? (caption.length > 200 ? caption.substring(0, 200) + '...' : caption)
   : `Post by @${authorHandle}`;
 
@@ -300,7 +300,7 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta name="twitter:image" content={ogImage} />
 
     <!-- Structured Data for SEO - Breadcrumbs -->
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
@@ -326,7 +326,7 @@ const finalOgTitle = `post by @${authorHandle}`;
     })}></script>
     <!-- Video Structured Data -->
     {videoUrl && (
-      <script type="application/ld+json" set:html={JSON.stringify({
+      <script type="application/ld+json" is:inline set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": "VideoObject",
         "name": finalOgTitle,
