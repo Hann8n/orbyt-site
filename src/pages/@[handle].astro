@@ -28,7 +28,7 @@ const videoPosts = videoFeed.posts;
 const nextCursor = videoFeed.cursor;
 
 // Fetch profile colors via Service Binding
-const colorData = profileData.did && env.ORBYT_API
+const colorData = profileData.did && env?.ORBYT_API
   ? await getColor(profileData.did, env.ORBYT_API)
   : null;
 
