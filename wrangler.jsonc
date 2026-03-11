@@ -1,20 +1,23 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "orbyt-site",
-  "main": "@astrojs/cloudflare/entrypoints/server",
-  "compatibility_date": "2026-01-29",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "./dist"
-  },
-  "services": [
-    {
-      "binding": "ORBYT_API",
-      "service": "orbyt-api"
-    }
-  ],
-  "observability": {
-    "enabled": true
-  }
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "orbyt-site",
+	"main": "@astrojs/cloudflare/entrypoints/server",
+	"compatibility_date": "2026-01-29",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist"
+	},
+	"services": [
+		{
+			"binding": "ORBYT_API",
+			"service": "orbyt-api"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
 }

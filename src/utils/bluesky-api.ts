@@ -80,11 +80,15 @@ interface BskyFeedResponse {
   cursor?: string;
 }
 
+const FETCH_HEADERS: HeadersInit = {
+  'User-Agent': 'Orbyt/1.0 (https://getorbyt.com)',
+};
+
 async function fetchWithTimeout(url: string, timeout: number = API_TIMEOUT): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await fetch(url, { signal: controller.signal, headers: FETCH_HEADERS });
     clearTimeout(timeoutId);
     return response;
   } catch (error) {
