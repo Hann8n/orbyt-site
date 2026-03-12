@@ -6,6 +6,8 @@ Your app is approved, notarized, and AltStore PAL is configured. Complete these 
 
 **Cloudflare note:** Do not deploy the ADP folder from `public/`. The IPA files are larger than Cloudflare Workers static asset limits. Use R2 for the ADP payload and keep only `source.json` and the icon on the website.
 
+**Routing note:** `getorbyt.com/*` is served by the Cloudflare Worker route configured in `wrangler.jsonc`, so deploy production with `wrangler deploy`.
+
 ---
 
 ## Step 0: Enable R2 in Cloudflare
@@ -87,11 +89,13 @@ npm run altstore:r2 -- setup orbyt-altstore-adp
 This script will:
 
 1. create the R2 bucket if needed
-2. enable the public `r2.dev` URL
+2. enable the public `r2.dev` URL (fallback)
 3. upload `manifest.json`, `signature`, and `variant/*.ipa`
-4. update `public/altstore/source.json` so `downloadURL` points to the hosted `manifest.json`
+4. update `public/altstore/source.json` so `downloadURL` points to `https://downloads.getorbyt.com/manifest.json` when available, otherwise it falls back to `r2.dev`
 
 If you want to use a different bucket name, replace `orbyt-altstore-adp` with your preferred name.
+
+If you want a different manifest host, set `ALTSTORE_CUSTOM_MANIFEST_URL` before running setup.
 
 ---
 
@@ -108,7 +112,15 @@ cp orbyt-app/src/assets/AppIcons/iOS/orbyt.png \
 
 ## Step 6: Deploy and verify the source JSON
 
-1. Deploy `orbyt-site`.
+1. Build and deploy the Worker route:
+
+  ```bash
+  cd orbyt-site
+  npm run build
+  npx wrangler deploy
+  ```
+
+  If you also deploy via Pages, note that Pages deploys alone do not update the `getorbyt.com/*` Worker route.
 
 2. Verify the site source URL:
 
@@ -128,6 +140,8 @@ curl -X POST -H "Content-Type: application/json" \
   https://api.altstore.io/federate
 ```
 
+If AltStore returns a "pending approval" error, wait for approval and retry the same command.
+
 ---
 
 ## Summary
@@ -144,3 +158,40 @@ curl -X POST -H "Content-Type: application/json" \
 | 7 | Federate via the API |
 
 After this, EU and Japan users can add `https://getorbyt.com/altstore/source.json` in AltStore PAL and install Orbyt.
+
+---
+
+## Quick Release Checklist
+
+Run from the parent folder containing both `orbyt-app` and `orbyt-site`.
+
+```bash
+# 1) Download fresh ADP from App Store Connect package ID
+cd orbyt-app
+./scripts/altstore-pal.sh download 4792c770-f63a-47d2-bd86-bb7254e8f9bf
+
+# 2) Extract ADP
+unzip orbyt-adp-4792c770-f63a-47d2-bd86-bb7254e8f9bf.zip -d adp-extracted
+
+# 3) Stage ADP in orbyt-site (outside public)
+cd ../orbyt-site
+mkdir -p .altstore
+rm -rf .altstore/adp
+mv ../orbyt-app/adp-extracted .altstore/adp
+
+# 4) Upload ADP to R2 and update public/altstore/source.json downloadURL
+npm run altstore:r2 -- setup orbyt-altstore-adp
+
+# 5) Deploy production route (getorbyt.com/*)
+npm run build
+npx wrangler deploy
+
+# 6) Verify live URLs
+curl -sS -o /dev/null -w 'source %{http_code}\n' https://getorbyt.com/altstore/source.json
+curl -sS -o /dev/null -w 'manifest %{http_code}\n' https://downloads.getorbyt.com/manifest.json
+
+# 7) Federate source
+curl -X POST -H "Content-Type: application/json" -d '{"source":"https://getorbyt.com/altstore/source.json"}' https://api.altstore.io/federate
+```
+
+If federation returns a pending approval error, wait for approval and rerun only step 7.

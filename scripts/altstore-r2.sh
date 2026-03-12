@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEFAULT_ADP_DIR="${ALTSTORE_ADP_DIR:-$ROOT_DIR/.altstore/adp}"
 SOURCE_JSON="$ROOT_DIR/public/altstore/source.json"
 DEFAULT_BUCKET_LOCATION="${R2_BUCKET_LOCATION:-weur}"
+DEFAULT_CUSTOM_MANIFEST_URL="${ALTSTORE_CUSTOM_MANIFEST_URL:-https://downloads.getorbyt.com/manifest.json}"
 
 usage() {
   cat <<'EOF'
@@ -24,6 +25,9 @@ Commands:
 Environment:
   ALTSTORE_ADP_DIR     Override the default ADP directory (.altstore/adp)
   R2_BUCKET_LOCATION   Override the bucket location hint (default: weur)
+  ALTSTORE_CUSTOM_MANIFEST_URL
+                       Preferred manifest URL after upload. Defaults to
+                       https://downloads.getorbyt.com/manifest.json.
 EOF
 }
 
@@ -157,10 +161,25 @@ check_url() {
   curl -sS -o /dev/null -w '%{http_code} %{url_effective}\n' "$url"
 }
 
+pick_manifest_url() {
+  local dev_url="$1"
+  local custom_status
+
+  custom_status="$(curl -sS -o /dev/null -w '%{http_code}' "$DEFAULT_CUSTOM_MANIFEST_URL" || true)"
+
+  if [[ "$custom_status" == "200" ]]; then
+    printf '%s' "$DEFAULT_CUSTOM_MANIFEST_URL"
+    return
+  fi
+
+  printf '%s' "$dev_url/manifest.json"
+}
+
 setup_bucket() {
   local bucket="$1"
   local adp_dir="${2:-$DEFAULT_ADP_DIR}"
   local dev_url
+  local manifest_url
 
   ensure_prereqs
   ensure_adp_dir "$adp_dir"
@@ -171,11 +190,12 @@ setup_bucket() {
   dev_url="$(get_dev_url "$bucket")"
   [[ -n "$dev_url" ]] || fail "Unable to determine r2.dev URL for bucket '$bucket'"
 
-  set_source_url "$dev_url/manifest.json"
+  manifest_url="$(pick_manifest_url "$dev_url")"
+  set_source_url "$manifest_url"
 
   echo
   echo "R2 setup complete."
-  echo "Manifest URL: $dev_url/manifest.json"
+  echo "Manifest URL: $manifest_url"
   echo "Next: deploy the site so https://getorbyt.com/altstore/source.json serves the updated metadata."
 }
 

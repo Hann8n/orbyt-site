@@ -45,10 +45,12 @@ Website for orbyt, a video app for Bluesky.
 
 ## Deployment
 
-- **Platform:** Cloudflare Pages (Astro adapter)
-- **Config:** [wrangler.jsonc](wrangler.jsonc) — assets binding, ORBYT_API service
-- **Site:** getorbyt.com (CNAME)
-- **AltStore ADP:** host in Cloudflare R2, not `public/`, because IPA files exceed Workers asset limits
+- **Runtime:** Cloudflare Worker deployed with `wrangler deploy` on route `getorbyt.com/*`
+- **Pages Project:** `orbyt-site.pages.dev` exists for Pages deployments/management, but production traffic is served by the Worker route
+- **Config:** [wrangler.jsonc](wrangler.jsonc) — assets binding, ORBYT_API service, R2 bucket binding
+- **Deploy Command:** `npm run build && npx wrangler deploy`
+- **AltStore ADP:** hosted in Cloudflare R2; only `public/altstore/source.json` and `public/altstore/orbyt-icon.png` stay in site assets
+- **AltStore Runbook:** see [docs/ALTSTORE_FINISH_SETUP.md](docs/ALTSTORE_FINISH_SETUP.md) → "Quick Release Checklist"
 
 ## Project Structure
 
@@ -67,19 +69,22 @@ orbyt-site/
 │       ├── orbyt-api.ts             # Color API binding
 │       └── richtext.ts              # Mention/link parsing
 ├── public/                          # Static assets, CSS, favicon
+│   └── altstore/                    # Source metadata + icon (no ADP payload)
+├── .altstore/adp/                   # Local ADP staging before R2 upload
+├── scripts/altstore-r2.sh           # R2 setup/upload helper
 ├── astro.config.mjs
 └── wrangler.jsonc
 ```
 
 ## Build Requirements
 
-- Node.js 18+
+- Node.js 22.12+
 - `npm install` then `npm run build`
 - `npm run dev` for local dev (ORBYT_API binding optional)
 
 ## Dependencies
 
-- **Astro** 5.x — SSG/SSR
+- **Astro** 6.x — SSG/SSR
 - **@astrojs/cloudflare** — adapter, image service, platform proxy
 
 ## Clone & Run
