@@ -2,14 +2,26 @@
 
 Your app is approved, notarized, and AltStore PAL is configured. Complete these steps to make Orbyt available to EU and Japan users.
 
+**Prerequisites:** These instructions assume `orbyt-app` and `orbyt-site` are sibling directories (e.g. both under `orbyt-master`). Run commands from the parent directory, or adjust paths to your layout.
+
+**Cloudflare note:** Do not deploy the ADP folder from `public/`. The IPA files are larger than Cloudflare Workers static asset limits. Use R2 for the ADP payload and keep only `source.json` and the icon on the website.
+
 ---
 
-## Step 1: Download the ADP (if you haven’t already)
+## Step 0: Enable R2 in Cloudflare
+
+If you have not used R2 before, enable it once in the Cloudflare dashboard for your account.
+
+Wrangler cannot create buckets until R2 is enabled.
+
+---
+
+## Step 1: Download the ADP (if you haven't already)
 
 Your previous zip may have been corrupted. Download a fresh copy:
 
 ```bash
-cd /Users/jack/orbyt-master/orbyt-app
+cd orbyt-app
 ./scripts/altstore-pal.sh download 4792c770-f63a-47d2-bd86-bb7254e8f9bf
 ```
 
@@ -20,7 +32,7 @@ This creates `orbyt-adp-4792c770-f63a-47d2-bd86-bb7254e8f9bf.zip` in the current
 ## Step 2: Extract the ADP
 
 ```bash
-cd /Users/jack/orbyt-master/orbyt-app
+cd orbyt-app
 unzip orbyt-adp-4792c770-f63a-47d2-bd86-bb7254e8f9bf.zip -d adp-extracted
 ```
 
@@ -39,66 +51,74 @@ Important: do not modify `manifest.json` or change any file contents. Preserve t
 
 ---
 
-## Step 3: Upload ADP to getorbyt.com
+## Step 3: Move the ADP out of `public/`
 
-Upload the extracted ADP contents so they are served at:
-
-**Base URL:** `https://getorbyt.com/altstore/adp/`
-
-Options:
-
-### Option A: Add to orbyt-site (Cloudflare Pages)
-
-1. Copy the extracted contents into `orbyt-site/public/altstore/adp/`:
-   ```bash
-   mkdir -p /Users/jack/orbyt-master/orbyt-site/public/altstore/adp
-   cp -r /Users/jack/orbyt-master/orbyt-app/adp-extracted/* /Users/jack/orbyt-master/orbyt-site/public/altstore/adp/
-   ```
-
-2. Deploy orbyt-site.
-
-3. Verify `manifest.json` is reachable at:
-   https://getorbyt.com/altstore/adp/manifest.json
-
-### Option B: Use a CDN or object storage
-
-Upload the ADP directory to S3, R2, Backblaze B2, etc., and serve it under a path like `https://getorbyt.com/altstore/adp/` (via a redirect or proxy if needed).
-
----
-
-## Step 4: Add app icon for AltStore
-
-Copy the 1024×1024 app icon to the AltStore folder:
+Keep the extracted ADP in a local staging folder inside `orbyt-site`, but outside the deployable `public/` directory:
 
 ```bash
-cp /Users/jack/orbyt-master/orbyt-app/src/assets/AppIcons/iOS/orbyt.png \
-   /Users/jack/orbyt-master/orbyt-site/public/altstore/orbyt-icon.png
+mkdir -p orbyt-site/.altstore
+rm -rf orbyt-site/.altstore/adp
+mv orbyt-app/adp-extracted orbyt-site/.altstore/adp
+```
+
+The expected structure becomes:
+
+```
+orbyt-site/
+  .altstore/
+    adp/
+      manifest.json
+      signature
+      variant/
+        <uuid>.ipa
+        ...
 ```
 
 ---
 
-## Step 5: Update and host the source JSON
+## Step 4: Upload ADP to Cloudflare R2
 
-1. Edit `orbyt-app/altstore-pal-source.json`:
+From `orbyt-site`, run:
 
-   - Confirm `downloadURL` is `https://getorbyt.com/altstore/adp/` (or the URL to `manifest.json`).
-   - Set `size` from the IPA size in bytes (e.g. from `variants/*.ipa`).
-   - Confirm `marketplaceID` is your app’s Apple ID from App Store Connect → App Information.
+```bash
+npm run altstore:r2 -- setup orbyt-altstore-adp
+```
 
-2. Copy the source to the site:
+This script will:
 
-   ```bash
-   cp /Users/jack/orbyt-master/orbyt-app/altstore-pal-source.json \
-      /Users/jack/orbyt-master/orbyt-site/public/altstore/source.json
-   ```
+1. create the R2 bucket if needed
+2. enable the public `r2.dev` URL
+3. upload `manifest.json`, `signature`, and `variant/*.ipa`
+4. update `public/altstore/source.json` so `downloadURL` points to the hosted `manifest.json`
 
-3. Deploy and verify:
-
-   https://getorbyt.com/altstore/source.json
+If you want to use a different bucket name, replace `orbyt-altstore-adp` with your preferred name.
 
 ---
 
-## Step 6: Federate (make it discoverable)
+## Step 5: Add app icon for AltStore
+
+Copy the 1024×1024 app icon to the AltStore folder:
+
+```bash
+cp orbyt-app/src/assets/AppIcons/iOS/orbyt.png \
+   orbyt-site/public/altstore/orbyt-icon.png
+```
+
+---
+
+## Step 6: Deploy and verify the source JSON
+
+1. Deploy `orbyt-site`.
+
+2. Verify the site source URL:
+
+   https://getorbyt.com/altstore/source.json
+
+3. Verify the ADP manifest URL stored inside `source.json` returns `200`.
+
+---
+
+## Step 7: Federate (make it discoverable)
 
 Once the source URL works, federate it so it appears on [explore.alt.store](https://explore.alt.store):
 
@@ -114,11 +134,13 @@ curl -X POST -H "Content-Type: application/json" \
 
 | Step | Action |
 |------|--------|
+| 0 | Enable R2 in Cloudflare once |
 | 1 | Download ADP with the script |
 | 2 | Extract the zip (do not modify contents) |
-| 3 | Upload ADP to `https://getorbyt.com/altstore/adp/` |
-| 4 | Add `orbyt-icon.png` to `public/altstore/` |
-| 5 | Copy and host `altstore-pal-source.json` as `source.json` |
-| 6 | Federate via the API |
+| 3 | Move the extracted ADP into `.altstore/adp/` |
+| 4 | Run `npm run altstore:r2 -- setup <bucket>` |
+| 5 | Add `orbyt-icon.png` to `public/altstore/` |
+| 6 | Deploy the site and verify `source.json` |
+| 7 | Federate via the API |
 
 After this, EU and Japan users can add `https://getorbyt.com/altstore/source.json` in AltStore PAL and install Orbyt.

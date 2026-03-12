@@ -3,6 +3,7 @@
 /test-server.py
 node_modules
 .wrangler/
+.altstore/
 .env
 .env.*
 !.env.example

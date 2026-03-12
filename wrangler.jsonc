@@ -2,7 +2,12 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "orbyt-site",
 	"main": "@astrojs/cloudflare/entrypoints/server",
-	"routes": [{ "pattern": "getorbyt.com/*", "zone_name": "getorbyt.com" }],
+	"routes": [
+		{
+			"pattern": "getorbyt.com/*",
+			"zone_name": "getorbyt.com"
+		}
+	],
 	"compatibility_date": "2026-01-29",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -20,5 +25,12 @@
 	],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"r2_buckets": [
+		{
+			"bucket_name": "orbyt-altstore-adp",
+			"binding": "orbyt_altstore_adp",
+			"remote": true
+		}
+	]
 }

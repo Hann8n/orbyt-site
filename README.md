@@ -48,6 +48,7 @@ Website for orbyt, a video app for Bluesky.
 - **Platform:** Cloudflare Pages (Astro adapter)
 - **Config:** [wrangler.jsonc](wrangler.jsonc) — assets binding, ORBYT_API service
 - **Site:** getorbyt.com (CNAME)
+- **AltStore ADP:** host in Cloudflare R2, not `public/`, because IPA files exceed Workers asset limits
 
 ## Project Structure
 
