@@ -4,8 +4,8 @@
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"routes": [
 		{
-			"pattern": "getorbyt.com/*",
-			"zone_name": "getorbyt.com"
+			"pattern": "getorbyt.com",
+			"custom_domain": true
 		}
 	],
 	"compatibility_date": "2026-01-29",
