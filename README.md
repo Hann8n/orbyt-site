@@ -46,9 +46,9 @@ Website for orbyt, a video app for Bluesky.
 ## Deployment
 
 - **Runtime:** Cloudflare Worker deployed with `wrangler deploy` on route `getorbyt.com/*`
-- **Pages Project:** `orbyt-site.pages.dev` exists for Pages deployments/management, but production traffic is served by the Worker route
 - **Config:** [wrangler.jsonc](wrangler.jsonc) — assets binding, ORBYT_API service, R2 bucket binding
 - **Deploy Command:** `npm run build && npx wrangler deploy`
+- **Pages cleanup:** If you previously created a Pages project, see [docs/CLOUDFLARE_PAGES_CLEANUP.md](docs/CLOUDFLARE_PAGES_CLEANUP.md)
 - **AltStore ADP:** hosted in Cloudflare R2; only `public/altstore/source.json` and `public/altstore/orbyt-icon.png` stay in site assets
 - **AltStore Runbook:** see [docs/ALTSTORE_FINISH_SETUP.md](docs/ALTSTORE_FINISH_SETUP.md) → "Quick Release Checklist"
 

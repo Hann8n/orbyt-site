@@ -120,8 +120,6 @@ cp orbyt-app/src/assets/AppIcons/iOS/orbyt.png \
   npx wrangler deploy
   ```
 
-  If you also deploy via Pages, note that Pages deploys alone do not update the `getorbyt.com/*` Worker route.
-
 2. Verify the site source URL:
 
    https://getorbyt.com/altstore/source.json

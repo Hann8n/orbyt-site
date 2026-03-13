@@ -1,5 +1,5 @@
-# Cloudflare Pages headers configuration
-# https://developers.cloudflare.com/pages/configuration/headers/
+# Cloudflare Worker static assets headers
+# https://developers.cloudflare.com/workers/static-assets/configuration/
 
 # Font caching - 1 year with immutable (fonts never change once deployed)
 /fonts/*
