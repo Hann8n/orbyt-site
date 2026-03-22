@@ -1,0 +1,24 @@
+---
+export const prerender = true;
+
+import Base from '../../layouts/Base.astro';
+import IndexContent from '../../components/pages/IndexContent.astro';
+import { useTranslations, useTranslatedPath } from '../../i18n/utils';
+
+const locale = 'ja';
+const t = useTranslations(locale);
+const translatePath = useTranslatedPath(locale);
+---
+
+<Base lang={locale} title={t('index.title')} description={t('index.metaDescription')} canonicalUrl={"https://getorbyt.com/" + locale + "/"}>
+  <div class="index-container">
+    <div class="main-content">
+      <IndexContent t={t} translatePath={translatePath} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .index-container { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+  .main-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+</style>

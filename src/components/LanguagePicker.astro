@@ -1,0 +1,41 @@
+---
+import { languages } from '../i18n/ui';
+import { getLangFromUrl, useTranslatedPath, getRouteFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+const route = getRouteFromUrl(Astro.url);
+---
+
+<ul class="language-picker" aria-label="Select language">
+  {Object.entries(languages).map(([code, label]) => (
+    <li>
+      <a href={translatePath(route, code)} hreflang={code} class:list={[code === lang && 'current']}>
+        {label}
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .language-picker {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .language-picker a {
+    font-size: 0.85rem;
+    color: #888;
+    text-decoration: none;
+  }
+  .language-picker a:hover {
+    color: #f3f5fe;
+  }
+  .language-picker a.current {
+    color: #01f5b3;
+    font-weight: 600;
+  }
+</style>

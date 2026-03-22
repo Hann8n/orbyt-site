@@ -1,209 +1,32 @@
 ---
 export const prerender = true;
+
+import Base from '../layouts/Base.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found | Orbyt</title>
-    
-    <!-- Critical: Load fonts immediately, before any external resources -->
-    <link rel="stylesheet" href="/css/fonts.css">
-    <!-- Preload Figtree font to prevent FOUT -->
-    <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- Favicon setup -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/favicon/site.webmanifest">
-    
-    <!-- Theme colors for mobile browsers -->
-    <meta name="theme-color" content="#000000">
-    <meta name="msapplication-TileColor" content="#000000">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000000;
-            min-height: 100vh;
-            min-height: 100dvh;
-            color: #f3f5fe;
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: min(100% - clamp(2rem, 5vw, 4rem), 800px);
-            margin-inline: auto;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: clamp(0.75rem, 2vw, 1rem);
-            padding-block: clamp(2rem, 8vh, 6rem);
-        }
-
-        /* Hero element - TV static is the focal point */
-        .tv-static {
-            width: clamp(120px, 20vw, 160px);
-            aspect-ratio: 1;
-            background-image: url('/images/tv-static-sprite-sheet.webp');
-            background-size: 500% 500%;
-            animation: tv-static-animation 0.8s steps(1) infinite;
-        }
-
-        @keyframes tv-static-animation {
-            0%    { background-position: 0% 0%; }
-            4%    { background-position: 25% 0%; }
-            8%    { background-position: 50% 0%; }
-            12%   { background-position: 75% 0%; }
-            16%   { background-position: 100% 0%; }
-            20%   { background-position: 0% 25%; }
-            24%   { background-position: 25% 25%; }
-            28%   { background-position: 50% 25%; }
-            32%   { background-position: 75% 25%; }
-            36%   { background-position: 100% 25%; }
-            40%   { background-position: 0% 50%; }
-            44%   { background-position: 25% 50%; }
-            48%   { background-position: 50% 50%; }
-            52%   { background-position: 75% 50%; }
-            56%   { background-position: 100% 50%; }
-            60%   { background-position: 0% 75%; }
-            64%   { background-position: 25% 75%; }
-            68%   { background-position: 50% 75%; }
-            72%   { background-position: 75% 75%; }
-            76%   { background-position: 100% 75%; }
-            80%   { background-position: 0% 100%; }
-            84%   { background-position: 25% 100%; }
-            88%   { background-position: 50% 100%; }
-            92%   { background-position: 75% 100%; }
-            96%   { background-position: 100% 100%; }
-        }
-
-        /* Primary text - the error code */
-        .error-title {
-            font-size: clamp(2rem, 5vw, 2.5rem);
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -0.02em;
-        }
-
-        /* Supporting text - explains the error */
-        .error-message {
-            font-size: clamp(1rem, 2vw, 1.125rem);
-            color: #9ca3af;
-            max-width: 32ch;
-            line-height: 1.5;
-        }
-
-        /* Action - clear call to action */
-        .nav-button {
-            display: inline-flex;
-            background: #f3f5fe;
-            color: #000000;
-            text-decoration: none;
-            padding: 0.625rem 1.25rem;
-            border-radius: 999px;
-            font-size: 0.875rem;
-            font-weight: 700;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            margin-top: 0.5rem;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-button:active {
-            transform: translateY(0);
-        }
-
-        .separator {
-            height: 7px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            width: 100%;
-        }
-
-        .separator svg {
-            width: 100%;
-            height: 7px;
-        }
-
-        .footer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 12px 32px;
-            margin-top: auto;
-            margin-bottom: 40px;
-        }
-
-        .footer a {
-            font-style: normal;
-            font-weight: bold;
-            font-size: 13px;
-            text-align: left;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: #ccc;
-        }
-
-        .footer a:hover {
-            color: #f3f5fe;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="main-content">
-            <div class="tv-static" aria-hidden="true"></div>
-            <h1 class="error-title">No Signal</h1>
-            <p class="error-message">This page doesn't exist or has been moved.</p>
-            <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
-        </div>
-
-        <footer class="footer">
-            <div class="separator">
-                <svg height="7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <pattern id="squigglePattern" width="374" height="7" patternUnits="userSpaceOnUse">
-                            <path d="M0 1C5.50021 1 5.50021 5.84456 11.0004 5.84456C16.5006 5.84456 16.5006 1 22.0008 1C27.501 1 27.501 5.84456 33.0013 5.84456C38.5015 5.84456 38.5015 1 44.0017 1C49.5019 1 49.5019 5.84456 55.0021 5.84456C60.5023 5.84456 60.5023 1 66.0025 1C71.5027 1 71.5027 5.84456 77.0029 5.84456C82.5031 5.84456 82.5031 1 87.9998 1C93.5 1 93.5 5.84456 98.9967 5.84456C104.497 5.84456 104.497 1 109.994 1C115.494 1 115.494 5.84456 120.99 5.84456C126.491 5.84456 126.491 1 131.991 1C137.491 1 137.491 5.84456 142.991 5.84456C148.491 5.84456 148.491 1 153.992 1C159.492 1 159.492 5.84456 164.988 5.84456C170.489 5.84456 170.489 1 175.985 1C181.486 1 181.486 5.84456 186.986 5.84456C192.486 5.84456 192.486 1 197.986 1C203.486 1 203.486 5.84456 208.987 5.84456C214.487 5.84456 214.487 1 219.987 1C225.487 1 225.487 5.84456 230.987 5.84456C236.488 5.84456 236.488 1 241.988 1C247.488 1 247.488 5.84456 252.988 5.84456C258.488 5.84456 258.488 1 263.989 1C269.489 1 269.489 5.84456 274.989 5.84456C280.489 5.84456 280.489 1 285.99 1C291.49 1 291.49 5.84456 296.99 5.84456C302.49 5.84456 302.49 1 307.99 1C313.491 1 313.491 5.84456 318.991 5.84456C324.491 5.84456 324.491 1 329.991 1C335.491 1 335.491 5.84456 340.992 5.84456C346.492 5.84456 346.492 1 351.992 1C357.492 1 357.492 5.84456 362.996 5.84456C368.5 5.84456 368.496 1 374 1" stroke="#551DEF" stroke-width="2" stroke-miterlimit="10"/>
-                        </pattern>
-                    </defs>
-                    <rect fill="url(#squigglePattern)" width="100%" height="100%"/>
-                </svg>
-            </div>
-            <a href="/about">about</a>
-            <a href="https://bsky.app/profile/getorbyt.com">bluesky</a>
-            <a href="https://community.getorbyt.com">community</a>
-            <a href="/terms">terms</a>
-            <a href="/privacy">privacy</a>
-            <a href="/contact">contact</a>
-        </footer>
+<Base lang={lang} title={t('404.title')} noFooter={false}>
+  <div class="container">
+    <div class="main-content">
+      <div class="tv-static" aria-hidden="true"></div>
+      <h1 class="error-title">{t('404.errorTitle')}</h1>
+      <p class="error-message">{t('404.errorMessage')}</p>
+      <a href="#" onclick="window.history.back(); return false;" class="nav-button">{t('404.goBack')}</a>
     </div>
-</body>
-</html>
+  </div>
+</Base>
+
+<style>
+  .container { width: min(100% - clamp(2rem, 5vw, 4rem), 800px); margin-inline: auto; min-height: 100vh; display: flex; flex-direction: column; }
+  .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: clamp(0.75rem, 2vw, 1rem); padding-block: clamp(2rem, 8vh, 6rem); }
+  .tv-static { width: clamp(120px, 20vw, 160px); aspect-ratio: 1; background-image: url('/images/tv-static-sprite-sheet.webp'); background-size: 500% 500%; animation: tv-static-animation 0.8s steps(1) infinite; }
+  @keyframes tv-static-animation { 0% { background-position: 0% 0%; } 4% { background-position: 25% 0%; } 8% { background-position: 50% 0%; } 12% { background-position: 75% 0%; } 16% { background-position: 100% 0%; } 20% { background-position: 0% 25%; } 24% { background-position: 25% 25%; } 28% { background-position: 50% 25%; } 32% { background-position: 75% 25%; } 36% { background-position: 100% 25%; } 40% { background-position: 0% 50%; } 44% { background-position: 25% 50%; } 48% { background-position: 50% 50%; } 52% { background-position: 75% 50%; } 56% { background-position: 100% 50%; } 60% { background-position: 0% 75%; } 64% { background-position: 25% 75%; } 68% { background-position: 50% 75%; } 72% { background-position: 75% 75%; } 76% { background-position: 100% 75%; } 80% { background-position: 0% 100%; } 84% { background-position: 25% 100%; } 88% { background-position: 50% 100%; } 92% { background-position: 75% 100%; } 96% { background-position: 100% 100%; } }
+  .error-title { font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+  .error-message { font-size: clamp(1rem, 2vw, 1.125rem); color: #9ca3af; max-width: 32ch; line-height: 1.5; }
+  .nav-button { display: inline-flex; background: #f3f5fe; color: #000; text-decoration: none; padding: 0.625rem 1.25rem; border-radius: 999px; font-size: 0.875rem; font-weight: 700; margin-top: 0.5rem; }
+  .nav-button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1); }
+</style>

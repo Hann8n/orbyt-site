@@ -6,8 +6,17 @@ import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '
 import { getColor } from '../utils/orbyt-api';
 import { parseRichText } from '../utils/richtext';
 import { ClientRouter } from 'astro:transitions';
+import ProfileLanguagePicker from '../components/ProfileLanguagePicker.astro';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+const LOCALES = ['en', 'de', 'es', 'es-419', 'fr', 'ja', 'ko', 'pt-BR'];
 
 const { handle } = Astro.params;
+
+const cookieLocale = Astro.cookies.get('locale')?.value;
+const locale = (cookieLocale && LOCALES.includes(cookieLocale) ? cookieLocale : (Astro.currentLocale ?? 'en')) as 'en';
+const t = useTranslations(locale);
+const translatePath = useTranslatedPath(locale);
 
 if (!handle) {
   return new Response(null, { status: 404 });
@@ -50,7 +59,7 @@ const ogImageAlt = description.length > 200 ? description.substring(0, 200) : de
 
 // Format join date for beta badge tooltip
 const joinDate = colorData?.joinedAt 
-  ? new Date(colorData.joinedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  ? new Date(colorData.joinedAt).toLocaleDateString(locale === 'en' ? 'en-US' : locale, { month: 'long', day: 'numeric', year: 'numeric' })
   : null;
 
 // Color styles
@@ -62,7 +71,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
 
 <head>
     <meta charset="utf-8">
@@ -99,7 +108,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <meta property="og:type" content="profile" />
     <meta property="profile:username" content={handle} />
     <meta property="og:site_name" content="orbyt" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={({ en: 'en_US', de: 'de_DE', es: 'es_ES', 'es-419': 'es_419', fr: 'fr_FR', ja: 'ja_JP', ko: 'ko_KR', 'pt-BR': 'pt_BR' } as Record<string, string>)[locale] || 'en_US'} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={ogTitle} />
     <meta name="twitter:description" content={ogDescription} />
@@ -113,7 +122,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "Home",
+          "name": t('profile.home'),
           "item": "https://getorbyt.com"
         },
         {
@@ -213,11 +222,11 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
   <div id="profile" data-handle={handle} data-cursor={nextCursor || ''}>
     <header style={`background-color: ${backgroundColor};`}>
       <div class="links">
-        <a href='/' class="logo-wordmark">
+        <a href={translatePath('/')} class="logo-wordmark">
           <span class="logo-text" style={`color: ${textColor}; view-transition-name: orbyt-logo;`}>orbyt</span>
         </a>
-        <a class='install-button mobile' href="/beta" style={`background-color: ${textColor}; color: ${backgroundColor}; view-transition-name: orbyt-beta;`}>
-          Get the beta
+        <a class='install-button mobile' href={translatePath('/beta')} style={`background-color: ${textColor}; color: ${backgroundColor}; view-transition-name: orbyt-beta;`}>
+          {t('profile.getBeta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
@@ -238,7 +247,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
         <img class='avatar' src={avatar} alt={`${displayName}'s avatar`} style={`border-color: ${textColor};`} />
         <h1 class="username" style={`color: ${textColor};`}>{displayName}{colorData?.isBeta && (
           <span class="beta-badge">&#8288;<svg class="beta-icon" viewBox="28 24 160 160" xmlns="http://www.w3.org/2000/svg" style={`color: ${textColor};`}>
-            <title>{joinDate ? `Beta Tester | Joined on ${joinDate}` : 'Beta Tester'}</title>
+            <title>{joinDate ? `${t('profile.betaTester')} | ${t('profile.joinedOn')} ${joinDate}` : t('profile.betaTester')}</title>
             <polygon points="62.5,25 62.5,130 153.43,77.5" fill="currentColor" fill-opacity="0.5"/>
             <polygon points="62.5,77.5 62.5,182.5 153.43,130" fill="currentColor" fill-opacity="0.5"/>
           </svg></span>
@@ -255,14 +264,15 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       </div>
 
       <div class="install-button-wrapper desktop">
-        <a class='install-button' href="/beta" style={`background-color: ${textColor}; color: ${backgroundColor};`}>
-          Get the beta
+        <a class='install-button' href={translatePath('/beta')} style={`background-color: ${textColor}; color: ${backgroundColor};`}>
+          {t('profile.getBeta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
           </svg>
         </a>
       </div>
+      <ProfileLanguagePicker currentLocale={locale} />
     </header>
 
     <div class="posts">
@@ -275,17 +285,17 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               <div class="caption" style={`view-transition-name: caption-${post.postId}`} set:html={parseRichText(post.caption)}></div>
             </div>
           </div>
-          <a href={`/@${handle}/${post.postId}`} aria-label="View post"></a>
+          <a href={`/@${handle}/${post.postId}`} aria-label={t('profile.viewPost')}></a>
         </div>
       )) : (
         <div class="empty-feed">
           <div class="tv-static" aria-hidden="true"></div>
-          <p class="empty-feed-message">nothing here, yet...</p>
+          <p class="empty-feed-message">{t('profile.nothingHere')}</p>
         </div>
       )}
       {nextCursor && (
         <footer>
-          <a id="load-more" style={`background-color: ${textColor}; color: ${backgroundColor};`}>Load more</a>
+          <a id="load-more" style={`background-color: ${textColor}; color: ${backgroundColor};`}>{t('profile.loadMore')}</a>
         </footer>
       )}
     </div>

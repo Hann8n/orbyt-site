@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  locale: string;
+  slug: string;
+}
+const { locale, slug } = Astro.props;
+
+const t = useTranslations(locale as import('../i18n/ui').defaultLang);
+const translatePath = useTranslatedPath(locale as import('../i18n/ui').defaultLang);
+
+const appUrl = 'https://getorbyt.com/app';
+const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
+
+const titles: Record<string, string> = {
+  about: t('about.title'),
+  app: t('app.title'),
+  beta: t('beta.title'),
+  contact: t('contact.title'),
+  discord: t('discord.title'),
+  terms: t('terms.title'),
+  privacy: t('privacy.title'),
+};
+---
+
+<Base
+  lang={locale}
+  noFooter={slug === 'beta' || slug === 'discord'}
+  title={titles[slug]}
+  description={slug === 'about' ? t('about.metaDescription') : undefined}
+  canonicalUrl={`https://getorbyt.com/${locale}/${slug}/`}
+>
+  <Fragment slot="head">
+    {slug === 'discord' && (
+      <>
+        <meta http-equiv="refresh" content="0; url=https://community.getorbyt.com" />
+        <link rel="canonical" href="https://community.getorbyt.com" />
+        <script is:inline>
+        window.location.href = "https://community.getorbyt.com";
+      </script>
+      </>
+    )}
+    {slug === 'beta' && (
+      <>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <script is:inline async src="https://tally.so/widgets/embed.js"></script>
+        <style is:inline>
+          html { margin: 0; height: 100%; overflow: hidden; background: #000; }
+          body { margin: 0; background: #000; }
+          iframe { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border: 0; }
+        </style>
+      </>
+    )}
+  </Fragment>
+
+  {slug === 'discord' && (
+    <div class="discord-container">
+      <div class="discord-content">
+        <div class="emojis">🚙💨</div>
+        <div class="text">{t('discord.routing')}</div>
+      </div>
+    </div>
+  )}
+
+  {slug === 'beta' && (
+    <div class="beta-container">
+      <iframe data-tally-src="https://tally.so/r/nWx7zQ?transparentBackground=1&formEventsForwarding=1" width="100%" height="100%" style="border: 0; margin: 0;" title={t('beta.iframeTitle')}></iframe>
+    </div>
+  )}
+
+  {['about', 'app', 'contact', 'terms', 'privacy'].includes(slug) && (
+    <div class="page-container">
+      <div class="header">
+        <a href={translatePath('/')} class="logo">
+          <img src="/images/orbyt-logo.svg" alt={t('common.orbytAlt')} />
+        </a>
+        {slug === 'contact' && <h1>{t('contact.title').replace(' - Orbyt', '')}</h1>}
+        {slug === 'terms' && <h1>{t('terms.title').replace(' - Orbyt', '')}</h1>}
+        {slug === 'privacy' && <h1>{t('privacy.title').replace(' - Orbyt', '')}</h1>}
+      </div>
+
+      {slug === 'app' && (
+        <div class="app-main">
+          <a href={translatePath('/')} class="logo">
+            <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
+              <defs>
+                <mask id="cutout-mask">
+                  <rect x="65" y="65" width="894" height="894" fill="white"/>
+                  <path fill="black" fill-rule="evenodd" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3m249.3 243.2C752 381.3 773.8 399.3 781.1 523c5.8 98.9-9.4 168.3-41.5 189.8-59.5 39.8-394.7 39.8-454.2 0-32.1-21.5-47.3-90.9-41.5-189.8 7.7-130.5 28.8-144.8 226.1-152.4 19.3-.8 104.3.5 128.3 1.9Z"/>
+                  <rect fill="black" x="372" y="482" width="82" height="136" rx="41" ry="41"/>
+                  <rect fill="black" x="570" y="482" width="82" height="136" rx="41" ry="41"/>
+                </mask>
+              </defs>
+              <path class="logo-fg" mask="url(#cutout-mask)" stroke-width="65" stroke-linejoin="round" stroke-linecap="round" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3Z"/>
+            </svg>
+          </a>
+          <div class="subtitle subtitle-desktop">{t('app.subtitleDesktop')}</div>
+          <div class="subtitle subtitle-mobile">{t('app.subtitleMobile')}</div>
+          <div class="qr-section">
+            <div class="qr-container">
+              <img class="qr-code" src={qrCodeUrl} alt={t('app.qrAlt')} />
+            </div>
+            <div class="qr-label">{t('app.qrLabel')}</div>
+          </div>
+          <div class="buttons">
+            <a href="https://apps.apple.com/us/app/orbyt-video/id6751679299" class="download-button">{t('index.ios')}</a>
+            <a href={translatePath('/beta')} class="download-button">{t('index.androidWaitlist')}</a>
+          </div>
+        </div>
+      )}
+
+      {slug === 'about' && (
+        <div class="content">
+          <h3>{t('about.questions')}</h3>
+          <h2>{t('about.whatMakesDifferent')}</h2>
+          <p>{t('about.whatMakesDifferentBody')}</p>
+          <h2>{t('about.howBuilt')}</h2>
+          <p>{t('about.howBuiltBody')}</p>
+          <h2>{t('about.whereIdea')}</h2>
+          <p>{t('about.whereIdeaBody')}</p>
+          <h2>{t('about.whatsNext')}</h2>
+          <p set:html={t('about.whatsNextBody')
+            .replace('{bluesky}', `<a href="https://bsky.app/profile/getorbyt.com">Bluesky</a>`)
+            .replace('{community}', `<a href="https://community.getorbyt.com">community forum</a>`)
+            .replace('{sayHello}', `<a href="${translatePath('/contact')}">${t('about.sayHello')}</a>`)} />
+        </div>
+      )}
+
+      {slug === 'contact' && (
+        <div class="content">
+          <h2>{t('contact.generalInquiries')}</h2>
+          <p><a href="mailto:hello@getorbyt.com">hello@getorbyt.com</a></p>
+          <h2>{t('contact.pressMedia')}</h2>
+          <p><a href="mailto:press@getorbyt.com">press@getorbyt.com</a></p>
+          <h2>{t('contact.bugReports')}</h2>
+          <p><a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
+          <h2>{t('contact.copyrightIssues')}</h2>
+          <p>{t('contact.copyrightBody')}</p>
+        </div>
+      )}
+
+      {slug === 'terms' && (
+        <div class="content">
+          <p>Welcome to Orbyt, a video social networking application! We're excited to have you on board as a user. Orbyt runs on the Authenticated Transfer Protocol ("AT Protocol"), a decentralized social networking protocol that supports many different kinds of services. These Terms of Service apply to the Orbyt service.</p>
+          <p>Before you dive into using Orbyt, please take a moment to carefully read these Terms. This document outlines our legal obligations to each other and they apply to your use of our services.</p>
+          <p>Orbyt is available as a mobile application ("Orbyt App" or "the App"). Your use of Orbyt is subject to these Terms of Service ("Terms"), and Orbyt Privacy Policy, which are referenced in our Terms and available to read separately.</p>
+          <a href={translatePath('/privacy')}>Privacy Policy</a>
+        </div>
+      )}
+
+      {slug === 'privacy' && (
+        <div class="content">
+          <p>This Privacy Policy describes how Orbyt ("we", "us", "our") collects, uses, and shares information when you use our mobile application ("Orbyt" or "the App").</p>
+          <p><strong>Important:</strong> Orbyt is a third-party client application that connects to the Bluesky network via the AT Protocol. When you use Orbyt, your data is shared with the decentralized AT Protocol network. You should also review <a href="https://bsky.social/about/support/privacy-policy" target="_blank" rel="noopener">Bluesky's Privacy Policy</a> to understand how your data is handled on their network.</p>
+          <a href={translatePath('/terms')}>Terms of Use</a>
+        </div>
+      )}
+    </div>
+  )}
+</Base>
+
+<style>
+  .page-container { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+  .logo { display: block; margin-bottom: 2rem; }
+  .logo img { width: 80px; height: 80px; }
+  .header h1 { font-family: 'Figtree', sans-serif; font-size: 3rem; font-weight: 900; color: #f3f5fe; margin-bottom: 1rem; }
+  .content h2 { font-family: 'Figtree', sans-serif; font-size: 1.8rem; color: #f3f5fe; margin: 2rem 0 1rem 0; font-weight: 900; }
+  .content p { font-family: 'Figtree', sans-serif; font-size: 1rem; color: #cfd6e8; margin-bottom: 1rem; }
+  .content a { color: #01f5b3; text-decoration: none; }
+  .discord-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+  .discord-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .emojis { font-size: 70px; }
+  .discord-content .text { font-family: 'Figtree', sans-serif; font-weight: 300; font-size: 20px; color: #fff; }
+  .beta-container { position: absolute; inset: 0; }
+  .beta-container iframe { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border: 0; }
+  .app-main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .app-main .logo { display: block; transition: opacity 0.2s ease; }
+  .app-main .logo:hover { opacity: 0.8; }
+  .app-main .logo-icon { width: 120px; height: auto; }
+  .app-main .logo-icon .logo-fg { fill: #f3f5fe; stroke: #f3f5fe; }
+  .subtitle { font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 28px; color: #f3f5fe; margin: 20px auto 0; }
+  .subtitle-mobile { display: none; }
+  .qr-section { margin: 40px 0; }
+  .qr-container { padding: 20px; border-radius: 20px; border: 2px solid #333; display: inline-block; }
+  .qr-code { width: 200px; height: 200px; display: block; }
+  .qr-label { font-size: 14px; color: #888; margin-top: 16px; }
+  .buttons { text-align: center; margin-top: 10px; width: 100%; max-width: 400px; }
+  .download-button { background: #551DEF; border: 2px solid #000; border-radius: 30px; height: 60px; font-weight: bold; font-size: 20px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #E0EBFF; width: 100%; margin: 0 auto 12px auto; }
+  @media (hover: none) and (pointer: coarse) { .qr-section { display: none; } .subtitle-desktop { display: none; } .subtitle-mobile { display: block; } }
+</style>
