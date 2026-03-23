@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate:locales": "node scripts/generate-locale-pages.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",

@@ -4,16 +4,8 @@ export const prerender = false; // SSR route (shell-only, lightweight)
 import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-api';
 import { parseRichText } from '../../utils/richtext';
 import { ClientRouter } from 'astro:transitions';
-import ProfileLanguagePicker from '../../components/ProfileLanguagePicker.astro';
-import { useTranslations, useTranslatedPath } from '../../i18n/utils';
-
-const LOCALES = ['en', 'de', 'es', 'es-419', 'fr', 'ja', 'ko', 'pt-BR'];
 
 const { handle, postId } = Astro.params;
-const cookieLocale = Astro.cookies.get('locale')?.value;
-const locale = (cookieLocale && LOCALES.includes(cookieLocale) ? cookieLocale : (Astro.currentLocale ?? 'en')) as 'en';
-const t = useTranslations(locale);
-const translatePath = useTranslatedPath(locale);
 // handle is "wsj.com", postId is "3mc3tjpupzo2i"
 
 // Fetch post data for Open Graph metadata
@@ -92,11 +84,11 @@ const ogImageAlt = caption
   : `Post by @${authorHandle}`;
 
 // Title: "post by @[handle]"
-const finalOgTitle = t('profile.postBy').replace('{handle}', authorHandle);
+const finalOgTitle = `post by @${authorHandle}`;
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -285,7 +277,7 @@ const finalOgTitle = t('profile.postBy').replace('{handle}', authorHandle);
     <meta property="og:image:height" content={imageHeight.toString()} />
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:site_name" content="orbyt" />
-    <meta property="og:locale" content={({ en: 'en_US', de: 'de_DE', es: 'es_ES', 'es-419': 'es_419', fr: 'fr_FR', ja: 'ja_JP', ko: 'ko_KR', 'pt-BR': 'pt_BR' } as Record<string, string>)[locale] || 'en_US'} />
+    <meta property="og:locale" content="en_US" />
     {videoUrl && (
       <>
         <meta property="og:video" content={videoUrl} />
@@ -315,7 +307,7 @@ const finalOgTitle = t('profile.postBy').replace('{handle}', authorHandle);
         {
           "@type": "ListItem",
           "position": 1,
-          "name": t('profile.home'),
+          "name": "Home",
           "item": "https://getorbyt.com"
         },
         {
@@ -379,20 +371,19 @@ const finalOgTitle = t('profile.postBy').replace('{handle}', authorHandle);
       <div class="logo-overlay mobile-overlay">
 
         <div class="logo">
-          <a href={translatePath('/')} class="logo-wordmark">
+          <a href='/' class="logo-wordmark">
             <span class="logo-text" style="view-transition-name: orbyt-logo;">orbyt</span>
           </a>
         </div>
 
-        <a class='install-button' href={translatePath('/beta')} style="view-transition-name: orbyt-beta;">
-          {t('profile.getBeta')}
+        <a class='install-button' href="/beta" style="view-transition-name: orbyt-beta;">
+          Get the beta
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke-width="3.993"/>
           </svg>
         </a>
 
-        <ProfileLanguagePicker currentLocale={locale} />
       </div>
 
       <div id="post-overlay" class="post-overlay">
@@ -443,20 +434,19 @@ const finalOgTitle = t('profile.postBy').replace('{handle}', authorHandle);
       <div class="desktop-title">
 
         <div class="logo">
-          <a href={translatePath('/')} class="logo-wordmark">
+          <a href='/' class="logo-wordmark">
             <span class="logo-text">orbyt</span>
           </a>
         </div>
 
-        <a class='install-button' href={translatePath('/beta')}>
-          {t('profile.getBeta')}
+        <a class='install-button' href="/beta">
+          Get the beta
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke-width="3.993"/>
           </svg>
         </a>
 
-        <ProfileLanguagePicker currentLocale={locale} />
       </div>
 
       <div class="horizontal-rule">
