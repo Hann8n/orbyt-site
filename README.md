@@ -8,6 +8,12 @@ Website for orbyt, a video app for Bluesky.
 
 ## Architecture
 
+### Header banners source of truth
+
+- Primary source of truth is now `orbyt-api` admin at `https://api.getorbyt.com/admin`
+- Public app read endpoint is `https://api.getorbyt.com/v1/headers/active`
+- `public/api/headers.json` is retained only as a legacy emergency fallback
+
 ### Bluesky API (`src/utils/bluesky-api.ts`)
 
 - Fetches profiles, posts, and video feeds from `https://public.api.bsky.app/xrpc`

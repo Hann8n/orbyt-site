@@ -1,6 +1,6 @@
 {
   "_doc": {
-    "about": "Documentation for header banner JSON. This object is ignored by the app; only 'headers' is used.",
+    "about": "Legacy fallback for header banners. Source of truth is now orbyt-api admin at https://api.getorbyt.com/admin. This object is ignored by the app; only 'headers' is used.",
     "fields": {
       "id": "Unique string identifier for the header",
       "imageUrl": "Image URL for the banner background. Can be absolute or relative (e.g., 'banners/header.png').",
@@ -34,7 +34,8 @@
       "textOrder": "title-first"
     },
     "localDevelopment": {
-      "verifyLocalEndpoint": "curl -s http://localhost:5173/api/headers.json | cat@headers.json"
+      "verifyLocalEndpoint": "curl -s http://localhost:5173/api/headers.json",
+      "note": "Use only for emergency fallback/rollback. Primary app endpoint is https://api.getorbyt.com/v1/headers/active"
     }
   },
   "headers": [
