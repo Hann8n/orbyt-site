@@ -86,7 +86,7 @@
             // Success - redirect back to app
             setTimeout(() => {
                 // Try to redirect to the app using a custom URL scheme
-                const appUrl = `orbyt://oauth/callback?code=${code}&state=${state}`;
+                const appUrl = `orbyt://oauth/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`;
                 window.location.href = appUrl;
                 
                 // Fallback: show success message
