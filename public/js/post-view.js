@@ -1,12 +1,3 @@
-/**
- * Video Post View
- * Handles video playback for post pages
- * Uses SSR data from data attributes - no API calls needed
- */
-
-/**
- * Format relative time (e.g., "2h", "3d", "1mo")
- */
 function formatRelativeTime(createdAt) {
   if (!createdAt) return '';
 
@@ -26,9 +17,6 @@ function formatRelativeTime(createdAt) {
   return 'now';
 }
 
-/**
- * Initialize video player with HLS support
- */
 function initVideoPlayer(videoUrl, thumbnail) {
   const videoEl = document.getElementById('vinit');
   const thumbnailEl = document.getElementById('video-thumbnail');
@@ -38,30 +26,22 @@ function initVideoPlayer(videoUrl, thumbnail) {
     return;
   }
 
-  // Clean up any existing HLS instance
   if (videoEl.hlsInstance) {
-    try {
-      videoEl.hlsInstance.destroy();
-      videoEl.hlsInstance = null;
-    } catch (e) {
-      console.warn('Error destroying HLS instance:', e);
-    }
+    videoEl.hlsInstance.destroy();
+    videoEl.hlsInstance = null;
   }
 
-  // Reset video element
   videoEl.pause();
   videoEl.src = '';
   videoEl.removeAttribute('src');
   videoEl.load();
 
-  // Set video attributes
   videoEl.setAttribute('autoplay', '');
   videoEl.setAttribute('loop', '');
   videoEl.setAttribute('playsinline', '');
   videoEl.setAttribute('preload', 'auto');
   videoEl.muted = true;
 
-  // Thumbnail visibility handlers (thumbnail is rendered in HTML, no need to set src)
   const hideThumbnail = () => {
     if (thumbnailEl) {
       thumbnailEl.classList.add('hidden');
@@ -77,14 +57,11 @@ function initVideoPlayer(videoUrl, thumbnail) {
   videoEl.addEventListener('playing', hideThumbnail, { once: true });
   videoEl.addEventListener('pause', showThumbnail);
 
-  // Setup HLS playback
   if (videoUrl.includes('.m3u8')) {
     if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native HLS (Safari/iOS)
       videoEl.src = videoUrl;
       videoEl.load();
     } else if (typeof Hls !== 'undefined') {
-      // Use hls.js
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
@@ -125,7 +102,6 @@ function initVideoPlayer(videoUrl, thumbnail) {
     videoEl.load();
   }
 
-  // Mute/unmute on tap/click anywhere on video (video keeps playing)
   const videoContainer = thumbnailEl?.closest('.video-container');
   const handleVideoAreaClick = (e) => {
     e.stopPropagation();
@@ -144,13 +120,9 @@ function initVideoPlayer(videoUrl, thumbnail) {
     videoContainer.addEventListener('click', handleVideoAreaClick);
   }
 
-  // Initialize sizing
   resizeVideoAndOverlay();
 }
 
-/**
- * Initialize mute toggle controls
- */
 function initMuteControls() {
   const videoEl = document.getElementById('vinit');
   const muteToggle = document.getElementById('mute-toggle');
@@ -179,9 +151,6 @@ function initMuteControls() {
   }
 }
 
-/**
- * Resize video and overlay for responsive layout
- */
 function resizeVideoAndOverlay() {
   const videoEl = document.getElementById('vinit');
   const postOverlay = document.getElementById('post-overlay');
@@ -198,14 +167,12 @@ function resizeVideoAndOverlay() {
     let videoHeight = Math.max(minHeight, maxHeight);
     let columnWidth = (videoHeight * 9) / 16;
 
-    // Scale for narrower viewports
     if (viewportWidth < 900) {
       const scaleFactor = 0.75 + (0.25 * (viewportWidth - 700)) / 200;
       videoHeight = videoHeight * Math.max(0.75, Math.min(1.0, scaleFactor));
       columnWidth = (videoHeight * 9) / 16;
     }
 
-    // Fit within available space
     let reservedSpace = viewportWidth < 900 
       ? Math.max(400, 540 * (0.7 + (0.3 * (viewportWidth - 700)) / 200))
       : 540;
@@ -227,7 +194,6 @@ function resizeVideoAndOverlay() {
     videoEl.style.height = 'auto';
   }
 
-  // Adjust overlay position
   if (postOverlay) {
     const scrollPosition = window.scrollY;
     const offsetHeight = videoEl.offsetHeight;
@@ -239,9 +205,6 @@ function resizeVideoAndOverlay() {
 
 let resizeInitialized = false;
 
-/**
- * Initialize resize listeners (once)
- */
 function initResizeListeners() {
   if (resizeInitialized) {
     resizeVideoAndOverlay();
@@ -265,12 +228,7 @@ function initResizeListeners() {
   });
 }
 
-/**
- * Update display elements with SSR data
- * Note: Captions are now rendered server-side via set:html
- */
 function updateDisplay(data) {
-  // Update time (computed client-side for accurate relative time)
   const relativeTime = formatRelativeTime(data.createdAt);
   const timeMobile = document.getElementById('post-time-mobile');
   const timeDesktop = document.getElementById('post-time-desktop');
@@ -283,22 +241,16 @@ function updateDisplay(data) {
     timeDesktop.style.display = relativeTime ? 'block' : 'none';
   }
 
-  // Update likes
   const likesCountMobile = document.getElementById('likes-count-mobile');
   const likesCountDesktop = document.getElementById('likes-count-desktop');
   if (likesCountMobile) likesCountMobile.textContent = data.likeCount;
   if (likesCountDesktop) likesCountDesktop.textContent = data.likeCount;
 }
 
-/**
- * Main initialization
- */
 function initPostView() {
   const postEl = document.getElementById('post');
   if (!postEl) return;
 
-  // Get SSR data from data attributes
-  // Note: caption is now rendered server-side, not needed here
   const data = {
     handle: postEl.dataset.handle,
     postId: postEl.dataset.postId,
@@ -311,28 +263,22 @@ function initPostView() {
     createdAt: postEl.dataset.createdAt,
   };
 
-  // Update display with SSR data
   updateDisplay(data);
 
-  // Initialize video player
   if (data.videoUrl) {
     initVideoPlayer(data.videoUrl, data.thumbnail);
   }
 
-  // Initialize controls
   initMuteControls();
   initResizeListeners();
 
-  // Show post content
   postEl.classList.remove('hidden');
 }
 
-// Show thumbnail before view transition captures snapshot (for back navigation)
 document.addEventListener('astro:before-preparation', () => {
   const videoEl = document.getElementById('vinit');
   const thumbnailEl = document.getElementById('video-thumbnail');
   
-  // Pause video and show thumbnail so view transition can capture it
   if (videoEl) {
     videoEl.pause();
   }
@@ -341,18 +287,13 @@ document.addEventListener('astro:before-preparation', () => {
   }
 });
 
-// Cleanup before page swap
 document.addEventListener('astro:before-swap', () => {
   const videoEl = document.getElementById('vinit');
   const muteToggle = document.getElementById('mute-toggle');
   
   if (videoEl && videoEl.hlsInstance) {
-    try {
-      videoEl.hlsInstance.destroy();
-      videoEl.hlsInstance = null;
-    } catch (e) {
-      console.warn('Error cleaning up HLS:', e);
-    }
+    videoEl.hlsInstance.destroy();
+    videoEl.hlsInstance = null;
     videoEl.pause();
     videoEl.src = '';
   }
@@ -361,5 +302,4 @@ document.addEventListener('astro:before-swap', () => {
   resizeInitialized = false;
 });
 
-// Initialize on page load
 document.addEventListener('astro:page-load', initPostView);

@@ -1,0 +1,13 @@
+---
+/** Document `<meta>` for color-scheme / theme-color; emit right after charset. */
+interface Props {
+  colorScheme: 'dark' | 'light';
+  themeColor: string;
+  tileColor?: string;
+}
+
+const { colorScheme, themeColor, tileColor } = Astro.props;
+---
+<meta name="color-scheme" content={colorScheme} />
+<meta name="theme-color" content={themeColor} />
+{tileColor && <meta name="msapplication-TileColor" content={tileColor} />}

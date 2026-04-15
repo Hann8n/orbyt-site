@@ -1,10 +1,18 @@
 ---
 export const prerender = true;
+
+import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import { SITE_DOCUMENT } from '../utils/site-document-theme';
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="orbyt-doc-dark">
 <head>
     <meta charset="UTF-8">
+    <DocumentColorScheme
+      colorScheme="dark"
+      themeColor={SITE_DOCUMENT.orbytBlack}
+      tileColor={SITE_DOCUMENT.orbytBlack}
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Use - Orbyt</title>
     
@@ -27,10 +35,7 @@ export const prerender = true;
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="manifest" href="/favicon/site.webmanifest">
-    
-    <!-- Theme colors for mobile browsers -->
-    <meta name="theme-color" content="#f3f5fe">
-    <meta name="msapplication-TileColor" content="#f3f5fe">
+    <link rel="stylesheet" href="/css/tokens.css" />
     <style>
         * {
             margin: 0;

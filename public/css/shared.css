@@ -1,16 +1,18 @@
+@import url('./tokens.css');
+
 body {
-  background: #000;
-  color: #B1BACF;
+  background: var(--orbyt-page-bg);
+  color: var(--orbyt-page-fg);
   font-family: 'Figtree', sans-serif;
   line-height: 28px;
 }
 
 .install-button {
   align-items: center;
-  background: #F4F7FF;
+  background: var(--orbyt-install-surface);
   border-radius: 31px;
   box-shadow: 0px 6px 10px rgba(7, 25, 72, 0.13);
-  color: black;
+  color: var(--orbyt-black);
   display: flex;
   font-size: 16px;
   font-weight: normal;
@@ -28,7 +30,7 @@ body {
 }
 .install-button:hover,
 .install-button:active {
-  color: black;
+  color: var(--orbyt-black);
 }
 
 .horizontal-rule {

@@ -3,6 +3,8 @@ export const prerender = false; // SSR route (shell-only, lightweight)
 
 import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-api';
 import { parseRichText } from '../../utils/richtext';
+import DocumentColorScheme from '../../components/DocumentColorScheme.astro';
+import { SITE_DOCUMENT } from '../../utils/site-document-theme';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle, postId } = Astro.params;
@@ -88,12 +90,16 @@ const finalOgTitle = `post by @${authorHandle}`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="orbyt-doc-dark">
 
 <head>
     <meta charset="utf-8">
+    <DocumentColorScheme
+      colorScheme="dark"
+      themeColor={SITE_DOCUMENT.orbytBlack}
+      tileColor={SITE_DOCUMENT.orbytBlack}
+    />
 
-    <!-- Critical: Inline font-face for immediate availability (no network delay) -->
     <style>
       @font-face {
         font-family: 'Figtree';
@@ -103,7 +109,6 @@ const finalOgTitle = `post by @${authorHandle}`;
         font-display: fallback; /* Short block window, then swap - prevents FOUT for logo */
       }
     </style>
-    <!-- Preload Figtree font to start download early -->
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -262,10 +267,8 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta name="description" content={ogDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- View Transitions -->
     <ClientRouter />
 
-    <!-- Open Graph meta tags -->
     <meta property="og:title" content={finalOgTitle} />
     <meta property="og:type" content="video.other" />
     <meta property="og:description" content={ogDescription} />
@@ -299,7 +302,6 @@ const finalOgTitle = `post by @${authorHandle}`;
     <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Structured Data for SEO - Breadcrumbs -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -324,7 +326,6 @@ const finalOgTitle = `post by @${authorHandle}`;
         }
       ]
     })}></script>
-    <!-- Video Structured Data -->
     {videoUrl && (
       <script type="application/ld+json" is:inline set:html={JSON.stringify({
         "@context": "https://schema.org",
@@ -343,7 +344,6 @@ const finalOgTitle = `post by @${authorHandle}`;
       })}></script>
     )}
 
-    <!-- Favicon setup -->
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
@@ -354,7 +354,6 @@ const finalOgTitle = `post by @${authorHandle}`;
 <body>
   <div id="background"> </div>
 
-  <!-- Post content -->
   <div id="post" 
     data-handle={handle} 
     data-post-id={postId}
@@ -484,10 +483,8 @@ const finalOgTitle = `post by @${authorHandle}`;
 
   </div>
 
-  <!-- HLS.js library for cross-browser HLS playback support -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-  <!-- Video player initialization -->
   <script is:inline src="/js/post-view.js"></script>
 
 

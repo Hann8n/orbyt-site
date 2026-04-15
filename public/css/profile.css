@@ -3,9 +3,28 @@ html, body {
 }
 body {
   width: 100%;
-  /* Fallback when --orbyt-chrome is unset; matches chrome for default profile bg #0e141b */
-  background-color: var(--orbyt-chrome, #0c1117);
-  color: #ccd7e9;
+  background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
+  color: var(--orbyt-profile-text, var(--orbyt-neutral-200));
+}
+
+#profile > header {
+  background-color: var(--orbyt-profile-bg);
+}
+#profile .author {
+  color: var(--orbyt-profile-text);
+}
+#profile .beta-icon {
+  color: inherit;
+}
+#profile .author .avatar {
+  border-color: var(--orbyt-profile-text);
+}
+#profile .decorative-hr path {
+  stroke: var(--orbyt-profile-text);
+}
+#profile .install-button {
+  background-color: var(--orbyt-profile-text);
+  color: var(--orbyt-profile-bg);
 }
 header {
   padding: 20px;
@@ -97,7 +116,7 @@ header.hidden {
 }
 .empty-feed-message {
   font-size: clamp(1.25rem, 3vw, 1.75rem);
-  color: #9ca3af;
+  color: var(--orbyt-text-subtle);
   line-height: 1.5;
 }
 
@@ -134,7 +153,7 @@ header.hidden {
   width: 50%;
   margin-bottom: 2px;
   box-sizing: border-box;
-  color: #ccd7e9;
+  color: var(--orbyt-profile-text, var(--orbyt-neutral-200));
   align-items: flex-end;
   padding: 0;
   overflow: hidden;
@@ -174,7 +193,7 @@ header.hidden {
   top: 0;
   height: 100%;
   object-fit: contain;
-  background-color: var(--orbyt-chrome, #0c1117);
+  background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
 }
 .post .play-button {
   width: 60px;
@@ -186,8 +205,12 @@ header.hidden {
   left: 0;
   right: 0;
   bottom: 0;
-  /* Orbyt black rgb(5,7,10) — matches app `Colors.overlay`, not pure #000 */
-  background: linear-gradient(360deg, rgba(5, 7, 10, 0.4) 0%, rgba(5, 7, 10, 0.2) 43.67%, rgba(5, 7, 10, 0) 96.43%);
+  background: linear-gradient(
+    360deg,
+    rgb(var(--orbyt-scrim-rgb) / 0.4) 0%,
+    rgb(var(--orbyt-scrim-rgb) / 0.2) 43.67%,
+    rgb(var(--orbyt-scrim-rgb) / 0) 96.43%
+  );
   padding: 20px 10px 8px;
   box-sizing: border-box;
 }
@@ -207,9 +230,9 @@ footer {
   margin-bottom: 50px;
 }
 #load-more {
-  background: #888;
+  background: var(--orbyt-profile-text);
+  color: var(--orbyt-profile-bg);
   border-radius: 30px;
-  color: #ccd7e9;
   cursor: pointer;
   padding: 5px 20px;
   text-decoration: none;
@@ -217,14 +240,14 @@ footer {
 #load-more:hover,
 #load-more:active,
 #load-more:visited {
-  color: #ccd7e9;
+  color: var(--orbyt-profile-bg);
   text-decoration: none;
 }
 
 .loading {
   padding: 20px;
   text-align: center;
-  color: #ccd7e9;
+  color: var(--orbyt-profile-text, var(--orbyt-neutral-200));
 }
 
 /*--- Responsive styles ---*/

@@ -1,12 +1,21 @@
 ---
 // All users see this landing page with QR code
+import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import { SITE_DOCUMENT } from '../utils/site-document-theme';
+
 const appUrl = 'https://getorbyt.com/app';
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" class="orbyt-doc-dark">
 <head>
     <meta charset="utf-8">
+    <DocumentColorScheme
+      colorScheme="dark"
+      themeColor={SITE_DOCUMENT.orbytBlack}
+      tileColor={SITE_DOCUMENT.orbytBlack}
+    />
+    <link rel="stylesheet" href="/css/tokens.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get the App - orbyt</title>
     

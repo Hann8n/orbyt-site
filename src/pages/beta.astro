@@ -1,10 +1,20 @@
 ---
 export const prerender = true;
+
+import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import { SITE_DOCUMENT } from '../utils/site-document-theme';
 ---
 
 <!doctype html>
-<html>
+<html lang="en" class="orbyt-doc-dark">
   <head>
+    <meta charset="utf-8" />
+    <DocumentColorScheme
+      colorScheme="dark"
+      themeColor={SITE_DOCUMENT.orbytBlack}
+      tileColor={SITE_DOCUMENT.orbytBlack}
+    />
+    <link rel="stylesheet" href="/css/tokens.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Join the waitlist</title>
     <script is:inline async src="https://tally.so/widgets/embed.js"></script>
