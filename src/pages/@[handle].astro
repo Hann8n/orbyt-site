@@ -5,6 +5,7 @@ import { env } from 'cloudflare:workers';
 import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '../utils/bluesky-api';
 import { getColor } from '../utils/orbyt-api';
 import { parseRichText } from '../utils/richtext';
+import { getChromeBackgroundColor } from '../utils/profile-colors';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle } = Astro.params;
@@ -53,9 +54,10 @@ const joinDate = colorData?.joinedAt
   ? new Date(colorData.joinedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
   : null;
 
-// Color styles
+// Color styles (chrome = darkened profile bg, same as app `chromeBackgroundColor`)
 const textColor = colorData?.textColor || '#ccd7e9';
 const backgroundColor = colorData?.backgroundColor || '#0e141b';
+const chromeBackgroundColor = getChromeBackgroundColor(backgroundColor);
 
 // Cache at Cloudflare edge: 60s fresh, serve stale up to 5min while revalidating
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
@@ -209,7 +211,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     </style>
 </head>
 
-<body>
+<body
+  style={`background-color: ${chromeBackgroundColor}; color: ${textColor}; --orbyt-chrome: ${chromeBackgroundColor}; --orbyt-profile-bg: ${backgroundColor};`}
+>
   <div id="profile" data-handle={handle} data-cursor={nextCursor || ''}>
     <header style={`background-color: ${backgroundColor};`}>
       <div class="links">

@@ -3,7 +3,8 @@ html, body {
 }
 body {
   width: 100%;
-  background-color: #000;
+  /* Fallback when --orbyt-chrome is unset; matches chrome for default profile bg #0e141b */
+  background-color: var(--orbyt-chrome, #0c1117);
   color: #ccd7e9;
 }
 header {
@@ -173,7 +174,7 @@ header.hidden {
   top: 0;
   height: 100%;
   object-fit: contain;
-  background-color: #000;
+  background-color: var(--orbyt-chrome, #0c1117);
 }
 .post .play-button {
   width: 60px;
@@ -185,7 +186,8 @@ header.hidden {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 43.67%, rgba(0,0,0,0) 96.43%);
+  /* Orbyt black rgb(5,7,10) — matches app `Colors.overlay`, not pure #000 */
+  background: linear-gradient(360deg, rgba(5, 7, 10, 0.4) 0%, rgba(5, 7, 10, 0.2) 43.67%, rgba(5, 7, 10, 0) 96.43%);
   padding: 20px 10px 8px;
   box-sizing: border-box;
 }
