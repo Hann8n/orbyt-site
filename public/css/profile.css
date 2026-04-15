@@ -218,8 +218,12 @@ header.hidden {
   font-size: 12px;
   line-height: 1.3;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 footer {
   display: flex;
@@ -347,8 +351,6 @@ footer {
   .post-overlay .caption {
     /* Fluid font size: scales smoothly with viewport */
     font-size: clamp(14px, 1.2vw, 16px);
-    line-height: 1.3;
-    -webkit-line-clamp: 4;
   }
 }
 
