@@ -372,11 +372,11 @@ const finalOgTitle = `post by @${authorHandle}`;
 
         <div class="logo">
           <a href='/' class="logo-wordmark">
-            <span class="logo-text" style="view-transition-name: orbyt-logo;">orbyt</span>
+            <span class="logo-text">orbyt</span>
           </a>
         </div>
 
-        <a class='install-button' href="https://apps.apple.com/us/app/orbyt-video/id6751679299" style="view-transition-name: orbyt-beta;">
+        <a class='install-button' href="https://apps.apple.com/us/app/orbyt-video/id6751679299">
           Get the app
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
@@ -396,7 +396,7 @@ const finalOgTitle = `post by @${authorHandle}`;
           </button>
         </div>
 
-        <div id="post-caption-mobile" class="post-content mobile-overlay" style={`view-transition-name: caption-${postId}`} set:html={parseRichText(caption)}></div>
+        <div id="post-caption-mobile" class="post-content mobile-overlay" set:html={parseRichText(caption)}></div>
 
         <div class="post-author mobile-overlay">
 
@@ -457,7 +457,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       <div>
 
-        <div id="post-caption-desktop" class="post-content" style={`view-transition-name: caption-${postId}`} set:html={parseRichText(caption)}></div>
+        <div id="post-caption-desktop" class="post-content" set:html={parseRichText(caption)}></div>
 
         <div class="post-author">
           <span class='avatar-wrapper'>
