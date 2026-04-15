@@ -41,3 +41,22 @@ export function getChromeBackgroundColor(profileBackgroundColor: string): string
     getAdaptiveChromeBlend(profileBackgroundColor)
   );
 }
+
+/**
+ * Same WCAG-relative luminance threshold as orbyt `isColorDark` (sRGB luminance ≈ 128).
+ * Drives `color-scheme` so scrollbars / form UI match the page (MDN color-scheme).
+ */
+export function isColorDark(hex: string): boolean {
+  const raw = hex.replace('#', '');
+  if (raw.length !== 6 || !/^[0-9a-fA-F]+$/.test(raw)) return true;
+  const r = parseInt(raw.substring(0, 2), 16);
+  const g = parseInt(raw.substring(2, 4), 16);
+  const b = parseInt(raw.substring(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness < 128;
+}
+
+/** Value for `<meta name="color-scheme">` and CSS `color-scheme` on the document root. */
+export function getUiColorScheme(chromeBackgroundHex: string): 'dark' | 'light' {
+  return isColorDark(chromeBackgroundHex) ? 'dark' : 'light';
+}
