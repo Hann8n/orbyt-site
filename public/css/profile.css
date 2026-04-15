@@ -226,7 +226,7 @@ footer {
 }
 
 /*--- Responsive styles ---*/
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 479px) {
   .post:nth-child(2n-1) {
     padding-right: 1px;
   }
@@ -235,9 +235,17 @@ footer {
   }
 }
 
-@media screen and (min-width: 540px) {
+@media screen and (min-width: 480px) and (max-width: 919px) {
   .post {
-    width: 33.3%;
+    width: 33.333%;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+}
+
+@media screen and (min-width: 920px) {
+  .post {
+    width: 25%;
     padding-left: 1px;
     padding-right: 1px;
   }
