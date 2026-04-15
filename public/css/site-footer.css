@@ -22,7 +22,7 @@
   justify-content: flex-start;
   gap: 12px 32px;
   margin-top: auto;
-  margin-bottom: 2.5rem;
+  margin-bottom: var(--site-footer-margin-bottom);
 }
 
 .site-footer a {

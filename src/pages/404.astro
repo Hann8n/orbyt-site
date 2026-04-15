@@ -40,16 +40,18 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 
         body {
             font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000000;
+            background: var(--orbyt-page-bg);
             min-height: 100vh;
             min-height: 100dvh;
-            color: #f3f5fe;
+            color: var(--orbyt-white);
             overflow-x: hidden;
         }
 
         .container {
-            width: min(100% - clamp(2rem, 5vw, 4rem), 800px);
+            width: 100%;
+            max-width: var(--site-content-max-width);
             margin-inline: auto;
+            padding: var(--site-page-padding-y) var(--site-page-padding-x);
             min-height: 100vh;
             min-height: 100dvh;
             display: flex;
@@ -115,7 +117,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
         /* Supporting text - explains the error */
         .error-message {
             font-size: clamp(1rem, 2vw, 1.125rem);
-            color: #9ca3af;
+            color: var(--orbyt-text-subtle);
             max-width: 32ch;
             line-height: 1.5;
         }
@@ -147,12 +149,12 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 </head>
 <body>
     <div class="container">
-        <div class="main-content">
+        <main class="main-content">
             <div class="tv-static" aria-hidden="true"></div>
             <h1 class="error-title">No Signal</h1>
             <p class="error-message">This page doesn't exist or has been moved.</p>
             <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
-        </div>
+        </main>
 
         <SiteFooter />
     </div>
