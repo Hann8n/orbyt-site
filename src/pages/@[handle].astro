@@ -214,9 +214,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <header style={`background-color: ${backgroundColor};`}>
       <div class="links">
         <a href='/' class="logo-wordmark">
-          <span class="logo-text" style={`color: ${textColor}; view-transition-name: orbyt-logo;`}>orbyt</span>
+          <span class="logo-text" style={`color: ${textColor};`}>orbyt</span>
         </a>
-        <a class='install-button mobile' href="https://apps.apple.com/us/app/orbyt-video/id6751679299" style={`background-color: ${textColor}; color: ${backgroundColor}; view-transition-name: orbyt-beta;`}>
+        <a class='install-button mobile' href="https://apps.apple.com/us/app/orbyt-video/id6751679299" style={`background-color: ${textColor}; color: ${backgroundColor};`}>
           Get the app
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
@@ -272,7 +272,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
             <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
             <div class="post-overlay">
-              <div class="caption" style={`view-transition-name: caption-${post.postId}`} set:html={parseRichText(post.caption)}></div>
+              <div class="caption" set:html={parseRichText(post.caption)}></div>
             </div>
           </div>
           <a href={`/@${handle}/${post.postId}`} aria-label="View post"></a>
@@ -335,7 +335,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
               <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
               <img class="post-thumb" src="${post.thumbnail}" alt="" style="view-transition-name: video-${post.postId}" />
               <div class="post-overlay">
-                <div class="caption" style="view-transition-name: caption-${post.postId}">${post.captionHtml}</div>
+                <div class="caption">${post.captionHtml}</div>
               </div>
             </div>
             <a href="/@${handle}/${post.postId}" aria-label="View post"></a>
