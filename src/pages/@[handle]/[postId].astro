@@ -5,6 +5,7 @@ import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-
 import { parseRichText } from '../../utils/richtext';
 import DocumentColorScheme from '../../components/DocumentColorScheme.astro';
 import { SITE_DOCUMENT } from '../../utils/site-document-theme';
+import { getVideoAmbientBackdropInlineStyle } from '../../utils/video-ambient-backdrop';
 import { ClientRouter } from 'astro:transitions';
 
 const { handle, postId } = Astro.params;
@@ -84,6 +85,8 @@ const ogImageType = getImageMimeType(thumbnail);
 const ogImageAlt = caption 
   ? (caption.length > 200 ? caption.substring(0, 200) + '...' : caption)
   : `Post by @${authorHandle}`;
+
+const videoAmbientBackdropStyle = getVideoAmbientBackdropInlineStyle(thumbnail);
 
 // Title: "post by @[handle]"
 const finalOgTitle = `post by @${authorHandle}`;
@@ -391,59 +394,62 @@ const finalOgTitle = `post by @${authorHandle}`;
 
       </div>
 
-      <div id="post-overlay" class="post-overlay">
-
-        <div class='mute-toggle-wrapper'>
-          <button id="mute-toggle" aria-label="Toggle mute">
-            <span id="mute-text">
-              LOADING...
-            </span>
-          </button>
+      <div class="post-media-visual">
+        <div class="video-container" style={videoAmbientBackdropStyle}>
+          <div class="video-ambient-backdrop" aria-hidden="true"></div>
+          <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
+          </video>
+          <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" style={`view-transition-name: video-${postId}`} />
         </div>
 
-        <div id="post-caption-mobile-wrap" class="post-caption-mobile-wrap mobile-overlay">
-          <div id="post-caption-mobile-inner" class="post-caption-mobile-inner" data-collapsed="true">
-            <div id="post-caption-mobile" class="post-content post-caption-mobile-text" set:html={parseRichText(caption)}></div>
-            <button
-              type="button"
-              id="post-caption-mobile-toggle"
-              class="post-caption-mobile-toggle"
-              hidden
-              aria-expanded="false"
-              aria-controls="post-caption-mobile"
-            >
-              More
+        <div id="post-overlay" class="post-overlay">
+
+          <div class='mute-toggle-wrapper'>
+            <button id="mute-toggle" aria-label="Toggle mute">
+              <span id="mute-text">
+                LOADING...
+              </span>
             </button>
           </div>
-        </div>
 
-        <div class="post-author mobile-overlay">
-
-          <span class='avatar-wrapper'>
-            <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
-            <div class="username">
-              <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorDisplayName}</a>
+          <div id="post-caption-mobile-wrap" class="post-caption-mobile-wrap mobile-overlay">
+            <div id="post-caption-mobile-inner" class="post-caption-mobile-inner" data-collapsed="true">
+              <div id="post-caption-mobile" class="post-content post-caption-mobile-text" set:html={parseRichText(caption)}></div>
+              <button
+                type="button"
+                id="post-caption-mobile-toggle"
+                class="post-caption-mobile-toggle"
+                hidden
+                aria-expanded="false"
+                aria-controls="post-caption-mobile"
+              >
+                More
+              </button>
             </div>
-            <div id="post-time-mobile" style="display: none;"></div>
-          </span>
+          </div>
 
-          <span class='likes'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
-              <g fill="none">
-                <path fill="#FE4359" d="M18.494 3.801c2.095 1.221 3.569 3.7 3.504 6.592C21.86 16.5 13.5 21 12 21s-9.861-4.5-9.998-10.607c-.065-2.892 1.409-5.37 3.504-6.592C7.466 2.66 9.928 2.653 12 4.338c2.072-1.685 4.534-1.679 6.494-.537"/>
-              </g>
-            </svg>
-            <span id="likes-count-mobile">0</span>
-          </span>
+          <div class="post-author mobile-overlay">
+
+            <span class='avatar-wrapper'>
+              <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
+              <div class="username">
+                <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorDisplayName}</a>
+              </div>
+              <div id="post-time-mobile" style="display: none;"></div>
+            </span>
+
+            <span class='likes'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
+                <g fill="none">
+                  <path fill="#FE4359" d="M18.494 3.801c2.095 1.221 3.569 3.7 3.504 6.592C21.86 16.5 13.5 21 12 21s-9.861-4.5-9.998-10.607c-.065-2.892 1.409-5.37 3.504-6.592C7.466 2.66 9.928 2.653 12 4.338c2.072-1.685 4.534-1.679 6.494-.537"/>
+                </g>
+              </svg>
+              <span id="likes-count-mobile">0</span>
+            </span>
+
+          </div>
 
         </div>
-
-      </div>
-
-      <div class="video-container">
-        <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
-        </video>
-        <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" style={`view-transition-name: video-${postId}`} />
       </div>
 
     </div>

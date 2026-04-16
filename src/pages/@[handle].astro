@@ -6,6 +6,7 @@ import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '
 import { getColor } from '../utils/orbyt-api';
 import { parseRichText } from '../utils/richtext';
 import { getChromeBackgroundColor, getUiColorScheme } from '../utils/profile-colors';
+import { getVideoAmbientBackdropInlineStyle } from '../utils/video-ambient-backdrop';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import { ClientRouter } from 'astro:transitions';
 
@@ -267,7 +268,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     <div class="posts">
       {videoPosts.length > 0 ? videoPosts.map((post) => (
         <div class="post">
-          <div class="post-image-container">
+          <div class="post-image-container" style={getVideoAmbientBackdropInlineStyle(post.thumbnail)}>
+            <div class="video-ambient-backdrop" aria-hidden="true"></div>
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
             <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
             <div class="post-overlay">
@@ -297,7 +299,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 
   // Wrapper to work around Astro actions client typing (expects FormData, accepts object)
   async function loadMorePosts(handle: string, cursor: string) {
-    return (actions as unknown as { loadMorePosts: (input: { handle: string; cursor: string }) => Promise<{ data?: { posts?: { postId: string; thumbnail: string; captionHtml: string }[]; nextCursor?: string | null }; error?: unknown }> })
+    return (actions as unknown as { loadMorePosts: (input: { handle: string; cursor: string }) => Promise<{ data?: { posts?: { postId: string; thumbnail: string; captionHtml: string; videoAmbientBackdropStyle: string }[]; nextCursor?: string | null }; error?: unknown }> })
       .loadMorePosts({ handle, cursor });
   }
 
@@ -330,7 +332,8 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           const postDiv = document.createElement('div');
           postDiv.className = 'post';
           postDiv.innerHTML = `
-            <div class="post-image-container">
+            <div class="post-image-container" style="${post.videoAmbientBackdropStyle}">
+              <div class="video-ambient-backdrop" aria-hidden="true"></div>
               <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
               <img class="post-thumb" src="${post.thumbnail}" alt="" style="view-transition-name: video-${post.postId}" />
               <div class="post-overlay">

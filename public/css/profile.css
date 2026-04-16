@@ -198,6 +198,13 @@ header.hidden {
   line-height: 0;
   padding-bottom: 177.78%;
   overflow: hidden;
+  border-radius: var(--orbyt-media-radius);
+}
+
+@supports (corner-shape: squircle) {
+  .post .post-image-container {
+    corner-shape: var(--orbyt-corner-shape, squircle);
+  }
 }
 .post img {
   width: 100%;
@@ -216,7 +223,8 @@ header.hidden {
   top: 0;
   height: 100%;
   object-fit: contain;
-  background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
+  background-color: transparent;
+  z-index: 1;
 }
 .post .play-button {
   width: 60px;
@@ -228,6 +236,7 @@ header.hidden {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   background: linear-gradient(
     360deg,
     rgb(var(--orbyt-scrim-rgb) / 0.4) 0%,
@@ -356,17 +365,6 @@ footer {
     padding: 20px 10px;
   }
 
-  .post img {
-    border-radius: 10px;
-  }
-
-  @supports (corner-shape: squircle) {
-    .post img,
-    .post-overlay {
-      corner-shape: var(--orbyt-corner-shape, squircle);
-    }
-  }
-
   .post {
     padding-left: 10px;
     padding-right: 10px;
@@ -376,7 +374,6 @@ footer {
   .post-overlay {
     padding-left: 10px;
     padding-right: 10px;
-    border-radius: 0 0 10px 10px;
   }
 
   .post-overlay .caption {

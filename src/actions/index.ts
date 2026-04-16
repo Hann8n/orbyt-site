@@ -2,6 +2,7 @@ import { defineAction } from "astro:actions";
 import { z } from "astro/zod";
 import { fetchVideoPosts } from "../utils/bluesky-api";
 import { parseRichText } from "../utils/richtext";
+import { getVideoAmbientBackdropInlineStyle } from "../utils/video-ambient-backdrop";
 
 export const server = {
   loadMorePosts: defineAction({
@@ -16,6 +17,7 @@ export const server = {
         postId: post.postId,
         thumbnail: post.thumbnail,
         captionHtml: parseRichText(post.caption),
+        videoAmbientBackdropStyle: getVideoAmbientBackdropInlineStyle(post.thumbnail),
       }));
       
       return {

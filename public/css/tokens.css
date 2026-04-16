@@ -54,4 +54,6 @@ html.orbyt-doc-light {
    * https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/superellipse
    */
   --orbyt-corner-shape: squircle;
+
+  --orbyt-media-radius: 10px;
 }
