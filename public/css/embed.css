@@ -50,6 +50,81 @@
   .mute-toggle-wrapper {
     margin-bottom: 16px;
   }
+
+  .post-caption-mobile-wrap {
+    width: 100%;
+    min-width: 0;
+  }
+  .post-caption-mobile-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  .post-caption-mobile-inner[data-collapsed="false"] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .post-caption-mobile-text {
+    flex: 1;
+    min-width: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .post-caption-mobile-inner[data-collapsed="false"] .post-caption-mobile-text {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+  }
+  .post-caption-mobile-inner[data-collapsed="false"] .post-caption-mobile-toggle {
+    align-self: flex-end;
+  }
+  .post-caption-mobile-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1px 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.8);
+    background: rgba(243, 245, 254, 0.12);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+  .post-caption-mobile-toggle:focus {
+    outline: none;
+  }
+  .post-caption-mobile-toggle:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    outline-offset: 2px;
+  }
+  .post-caption-mobile-toggle:active {
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.8);
+    background: rgba(243, 245, 254, 0.2);
+  }
 }
 .post-overlay {
   background: linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.2) 43.67%, rgba(0, 0, 0, 0) 96.43%);

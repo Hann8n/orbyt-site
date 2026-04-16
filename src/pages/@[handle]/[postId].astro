@@ -401,7 +401,21 @@ const finalOgTitle = `post by @${authorHandle}`;
           </button>
         </div>
 
-        <div id="post-caption-mobile" class="post-content mobile-overlay" set:html={parseRichText(caption)}></div>
+        <div id="post-caption-mobile-wrap" class="post-caption-mobile-wrap mobile-overlay">
+          <div id="post-caption-mobile-inner" class="post-caption-mobile-inner" data-collapsed="true">
+            <div id="post-caption-mobile" class="post-content post-caption-mobile-text" set:html={parseRichText(caption)}></div>
+            <button
+              type="button"
+              id="post-caption-mobile-toggle"
+              class="post-caption-mobile-toggle"
+              hidden
+              aria-expanded="false"
+              aria-controls="post-caption-mobile"
+            >
+              More
+            </button>
+          </div>
+        </div>
 
         <div class="post-author mobile-overlay">
 

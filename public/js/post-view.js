@@ -251,6 +251,59 @@ function updateDisplay(data) {
   if (likesCountDesktop) likesCountDesktop.textContent = data.likeCount;
 }
 
+const MOBILE_CAPTION_MAX_WIDTH_PX = 699;
+
+function measureMobileCaptionOverflow() {
+  const inner = document.getElementById('post-caption-mobile-inner');
+  const textEl = document.getElementById('post-caption-mobile');
+  const toggle = document.getElementById('post-caption-mobile-toggle');
+  if (!inner || !textEl || !toggle) return;
+
+  if (window.innerWidth > MOBILE_CAPTION_MAX_WIDTH_PX) {
+    toggle.hidden = true;
+    return;
+  }
+
+  if (!textEl.textContent?.trim()) {
+    toggle.hidden = true;
+    return;
+  }
+
+  inner.dataset.collapsed = 'true';
+  toggle.textContent = 'More';
+  toggle.setAttribute('aria-expanded', 'false');
+  void textEl.offsetHeight;
+  const overflows = textEl.scrollHeight > textEl.clientHeight + 1;
+  toggle.hidden = !overflows;
+}
+
+function initMobileCaptionCollapse() {
+  const inner = document.getElementById('post-caption-mobile-inner');
+  const toggle = document.getElementById('post-caption-mobile-toggle');
+  if (!inner || !toggle) return;
+
+  if (!toggle.dataset.listenerAttached) {
+    toggle.dataset.listenerAttached = 'true';
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const expanded = inner.dataset.collapsed === 'false';
+      inner.dataset.collapsed = expanded ? 'true' : 'false';
+      toggle.textContent = expanded ? 'More' : 'Less';
+      toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    });
+  }
+
+  requestAnimationFrame(measureMobileCaptionOverflow);
+}
+
+if (!window.__orbytMobileCaptionResizeHook) {
+  window.__orbytMobileCaptionResizeHook = true;
+  window.addEventListener('resize', () => {
+    requestAnimationFrame(measureMobileCaptionOverflow);
+  });
+}
+
 function initPostView() {
   const postEl = document.getElementById('post');
   if (!postEl) return;
@@ -277,6 +330,7 @@ function initPostView() {
   initResizeListeners();
 
   postEl.classList.remove('hidden');
+  initMobileCaptionCollapse();
 }
 
 document.addEventListener('astro:before-preparation', () => {
