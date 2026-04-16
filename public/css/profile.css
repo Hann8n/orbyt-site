@@ -1,10 +1,22 @@
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
+
+html {
+  /* Match body chrome so overscroll / safe-area never shows marketing page bg */
+  background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
+}
+
 body {
   width: 100%;
   background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
   color: var(--orbyt-profile-text, var(--orbyt-neutral-200));
+}
+
+#profile {
+  /* Shell behind the feed (mobile stack + desktop main column): chrome, not profile surface */
+  background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
 }
 
 #profile > header {
