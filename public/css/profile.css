@@ -34,8 +34,8 @@ body {
 #profile .decorative-hr path {
   stroke: var(--orbyt-profile-text);
 }
-#profile .install-button {
-  background-color: var(--orbyt-profile-text);
+#profile a.install-button {
+  background: var(--orbyt-profile-text);
   color: var(--orbyt-profile-bg);
 }
 header {
