@@ -140,7 +140,7 @@ header.hidden {
 }
 .empty-feed-message {
   font-size: clamp(1.25rem, 3vw, 1.75rem);
-  color: var(--orbyt-text-subtle);
+  color: color-mix(in srgb, var(--orbyt-profile-text) 75%, var(--orbyt-profile-bg));
   line-height: 1.5;
 }
 
