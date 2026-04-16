@@ -11,7 +11,6 @@ export const GET: APIRoute = ({ site }) => {
     { path: '/app/', changefreq: 'monthly', priority: '0.8' },
     { path: '/android/', changefreq: 'monthly', priority: '0.8' },
     { path: '/contact/', changefreq: 'monthly', priority: '0.6' },
-    { path: '/discord/', changefreq: 'monthly', priority: '0.6' },
     { path: '/privacy/', changefreq: 'yearly', priority: '0.4' },
     { path: '/terms/', changefreq: 'yearly', priority: '0.4' },
   ];

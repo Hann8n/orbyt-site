@@ -47,7 +47,7 @@ Website for orbyt, a video app for Bluesky.
 2. Video URL from embed (playlist or `video.bsky.app/watch/...`)
 3. HLS.js client-side playback, view transitions
 
-**Static pages:** `/`, `/about`, `/android`, `/app`, `/contact`, `/discord`, `/terms`, `/privacy` — all prerendered
+**Static pages:** `/`, `/about`, `/android`, `/app`, `/contact`, `/terms`, `/privacy` — all prerendered
 
 ## Deployment
 

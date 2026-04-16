@@ -3,9 +3,6 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://getorbyt.com',
-  redirects: {
-    '/iOS': '/ios',
-  },
   vite: {
     optimizeDeps: {
       exclude: ['fsevents'],
