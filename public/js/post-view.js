@@ -274,7 +274,7 @@ function measureMobileCaptionOverflow() {
   }
 
   inner.dataset.collapsed = 'true';
-  toggle.textContent = 'More';
+  toggle.textContent = 'Show';
   toggle.setAttribute('aria-expanded', 'false');
   void textEl.offsetHeight;
   const overflows = textEl.scrollHeight > textEl.clientHeight + 1;
@@ -293,7 +293,7 @@ function initMobileCaptionCollapse() {
       e.stopPropagation();
       const expanded = inner.dataset.collapsed === 'false';
       inner.dataset.collapsed = expanded ? 'true' : 'false';
-      toggle.textContent = expanded ? 'More' : 'Less';
+      toggle.textContent = expanded ? 'Show' : 'Hide';
       toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     });
   }
