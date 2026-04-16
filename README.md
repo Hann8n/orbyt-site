@@ -47,7 +47,7 @@ Website for orbyt, a video app for Bluesky.
 2. Video URL from embed (playlist or `video.bsky.app/watch/...`)
 3. HLS.js client-side playback, view transitions
 
-**Static pages:** `/`, `/about`, `/beta`, `/app`, `/contact`, `/discord`, `/terms`, `/privacy` — all prerendered
+**Static pages:** `/`, `/about`, `/android`, `/app`, `/contact`, `/discord`, `/terms`, `/privacy` — all prerendered
 
 ## Deployment
 
@@ -67,7 +67,7 @@ orbyt-site/
 │   │   ├── index.astro              # Landing
 │   │   ├── @[handle].astro          # Profile (SSR)
 │   │   ├── @[handle]/[postId].astro # Post (SSR)
-│   │   ├── about.astro, beta.astro, app.astro, ...
+│   │   ├── about.astro, android.astro, app.astro, ...
 │   │   └── sitemap.xml.ts
 │   ├── actions/index.ts             # loadMorePosts
 │   └── utils/
