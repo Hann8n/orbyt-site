@@ -73,6 +73,7 @@
     min-width: 0;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     overflow: hidden;
     word-break: break-word;
@@ -80,6 +81,7 @@
   }
   .post-caption-mobile-inner[data-collapsed="false"] .post-caption-mobile-text {
     display: block;
+    line-clamp: unset;
     -webkit-line-clamp: unset;
     -webkit-box-orient: unset;
     overflow: visible;
@@ -148,12 +150,6 @@
   width: 100%;
   border-radius: var(--orbyt-media-radius);
   overflow: hidden;
-}
-
-@supports (corner-shape: squircle) {
-  .post-media-visual {
-    corner-shape: var(--orbyt-corner-shape, squircle);
-  }
 }
 
 .video-container {
@@ -230,12 +226,6 @@ video {
   margin: 0 auto;
   cursor: pointer;
   border: none;
-}
-
-@supports (corner-shape: squircle) {
-  #mute-toggle {
-    corner-shape: var(--orbyt-corner-shape, squircle);
-  }
 }
 
 #mute-toggle span {

@@ -2,11 +2,10 @@
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "stores/*": ["src/stores/*"]
-    }
+      "*": ["./*"],
+      "@/*": ["./src/*"],
+      "stores/*": ["./src/stores/*"]
   },
   "include": [".astro/types.d.ts", "worker-configuration.d.ts", "**/*"],
   "exclude": ["dist", "public"]

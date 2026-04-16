@@ -201,11 +201,6 @@ header.hidden {
   border-radius: var(--orbyt-media-radius);
 }
 
-@supports (corner-shape: squircle) {
-  .post .post-image-container {
-    corner-shape: var(--orbyt-corner-shape, squircle);
-  }
-}
 .post img {
   width: 100%;
 }
