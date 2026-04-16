@@ -29,6 +29,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 const caption = postData?.text ?? '';
 const authorHandle = postData?.author?.handle || handle;
 const authorDisplayName = postData?.author?.displayName || authorHandle;
+const authorScreenName = authorHandle;
 const authorAvatar = postData?.author?.avatar || '/images/Default-avatar.png';
 // Fallback chain: post thumbnail -> author avatar -> Orbyt-with-background.png
 const thumbnail = postData?.embed?.thumbnail || postData?.author?.avatar || '/images/post/Orbyt-with-background.png';
@@ -369,7 +370,7 @@ const finalOgTitle = `post by @${authorHandle}`;
     data-video-url={videoUrl || ''}
     data-thumbnail={thumbnail}
     data-author-handle={authorHandle}
-    data-author-name={authorDisplayName}
+    data-author-name={authorScreenName}
     data-author-avatar={authorAvatar}
     data-like-count={likeCount.toString()}
     data-created-at={createdAt || ''}>
@@ -431,9 +432,9 @@ const finalOgTitle = `post by @${authorHandle}`;
           <div class="post-author mobile-overlay">
 
             <span class='avatar-wrapper'>
-              <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
+              <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}>
               <div class="username">
-                <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorDisplayName}</a>
+                <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorScreenName}</a>
               </div>
               <div id="post-time-mobile" style="display: none;"></div>
             </span>
@@ -486,9 +487,9 @@ const finalOgTitle = `post by @${authorHandle}`;
 
         <div class="post-author">
           <span class='avatar-wrapper'>
-            <img id="author-avatar-desktop" class='avatar' src={authorAvatar} alt={`${authorDisplayName}'s avatar`}>
+            <img id="author-avatar-desktop" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}>
             <div class="username">
-              <a id="author-link-desktop" href={`/@${authorHandle}`}>{authorDisplayName}</a>
+              <a id="author-link-desktop" href={`/@${authorHandle}`}>{authorScreenName}</a>
             </div>
             <div id="post-time-desktop" style="display: none;"></div>
           </span>
