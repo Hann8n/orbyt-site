@@ -77,8 +77,18 @@ header.hidden {
 /* Profile info */
 .author .avatar {
   width: 100px;
+  height: 100px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: inline-block;
+  vertical-align: baseline;
   border-radius: 50%;
   border: 2px solid;
+  background-color: color-mix(
+    in srgb,
+    var(--orbyt-profile-text, var(--orbyt-neutral-200)) 14%,
+    var(--orbyt-profile-bg)
+  );
 }
 .author h1 {
   font-weight: 900;
