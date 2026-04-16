@@ -28,15 +28,27 @@
 @media screen and (max-width: 699px) {
   .logo-overlay {
     align-items: center;
-    padding: 14px 0;
+    padding-top: max(14px, env(safe-area-inset-top, 0px));
+    padding-bottom: 14px;
+    padding-left: max(14px, env(safe-area-inset-left, 0px));
+    padding-right: max(14px, env(safe-area-inset-right, 0px));
   }
   .logo-overlay .logo {
     margin-top: 0;
-    margin-left: 14px;
+    margin-left: 0;
   }
   .logo-overlay .install-button {
     margin-top: 6px;
-    margin-right: 14px;
+    margin-right: 0;
+  }
+  .post-overlay {
+    padding-top: 48px;
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .mute-toggle-wrapper {
+    margin-bottom: 16px;
   }
 }
 .post-overlay {

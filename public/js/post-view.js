@@ -195,11 +195,15 @@ function resizeVideoAndOverlay() {
   }
 
   if (postOverlay) {
-    const scrollPosition = window.scrollY;
-    const offsetHeight = videoEl.offsetHeight;
-    const displayHeight = document.documentElement.clientHeight;
-    const overlayOffset = Math.max(0, offsetHeight - displayHeight - scrollPosition);
-    postOverlay.style.bottom = `${overlayOffset}px`;
+    if (window.innerWidth >= 700) {
+      const scrollPosition = window.scrollY;
+      const offsetHeight = videoEl.offsetHeight;
+      const displayHeight = document.documentElement.clientHeight;
+      const overlayOffset = Math.max(0, offsetHeight - displayHeight - scrollPosition);
+      postOverlay.style.bottom = `${overlayOffset}px`;
+    } else {
+      postOverlay.style.removeProperty('bottom');
+    }
   }
 }
 

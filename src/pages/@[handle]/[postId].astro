@@ -118,6 +118,12 @@ const finalOgTitle = `post by @${authorHandle}`;
     <link rel="stylesheet" href="/css/post.css"> 
 
     <style>
+      @media screen and (max-width: 699px) {
+        .post-overlay {
+          padding-top: 24px;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+      }
       /* Prevent scrollbars */
       html, body {
         overflow-x: hidden;
@@ -265,7 +271,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
     <title>{finalOgTitle}</title>
     <meta name="description" content={ogDescription} />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <ClientRouter />
 
