@@ -1,30 +1,54 @@
 ---
 export const prerender = true;
-
-import DocumentColorScheme from '../components/DocumentColorScheme.astro';
-import { SITE_DOCUMENT } from '../utils/site-document-theme';
 ---
 
 <!doctype html>
-<html lang="en" class="orbyt-doc-dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <DocumentColorScheme
-      colorScheme="dark"
-      themeColor={SITE_DOCUMENT.orbytBlack}
-      tileColor={SITE_DOCUMENT.orbytBlack}
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
     />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Join the waitlist</title>
-    <script is:inline async src="https://tally.so/widgets/embed.js"></script>
-    <style type="text/css">
-      html { margin: 0; height: 100%; overflow: hidden; background: #000000; }
-      body { margin: 0; background: #000000; }
-      iframe { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border: 0; }
+    <title>Android Beta sign up</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: #000;
+      }
+
+      body {
+        position: relative;
+      }
+
+      iframe {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 100dvh;
+        border: 0;
+        background: #000;
+      }
     </style>
   </head>
   <body>
-    <iframe data-tally-src="https://tally.so/r/nWx7zQ?transparentBackground=1&formEventsForwarding=1" width="100%" height="100%" style="border: 0; margin: 0;" title="Join the waitlist"></iframe>
+    <iframe
+      src="https://tally.so/r/nWx7zQ?transparentBackground=1"
+      title="Android Beta sign up"
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+      allow="clipboard-write"
+    ></iframe>
   </body>
 </html>
