@@ -33,7 +33,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #ccc;
+  color: var(--orbyt-neutral-300);
 }
 
 .site-footer a:hover {

@@ -30,8 +30,8 @@ body:has(> .site-doc) * {
 }
 
 .site-doc {
-  --site-doc-muted: #cfd6e8;
-  --site-doc-link: #01f5b3;
+  --site-doc-muted: var(--orbyt-neutral-200);
+  --site-doc-link: var(--orbyt-teal);
 
   width: 100%;
   max-width: var(--site-content-max-width);

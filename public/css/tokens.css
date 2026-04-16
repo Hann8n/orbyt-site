@@ -19,28 +19,32 @@ html.orbyt-doc-light {
 :root {
   /* Brand */
   --orbyt-white: #f3f5fe;
+  --orbyt-white-rgb: 243, 245, 254;
   --orbyt-black: #05070a;
   --orbyt-purple: #551def;
+  --orbyt-teal: #01f5b3;
 
   /* Neutrals (common surfaces / text) */
   --orbyt-neutral-900: #0e141b;
   --orbyt-neutral-200: #ccd7e9;
-  --orbyt-neutral-muted: #b1bacf;
+  --orbyt-neutral-300: #a8b8d4;
+  --orbyt-neutral-400: #7a8aa8;
+  --orbyt-neutral-muted: var(--orbyt-neutral-300);
 
   /* Marketing / embed surfaces */
   --orbyt-page-bg: var(--orbyt-black);
   --orbyt-page-fg: var(--orbyt-neutral-muted);
-  --orbyt-install-surface: #f4f7ff;
+  --orbyt-install-surface: #e4eaf5;
 
   /* Default profile chrome (SSR normally sets --orbyt-chrome on body) */
-  --orbyt-chrome-fallback: #0c1117;
+  --orbyt-chrome-fallback: #0c1118;
 
   /* Scrims / shadows (Orbyt black rgb — matches app Colors.overlay) */
   --orbyt-scrim-rgb: 5, 7, 10;
   --orbyt-shadow-soft: rgb(var(--orbyt-scrim-rgb) / 0.15);
 
   /* Profile: optional empty state */
-  --orbyt-text-subtle: #9ca3af;
+  --orbyt-text-subtle: var(--orbyt-neutral-400);
 
   /* Site layout */
   --site-content-max-width: 800px;

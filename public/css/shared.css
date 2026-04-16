@@ -11,7 +11,7 @@ body {
   align-items: center;
   background: var(--orbyt-install-surface);
   border-radius: 31px;
-  box-shadow: 0px 6px 10px rgba(7, 25, 72, 0.13);
+  box-shadow: 0px 6px 10px var(--orbyt-shadow-soft);
   color: var(--orbyt-black);
   display: flex;
   font-size: 16px;

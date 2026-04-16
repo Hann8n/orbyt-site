@@ -103,9 +103,9 @@
     font-weight: 500;
     line-height: 1;
     letter-spacing: 0;
-    color: rgba(255, 255, 255, 0.8);
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.8);
-    background: rgba(243, 245, 254, 0.12);
+    color: rgb(var(--orbyt-white-rgb) / 0.8);
+    -webkit-text-fill-color: rgb(var(--orbyt-white-rgb) / 0.8);
+    background: rgb(var(--orbyt-white-rgb) / 0.12);
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
     -webkit-appearance: none;
@@ -117,18 +117,23 @@
     outline: none;
   }
   .post-caption-mobile-toggle:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.35);
+    outline: 2px solid rgb(var(--orbyt-white-rgb) / 0.35);
     outline-offset: 2px;
   }
   .post-caption-mobile-toggle:active {
-    color: rgba(255, 255, 255, 0.8);
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.8);
-    background: rgba(243, 245, 254, 0.2);
+    color: rgb(var(--orbyt-white-rgb) / 0.8);
+    -webkit-text-fill-color: rgb(var(--orbyt-white-rgb) / 0.8);
+    background: rgb(var(--orbyt-white-rgb) / 0.2);
   }
 }
 .post-overlay {
-  background: linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.2) 43.67%, rgba(0, 0, 0, 0) 96.43%);
-  color: #f3f5fe;
+  background: linear-gradient(
+    360deg,
+    rgb(var(--orbyt-scrim-rgb) / 0.4) 0%,
+    rgb(var(--orbyt-scrim-rgb) / 0.2) 43.67%,
+    rgb(var(--orbyt-scrim-rgb) / 0) 96.43%
+  );
+  color: var(--orbyt-white);
   padding: 100px 20px 20px;
   position: absolute;
   bottom: 0;
@@ -209,9 +214,9 @@ video {
   display: none;
 }
 #mute-toggle {
-  background: rgba(0,0,0,0.5);
+  background: rgb(var(--orbyt-scrim-rgb) / 0.5);
   border-radius: 35px;
-  color: #f3f5fe;
+  color: var(--orbyt-white);
   display: flex;
   line-height: 1;
   letter-spacing: 1.6px;
@@ -301,7 +306,7 @@ video {
   white-space: nowrap;
 }
 .post-author .username a {
-  color: #f3f5fe;
+  color: var(--orbyt-white);
   text-decoration: none;
   display: block;
   overflow: hidden;
@@ -310,7 +315,7 @@ video {
 .post-author .username a:active,
 .post-author .username a:hover,
 .post-author .username a:visited {
-  color: #f3f5fe;
+  color: var(--orbyt-white);
   text-decoration: none;
 }
 .likes {
