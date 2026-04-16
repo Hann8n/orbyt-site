@@ -28,11 +28,11 @@
   },
   "homepage": "https://github.com/Hann8n/orbyt-site#readme",
   "dependencies": {
-    "@astrojs/cloudflare": "^13.0.2",
-    "astro": "^6.0.2"
+    "@astrojs/cloudflare": "^13.1.10",
+    "astro": "^6.1.7"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.7",
+    "@astrojs/check": "^0.9.8",
     "@types/node": "^22.15.29",
     "typescript": "^5.9.3"
   }
