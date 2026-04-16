@@ -106,15 +106,13 @@ function initVideoPlayer(videoUrl, thumbnail) {
   const handleVideoAreaClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    const muteText = document.getElementById('mute-text');
     if (videoEl.muted) {
       videoEl.muted = false;
       if (videoEl.paused) videoEl.play().catch(() => {});
-      if (muteText) muteText.textContent = 'TAP TO MUTE';
     } else {
       videoEl.muted = true;
-      if (muteText) muteText.textContent = 'TAP TO UNMUTE';
     }
+    syncMuteChrome(videoEl);
   };
   if (videoContainer) {
     videoContainer.addEventListener('click', handleVideoAreaClick);
@@ -123,15 +121,22 @@ function initVideoPlayer(videoUrl, thumbnail) {
   resizeVideoAndOverlay();
 }
 
+function syncMuteChrome(videoEl) {
+  const muteToggle = document.getElementById('mute-toggle');
+  const muteText = document.getElementById('mute-text');
+  if (muteText) muteText.textContent = videoEl.muted ? 'TAP TO UNMUTE' : '';
+  const wrap = muteToggle?.closest('.mute-toggle-wrapper');
+  if (wrap) wrap.hidden = !videoEl.muted;
+}
+
 function initMuteControls() {
   const videoEl = document.getElementById('vinit');
   const muteToggle = document.getElementById('mute-toggle');
-  const muteText = document.getElementById('mute-text');
 
   if (!videoEl) return;
 
   videoEl.muted = true;
-  if (muteText) muteText.textContent = 'TAP TO UNMUTE';
+  syncMuteChrome(videoEl);
 
   if (muteToggle && !muteToggle.dataset.listenerAttached) {
     muteToggle.dataset.listenerAttached = 'true';
@@ -142,11 +147,10 @@ function initMuteControls() {
       if (videoEl.muted) {
         videoEl.muted = false;
         if (videoEl.paused) videoEl.play().catch(() => {});
-        if (muteText) muteText.textContent = 'TAP TO MUTE';
       } else {
         videoEl.muted = true;
-        if (muteText) muteText.textContent = 'TAP TO UNMUTE';
       }
+      syncMuteChrome(videoEl);
     });
   }
 }

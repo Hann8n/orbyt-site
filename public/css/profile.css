@@ -119,6 +119,7 @@ header.hidden {
   padding-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
+  row-gap: 2px;
 }
 .empty-feed {
   width: 100%;
@@ -174,7 +175,6 @@ header.hidden {
   display: flex;
   position: relative;
   width: 50%;
-  margin-bottom: 2px;
   box-sizing: border-box;
   color: var(--orbyt-profile-text, var(--orbyt-neutral-200));
   align-items: flex-end;

@@ -196,6 +196,9 @@ video {
   justify-content: center;
   margin-bottom: 30px;
 }
+.mute-toggle-wrapper[hidden] {
+  display: none;
+}
 #mute-toggle {
   background: rgba(0,0,0,0.5);
   border-radius: 35px;
