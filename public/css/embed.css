@@ -190,6 +190,13 @@ video {
   .video-thumbnail {
     border-radius: 10px;
   }
+
+  @supports (corner-shape: squircle) {
+    video,
+    .video-thumbnail {
+      corner-shape: var(--orbyt-corner-shape, squircle);
+    }
+  }
 }
 .mute-toggle-wrapper {
   display: flex;
@@ -217,6 +224,13 @@ video {
   cursor: pointer;
   border: none;
 }
+
+@supports (corner-shape: squircle) {
+  #mute-toggle {
+    corner-shape: var(--orbyt-corner-shape, squircle);
+  }
+}
+
 #mute-toggle span {
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;

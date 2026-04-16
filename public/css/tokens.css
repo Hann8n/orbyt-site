@@ -47,4 +47,11 @@ html.orbyt-doc-light {
   --site-page-padding-x: clamp(1rem, 5vw, 2rem);
   --site-page-padding-y: clamp(1rem, 5vw, 2rem);
   --site-footer-margin-bottom: 2.5rem;
+
+  /*
+   * CSS Borders 4 — corner-shape + border-radius (squircle ≡ superellipse(2)).
+   * Use on rounded media surfaces and the tap-to-mute control; skip pure circles, 999px pills, and stadium CTAs elsewhere.
+   * https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/superellipse
+   */
+  --orbyt-corner-shape: squircle;
 }

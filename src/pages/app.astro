@@ -106,6 +106,12 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
             border: 2px solid #333;
             display: inline-block;
         }
+
+        @supports (corner-shape: squircle) {
+            .qr-container {
+                corner-shape: var(--orbyt-corner-shape, squircle);
+            }
+        }
         .qr-code {
             width: 200px;
             height: 200px;

@@ -126,4 +126,10 @@
   video {
     border-radius: 10px;
   }
+
+  @supports (corner-shape: squircle) {
+    video {
+      corner-shape: var(--orbyt-corner-shape, squircle);
+    }
+  }
 }
