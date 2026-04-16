@@ -89,6 +89,11 @@ body {
   font-weight: 600;
 }
 
+video {
+  position: relative;
+  z-index: 1;
+}
+
 .video-ambient-backdrop {
   position: absolute;
   inset: 0;
