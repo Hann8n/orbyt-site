@@ -21,6 +21,7 @@ body:has(> .site-doc) {
   min-height: 100dvh;
   color: var(--orbyt-white);
   position: relative;
+  scrollbar-gutter: stable both-edges;
   overflow-x: hidden;
   overflow-y: auto;
 }
