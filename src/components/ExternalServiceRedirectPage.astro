@@ -7,6 +7,10 @@ interface Props {
   title?: string;
   message?: string;
   emojis?: string;
+  autoRedirectDelayMs?: number;
+  manualLinkLabel?: string;
+  appleItunesAppId?: string;
+  appleItunesAppArgument?: string;
 }
 
 const {
@@ -14,7 +18,15 @@ const {
   title = 'Redirecting - orbyt',
   message = 'routing you to your destination...',
   emojis = '🚙💨',
+  autoRedirectDelayMs = 700,
+  manualLinkLabel = 'open destination',
+  appleItunesAppId,
+  appleItunesAppArgument,
 } = Astro.props;
+
+const appleItunesContent = appleItunesAppId
+  ? `app-id=${appleItunesAppId}${appleItunesAppArgument ? `, app-argument=${appleItunesAppArgument}` : ''}`
+  : undefined;
 ---
 
 <!doctype html>
@@ -29,10 +41,14 @@ const {
   <link rel="stylesheet" href="/css/tokens.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
-  <meta http-equiv="refresh" content={`0; url=${destinationUrl}`}>
+  {appleItunesContent && <meta name="apple-itunes-app" content={appleItunesContent} />}
   <link rel="canonical" href={destinationUrl}>
-  <script is:inline define:vars={{ destinationUrl }}>
-    window.location.href = destinationUrl;
+  <script is:inline define:vars={{ destinationUrl, autoRedirectDelayMs }}>
+    const redirect = () => {
+      window.location.assign(destinationUrl);
+    };
+
+    window.setTimeout(redirect, autoRedirectDelayMs);
   </script>
   <style>
     @font-face {
@@ -71,6 +87,22 @@ const {
       font-weight: 300;
       font-size: 20px;
       color: #fff;
+      text-align: center;
+      max-width: 320px;
+    }
+    .manual-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #e0ebff;
+      background: #551def;
+      border: 2px solid #000;
+      border-radius: 999px;
+      padding: 12px 18px;
     }
     .logo-icon {
       width: 80px;
@@ -88,7 +120,11 @@ const {
   <div class="container">
     <div class="emojis">{emojis}</div>
     <div class="text">{message}</div>
+    <a class="manual-link" href={destinationUrl}>{manualLinkLabel}</a>
   </div>
+  <noscript>
+    <p><a href={destinationUrl}>{manualLinkLabel}</a></p>
+  </noscript>
   <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
     <defs>
       <mask id="cutout-mask">
