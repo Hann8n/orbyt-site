@@ -16,6 +16,7 @@ body {
 
 #profile {
   /* Shell behind the feed (mobile stack + desktop main column): chrome, not profile surface */
+  min-height: 100dvh;
   background-color: var(--orbyt-chrome, var(--orbyt-chrome-fallback));
 }
 
