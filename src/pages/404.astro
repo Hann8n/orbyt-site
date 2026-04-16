@@ -41,10 +41,11 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
         body {
             font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--orbyt-page-bg);
-            min-height: 100vh;
             min-height: 100dvh;
             color: var(--orbyt-white);
             overflow-x: hidden;
+            display: grid;
+            place-items: center;
         }
 
         .container {
@@ -52,8 +53,6 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
             max-width: var(--site-content-max-width);
             margin-inline: auto;
             padding: var(--site-page-padding-y) var(--site-page-padding-x);
-            min-height: 100vh;
-            min-height: 100dvh;
             display: flex;
             flex-direction: column;
         }
