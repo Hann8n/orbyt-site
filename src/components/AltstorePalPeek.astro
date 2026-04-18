@@ -1,0 +1,299 @@
+---
+import AltstorePalTipArrow from './AltstorePalTipArrow.astro';
+import '../styles/altstore-pal-peek.css';
+
+interface Props {
+	href: string;
+	ariaLabel?: string;
+}
+
+const { href, ariaLabel = 'Add orbyt source in AltStore PAL' } = Astro.props;
+/** Same as `href` — AltStore PAL deep link for scanning from iPhone */
+const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(href)}`;
+---
+
+<a
+	class="altstore-pal-peek"
+	href={href}
+	aria-label={ariaLabel}
+	aria-haspopup="dialog"
+	data-altstore-pal-qr-trigger
+>
+	<span class="altstore-pal-peek__tip" aria-hidden="true">
+		<span class="altstore-pal-peek__tip-label">get it on altstore</span>
+		<AltstorePalTipArrow />
+	</span>
+	<img
+		class="altstore-pal-peek__img"
+		src="/images/altstore-pal-badge.png"
+		alt=""
+		width="46"
+		height="46"
+		decoding="async"
+		aria-hidden="true"
+	/>
+</a>
+
+<dialog
+	class="altstore-pal-qr-dialog"
+	aria-labelledby="altstore-pal-qr-dialog-title"
+	data-altstore-pal-qr-dialog
+>
+	<div class="altstore-pal-qr-dialog__panel">
+		<h2 id="altstore-pal-qr-dialog-title" class="altstore-pal-qr-dialog__title">
+			Scan with your iPhone
+		</h2>
+		<figure class="altstore-pal-qr-dialog__media">
+			<div class="altstore-pal-qr-dialog__qr-wrap">
+				<img
+					class="altstore-pal-qr-dialog__qr"
+					src={qrCodeImageUrl}
+					alt="QR code for AltStore PAL — scan with your iPhone"
+					width="200"
+					height="200"
+					loading="lazy"
+					decoding="async"
+				/>
+			</div>
+			<figcaption class="altstore-pal-qr-dialog__hint">
+				Adds the orbyt source in AltStore PAL
+			</figcaption>
+		</figure>
+		<form class="altstore-pal-qr-dialog__dismiss" method="dialog">
+			<button type="submit" class="altstore-pal-qr-dialog__close">
+				Close
+			</button>
+		</form>
+		<p class="altstore-pal-qr-dialog__new">
+			Need AltStore?{' '}
+			<a
+				class="altstore-pal-qr-dialog__altstore-link"
+				href="https://altstore.io/#Downloads"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				Get AltStore
+			</a>
+		</p>
+	</div>
+</dialog>
+<script is:inline>
+	(function () {
+		const trigger = document.querySelector('a[data-altstore-pal-qr-trigger]');
+		const dialog = document.querySelector('dialog[data-altstore-pal-qr-dialog]');
+		if (!trigger || !dialog) return;
+		const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+		trigger.addEventListener('click', function (e) {
+			if (!mq.matches) return;
+			if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+			e.preventDefault();
+			dialog.showModal();
+		});
+		dialog.addEventListener('click', function (e) {
+			if (e.target === dialog) dialog.close();
+		});
+	})();
+</script>
+
+<style>
+	.altstore-pal-qr-dialog {
+		padding: 0;
+		border: none;
+		background: transparent;
+		max-width: calc(100vw - 32px);
+	}
+
+	.altstore-pal-qr-dialog:focus,
+	.altstore-pal-qr-dialog:focus-visible {
+		outline: none;
+	}
+
+	.altstore-pal-qr-dialog::backdrop {
+		background-color: rgb(0 0 0 / 0%);
+		transition: background-color 0.28s ease;
+	}
+
+	.altstore-pal-qr-dialog[open]::backdrop {
+		background-color: rgb(0 0 0 / 72%);
+	}
+
+	@starting-style {
+		.altstore-pal-qr-dialog[open]::backdrop {
+			background-color: rgb(0 0 0 / 0%);
+		}
+	}
+
+	.altstore-pal-qr-dialog__panel {
+		background: #000;
+		color: #f3f5fe;
+		border: 2px solid #333;
+		border-radius: 20px;
+		padding: 24px 22px 18px;
+		font-family:
+			'Figtree',
+			system-ui,
+			sans-serif;
+		text-align: center;
+		max-width: 300px;
+		box-sizing: border-box;
+		transform-origin: center center;
+		opacity: 0;
+		transform: scale(0.94) translateY(12px);
+		transition:
+			opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+			transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.altstore-pal-qr-dialog[open] .altstore-pal-qr-dialog__panel {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+
+	@starting-style {
+		.altstore-pal-qr-dialog[open] .altstore-pal-qr-dialog__panel {
+			opacity: 0;
+			transform: scale(0.94) translateY(12px);
+		}
+	}
+
+	.altstore-pal-qr-dialog__title {
+		margin: 0 0 14px;
+		font-size: 1.125rem;
+		font-weight: 600;
+		line-height: 1.25;
+		letter-spacing: -0.02em;
+	}
+
+	.altstore-pal-qr-dialog__media {
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.altstore-pal-qr-dialog__qr-wrap {
+		background: #000;
+		padding: 16px;
+		border-radius: 16px;
+		border: 2px solid #333;
+		display: inline-block;
+		box-sizing: border-box;
+	}
+
+	.altstore-pal-qr-dialog__qr {
+		width: 200px;
+		height: 200px;
+		display: block;
+		vertical-align: middle;
+	}
+
+	.altstore-pal-qr-dialog__hint {
+		margin: 6px 0 0;
+		padding: 0 2px;
+		max-width: 28ch;
+		font-size: 12px;
+		font-weight: 400;
+		font-style: normal;
+		line-height: 1.35;
+		color: #8f94a3;
+		letter-spacing: 0.04em;
+		text-wrap: balance;
+	}
+
+	.altstore-pal-qr-dialog__dismiss {
+		display: block;
+		width: 100%;
+		margin: 20px 0 0;
+		padding: 0;
+		border: none;
+		background: none;
+	}
+
+	.altstore-pal-qr-dialog__new {
+		margin: 12px 0 0;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.45;
+		color: #787d8c;
+		letter-spacing: 0.02em;
+	}
+
+	.altstore-pal-qr-dialog__altstore-link {
+		color: var(--site-doc-link, var(--orbyt-teal));
+		text-decoration: none;
+		transition: color 0.2s ease, opacity 0.2s ease;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.altstore-pal-qr-dialog__altstore-link:hover {
+		color: var(--site-doc-link, var(--orbyt-teal));
+		opacity: 0.92;
+	}
+
+	.altstore-pal-qr-dialog__altstore-link:focus,
+	.altstore-pal-qr-dialog__altstore-link:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+
+	.altstore-pal-qr-dialog__close {
+		margin-top: 0;
+		width: 100%;
+		box-sizing: border-box;
+		background: #551def;
+		border: 2px solid #000;
+		border-radius: 30px;
+		height: 48px;
+		font-family: inherit;
+		font-weight: 700;
+		font-size: 16px;
+		color: #e0ebff;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.altstore-pal-qr-dialog__close:focus,
+	.altstore-pal-qr-dialog__close:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+
+	.altstore-pal-qr-dialog__close::-moz-focus-inner {
+		border: 0;
+	}
+
+	.altstore-pal-qr-dialog__close:hover {
+		opacity: 0.92;
+	}
+
+	@media (max-width: 500px) {
+		.altstore-pal-qr-dialog__qr {
+			width: 180px;
+			height: 180px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.altstore-pal-qr-dialog::backdrop {
+			transition: none;
+		}
+
+		.altstore-pal-qr-dialog[open]::backdrop {
+			background-color: rgb(0 0 0 / 72%);
+		}
+
+		.altstore-pal-qr-dialog__panel {
+			transition: none;
+			opacity: 1;
+			transform: none;
+		}
+
+		@starting-style {
+			.altstore-pal-qr-dialog[open] .altstore-pal-qr-dialog__panel {
+				opacity: 1;
+				transform: none;
+			}
+		}
+	}
+</style>

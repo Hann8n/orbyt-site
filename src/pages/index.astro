@@ -1,9 +1,18 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
+import AltstorePalPeek from '../components/AltstorePalPeek.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import {
+	getIosDownloadOptionsFromRequest,
+	iosDownloadHrefFromOptions,
+} from '../utils/ios-distribution';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+
+const iosDownload = getIosDownloadOptionsFromRequest(Astro.request);
+const iosHref = iosDownloadHrefFromOptions(iosDownload);
+const showAltstorePalPeek = iosDownload.primary === 'altstore';
 ---
 
 <!doctype html>
@@ -17,12 +26,15 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
     />
     <link rel="stylesheet" href="/css/tokens.css" />
     <link rel="stylesheet" href="/css/site-document.css" />
+    <link rel="stylesheet" href="/css/caveat.css" />
+    <link rel="stylesheet" href="/css/klee-one.css" />
     <meta name="google-site-verification" content="4xaimUg28uLCqKwsPNIz6QeG_tfnLlAdHgS5bC_90JU"/>
     <title>orbyt - video communities</title>
     <meta name="description" content="a new video app for bluesky">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Caveat/Caveat-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 
     <meta property="og:title" content="orbyt - video communities"/>
     <meta property="og:description" content="a new video app for bluesky"/>
@@ -82,6 +94,21 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
     .site-doc--landing {
         --bg-color: var(--orbyt-page-bg);
         --fg-color: var(--orbyt-white);
+    }
+
+    .download-button-wrap {
+        position: relative;
+        max-width: 500px;
+        margin: 0 auto 10px auto;
+        overflow: visible;
+    }
+
+    .download-button-wrap .download-button {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        max-width: none;
+        width: 100%;
     }
 
     .download-button {
@@ -193,6 +220,14 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
             font-size: 36px;
         }
 
+        .download-button-wrap {
+            margin-bottom: 15px;
+        }
+
+        .download-button-wrap .download-button {
+            margin-bottom: 0;
+        }
+
         .download-button {
             height: 50px;
             font-size: 20px;
@@ -226,7 +261,15 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
                 <p class="motto-text">video communities</p>
             </div>
             <div class="home-actions">
-                <a href="/ios" class="download-button">iOS</a>
+                <div
+                    class:list={[
+                        'download-button-wrap',
+                        { 'download-button-wrap--pal': showAltstorePalPeek },
+                    ]}
+                >
+                    {showAltstorePalPeek && <AltstorePalPeek href={iosHref} />}
+                    <a href="/ios" class="download-button">iOS</a>
+                </div>
                 <a href="/android" class="download-button">Android Waitlist</a>
             </div>
         </main>
