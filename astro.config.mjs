@@ -15,7 +15,7 @@ export default defineConfig({
     },
     routes: {
       strategy: 'include',
-      include: ['/@*', '/@*/*', '/altstore/source.json', '/api/admin/*', '/admin/*'],
+      include: ['/@*', '/@*/*'],
     },
   }),
 });

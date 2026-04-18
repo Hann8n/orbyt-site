@@ -12,7 +12,6 @@ usage() {
 Usage:
   ./scripts/altstore-r2.sh setup <bucket> [adp_dir]
   ./scripts/altstore-r2.sh upload <bucket> [adp_dir]
-  ./scripts/altstore-r2.sh release <bucket> <version> <build> <date> <size> [adp_dir]
   ./scripts/altstore-r2.sh set-source-url <manifest_url>
   ./scripts/altstore-r2.sh check <manifest_url>
 
@@ -20,8 +19,6 @@ Commands:
   setup           Create the R2 bucket if needed, enable the public r2.dev URL,
                   upload the ADP directory, and update public/altstore/source.json.
   upload          Upload the ADP directory to an existing R2 bucket.
-  release         Upload ADP to R2 then call the admin API to publish a new version.
-                  Requires ADMIN_SECRET env var. After this, open the admin UI to confirm.
   set-source-url  Update public/altstore/source.json to point at a manifest URL.
   check           Fetch a manifest URL and print the HTTP status.
 
@@ -31,10 +28,6 @@ Environment:
   ALTSTORE_CUSTOM_MANIFEST_URL
                        Preferred manifest URL after upload. Defaults to
                        https://downloads.getorbyt.com/manifest.json.
-  ADMIN_SECRET         Required for the release command. Bearer token for the admin API.
-  ADMIN_API_URL        Override the admin API URL (default: https://getorbyt.com/api/admin/altstore/release).
-  ALTSTORE_DESCRIPTION Override the changelog text for the release command.
-  ALTSTORE_MIN_OS      Override the minimum iOS version (default: 16.4).
 EOF
 }
 
@@ -206,60 +199,6 @@ setup_bucket() {
   echo "Next: deploy the site so https://getorbyt.com/altstore/source.json serves the updated metadata."
 }
 
-publish_release() {
-  local bucket="$1"
-  local version="$2"
-  local build="$3"
-  local date="$4"
-  local size="$5"
-  local adp_dir="${6:-$DEFAULT_ADP_DIR}"
-  local api_url="${ADMIN_API_URL:-https://getorbyt.com/api/admin/altstore/release}"
-  local description="${ALTSTORE_DESCRIPTION:-}"
-  local min_os="${ALTSTORE_MIN_OS:-16.4}"
-
-  [[ -n "${ADMIN_SECRET:-}" ]] || fail "ADMIN_SECRET env var is required for the release command"
-
-  echo "==> Uploading ADP to R2..."
-  upload_adp "$bucket" "$adp_dir"
-
-  echo
-  echo "==> Publishing release v${version} (build ${build}) to admin API..."
-
-  local payload
-  payload="$(node --input-type=commonjs - <<NODE
-const body = {
-  version: ${version@Q},
-  buildVersion: ${build@Q},
-  date: ${date@Q},
-  size: ${size},
-  downloadURL: "${DEFAULT_CUSTOM_MANIFEST_URL}",
-  minOSVersion: ${min_os@Q},
-};
-if (${description@Q}) body.localizedDescription = ${description@Q};
-process.stdout.write(JSON.stringify(body));
-NODE
-)"
-
-  local http_code
-  http_code="$(curl -sS -o /tmp/altstore_release_response.json -w '%{http_code}' \
-    -X POST \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${ADMIN_SECRET}" \
-    -d "$payload" \
-    "$api_url")"
-
-  if [[ "$http_code" == "200" ]]; then
-    echo "Release published successfully."
-    echo
-    echo "Next: open https://getorbyt.com/admin/altstore to confirm and verify the release."
-  else
-    echo "Admin API returned HTTP ${http_code}:"
-    cat /tmp/altstore_release_response.json 2>/dev/null || true
-    echo
-    fail "Release publish failed (HTTP ${http_code})"
-  fi
-}
-
 main() {
   local command="${1:-}"
 
@@ -272,10 +211,6 @@ main() {
       [[ $# -ge 2 ]] || fail "upload requires a bucket name"
       ensure_adp_dir "${3:-$DEFAULT_ADP_DIR}"
       upload_adp "$2" "${3:-$DEFAULT_ADP_DIR}"
-      ;;
-    release)
-      [[ $# -ge 6 ]] || fail "release requires: <bucket> <version> <build> <date> <size> [adp_dir]"
-      publish_release "$2" "$3" "$4" "$5" "$6" "${7:-$DEFAULT_ADP_DIR}"
       ;;
     set-source-url)
       [[ $# -eq 2 ]] || fail "set-source-url requires a manifest URL"
