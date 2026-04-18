@@ -1,13 +1,17 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+import { useTranslations, localeToHtmlLang } from '../i18n/utils';
+
+const locale = Astro.locals.locale ?? 'en';
+const t = useTranslations(locale);
 ---
 
 <!doctype html>
-<html lang="en" class="orbyt-doc-dark">
+<html lang={localeToHtmlLang(locale)} class="orbyt-doc-dark">
 <head>
     <meta charset="UTF-8">
     <DocumentColorScheme
@@ -16,7 +20,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
       tileColor={SITE_DOCUMENT.orbytBlack}
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found | Orbyt</title>
+    <title>{t('404.title')}</title>
     
     <!-- Critical: Load fonts immediately, before any external resources -->
     <link rel="stylesheet" href="/css/fonts.css">
@@ -172,15 +176,15 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
     <div class="container">
         <main class="main-content">
             <div class="tv-static" aria-hidden="true"></div>
-            <h1 class="error-title">No Signal</h1>
-            <p class="error-message">This page doesn't exist or has been moved.</p>
+            <h1 class="error-title">{t('404.heading')}</h1>
+            <p class="error-message">{t('404.message')}</p>
             <div class="error-actions">
-                <a href="#" onclick="window.history.back(); return false;" class="nav-button">Go Back</a>
-                <a href="/" class="nav-button nav-button--secondary">Homepage</a>
+                <a href="#" onclick="window.history.back(); return false;" class="nav-button">{t('404.action.back')}</a>
+                <a href="/" class="nav-button nav-button--secondary">{t('404.action.home')}</a>
             </div>
         </main>
 
-        <SiteFooter />
+        <SiteFooter locale={locale} />
     </div>
 </body>
 </html>

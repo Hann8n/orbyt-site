@@ -7,6 +7,7 @@ import DocumentColorScheme from '../../components/DocumentColorScheme.astro';
 import { SITE_DOCUMENT } from '../../utils/site-document-theme';
 import { getVideoAmbientBackdropInlineStyle } from '../../utils/video-ambient-backdrop';
 import { ClientRouter } from 'astro:transitions';
+import { useTranslations, localeToHtmlLang } from '../../i18n/utils';
 
 const { handle, postId } = Astro.params;
 // handle is "wsj.com", postId is "3mc3tjpupzo2i"
@@ -89,12 +90,15 @@ const ogImageAlt = caption
 
 const videoAmbientBackdropStyle = getVideoAmbientBackdropInlineStyle(thumbnail);
 
+const locale = Astro.locals.locale ?? 'en';
+const t = useTranslations(locale);
+
 // Title: "post by @[handle]"
 const finalOgTitle = `post by @${authorHandle}`;
 ---
 
 <!doctype html>
-<html lang="en" class="orbyt-doc-dark">
+<html lang={localeToHtmlLang(locale)} class="orbyt-doc-dark">
 
 <head>
     <meta charset="utf-8">
@@ -386,7 +390,7 @@ const finalOgTitle = `post by @${authorHandle}`;
         </div>
 
         <a class='install-button' href="/ios">
-          Get the app
+          {t('post.install_cta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke-width="3.993"/>
@@ -424,7 +428,7 @@ const finalOgTitle = `post by @${authorHandle}`;
                 aria-expanded="false"
                 aria-controls="post-caption-mobile"
               >
-                More
+                {t('post.caption.more')}
               </button>
             </div>
           </div>
@@ -466,7 +470,7 @@ const finalOgTitle = `post by @${authorHandle}`;
         </div>
 
         <a class='install-button' href="/ios">
-          Get the app
+          {t('post.install_cta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke-width="3.993"/>

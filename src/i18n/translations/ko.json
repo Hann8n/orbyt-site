@@ -1,0 +1,66 @@
+{
+  "index.title": "orbyt – 비디오 커뮤니티",
+  "index.meta.description": "블루스카이를 위한 새로운 비디오 앱",
+  "index.motto": "비디오 커뮤니티",
+  "index.button.ios": "iOS",
+  "index.button.android_waitlist": "안드로이드 대기 목록",
+  "index.schema.organization_description": "블루스카이를 위한 새로운 비디오 앱",
+
+  "app.title": "앱 다운로드 – orbyt",
+  "app.subtitle.desktop": "스캔하여 앱 다운로드",
+  "app.subtitle.mobile": "앱 다운로드",
+  "app.qr.alt": "orbyt 앱 다운로드 QR 코드",
+  "app.qr.caption": "또는 아래에서 직접 다운로드",
+  "app.button.ios": "iOS",
+  "app.button.android_waitlist": "안드로이드 대기 목록",
+
+  "404.title": "404 – 페이지를 찾을 수 없음 | Orbyt",
+  "404.heading": "신호 없음",
+  "404.message": "이 페이지는 존재하지 않거나 이동되었습니다.",
+  "404.action.back": "뒤로",
+  "404.action.home": "홈",
+
+  "contact.title": "문의하기 – Orbyt",
+  "contact.logo.alt": "Orbyt",
+  "contact.heading": "문의하기",
+  "contact.section.general": "일반 문의",
+  "contact.section.press": "언론 및 미디어 문의",
+  "contact.section.bugs": "버그 신고",
+  "contact.section.copyright": "저작권 및 콘텐츠 문제",
+  "contact.copyright.html": "Orbyt는 블루스카이를 위한 서드파티 클라이언트입니다. 콘텐츠는 Orbyt가 아닌 AT 프로토콜 네트워크에서 호스팅됩니다. 저작권 관련 삭제 요청이나 콘텐츠 관련 법적 문제는 <a href=\"https://bsky.social/about/support\" target=\"_blank\" rel=\"noopener\">블루스카이 지원팀</a>에 직접 문의하세요.",
+
+  "footer.link.bluesky": "블루스카이",
+  "footer.link.community": "커뮤니티",
+  "footer.link.terms": "이용약관",
+  "footer.link.privacy": "개인정보처리방침",
+  "footer.link.contact": "문의",
+
+  "privacy.title": "개인정보처리방침 – Orbyt",
+  "privacy.heading": "개인정보처리방침",
+  "privacy.last_updated": "최종 업데이트: 2026년 2월 2일",
+  "privacy.logo.alt": "Orbyt",
+
+  "terms.title": "이용약관 – Orbyt",
+  "terms.heading": "이용약관",
+  "terms.last_updated": "최종 업데이트: 2026년 2월 2일",
+  "terms.logo.alt": "Orbyt",
+
+  "profile.install_cta": "앱 다운로드",
+  "profile.empty_feed": "아직 아무것도 없어요...",
+  "profile.load_more": "더 보기",
+  "profile.loading": "불러오는 중...",
+  "profile.breadcrumb.home": "홈",
+
+  "post.install_cta": "앱 다운로드",
+  "post.breadcrumb.home": "홈",
+  "post.caption.more": "더 보기",
+
+  "altstore.tip_label": "AltStore에서 받기",
+  "altstore.aria_label": "AltStore PAL에 orbyt 소스 추가",
+  "altstore.dialog.title": "iPhone으로 스캔하세요",
+  "altstore.dialog.qr_alt": "AltStore PAL QR 코드 — iPhone으로 스캔",
+  "altstore.dialog.hint": "AltStore PAL에 orbyt 소스를 추가합니다",
+  "altstore.dialog.close": "닫기",
+  "altstore.dialog.need_altstore": "AltStore가 처음이신가요?",
+  "altstore.dialog.get_altstore": "자세히 알아보기"
+}

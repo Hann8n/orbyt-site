@@ -1,0 +1,66 @@
+{
+  "index.title": "orbyt – ビデオコミュニティ",
+  "index.meta.description": "Bluesky向けの新しいビデオアプリ",
+  "index.motto": "ビデオコミュニティ",
+  "index.button.ios": "iOS",
+  "index.button.android_waitlist": "Android 順番待ちリスト",
+  "index.schema.organization_description": "Bluesky向けの新しいビデオアプリ",
+
+  "app.title": "アプリを入手 – orbyt",
+  "app.subtitle.desktop": "スキャンしてアプリを入手",
+  "app.subtitle.mobile": "アプリを入手",
+  "app.qr.alt": "orbytアプリをダウンロードするQRコード",
+  "app.qr.caption": "または下からダウンロード",
+  "app.button.ios": "iOS",
+  "app.button.android_waitlist": "Android 順番待ちリスト",
+
+  "404.title": "404 – ページが見つかりません | Orbyt",
+  "404.heading": "信号なし",
+  "404.message": "このページは存在しないか、移動されました。",
+  "404.action.back": "戻る",
+  "404.action.home": "ホーム",
+
+  "contact.title": "お問い合わせ – Orbyt",
+  "contact.logo.alt": "Orbyt",
+  "contact.heading": "お問い合わせ",
+  "contact.section.general": "一般的なお問い合わせ",
+  "contact.section.press": "プレス・メディア向けお問い合わせ",
+  "contact.section.bugs": "バグ報告",
+  "contact.section.copyright": "著作権・コンテンツに関する問題",
+  "contact.copyright.html": "OrbytはBluesky向けのサードパーティクライアントです。コンテンツはAT Protocolネットワーク上でホストされており、Orbytが管理しているわけではありません。著作権の削除申請やコンテンツに関する法的問題については、<a href=\"https://bsky.social/about/support\" target=\"_blank\" rel=\"noopener\">Blueskyサポート</a>に直接お問い合わせください。",
+
+  "footer.link.bluesky": "bluesky",
+  "footer.link.community": "コミュニティ",
+  "footer.link.terms": "利用規約",
+  "footer.link.privacy": "プライバシー",
+  "footer.link.contact": "お問い合わせ",
+
+  "privacy.title": "プライバシーポリシー – Orbyt",
+  "privacy.heading": "プライバシーポリシー",
+  "privacy.last_updated": "最終更新日：2026年2月2日",
+  "privacy.logo.alt": "Orbyt",
+
+  "terms.title": "利用規約 – Orbyt",
+  "terms.heading": "利用規約",
+  "terms.last_updated": "最終更新日：2026年2月2日",
+  "terms.logo.alt": "Orbyt",
+
+  "profile.install_cta": "アプリを入手",
+  "profile.empty_feed": "まだ何もありません...",
+  "profile.load_more": "もっと見る",
+  "profile.loading": "読み込み中...",
+  "profile.breadcrumb.home": "ホーム",
+
+  "post.install_cta": "アプリを入手",
+  "post.breadcrumb.home": "ホーム",
+  "post.caption.more": "もっと",
+
+  "altstore.tip_label": "AltStoreで入手",
+  "altstore.aria_label": "AltStore PALにorbytソースを追加",
+  "altstore.dialog.title": "iPhoneでスキャン",
+  "altstore.dialog.qr_alt": "AltStore PAL用QRコード — iPhoneでスキャン",
+  "altstore.dialog.hint": "AltStore PALにorbytソースを追加します",
+  "altstore.dialog.close": "閉じる",
+  "altstore.dialog.need_altstore": "AltStore初めてですか？",
+  "altstore.dialog.get_altstore": "詳細を見る"
+}

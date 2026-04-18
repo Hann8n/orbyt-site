@@ -7,9 +7,12 @@ import {
 	iosDownloadHrefFromOptions,
 } from '../utils/ios-distribution';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 export const prerender = false;
 
+const locale = Astro.locals.locale ?? 'en';
+const t = useTranslations(locale);
 const appUrl = 'https://getorbyt.com/app';
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
 const iosDownload = getIosDownloadOptionsFromRequest(Astro.request);
@@ -17,7 +20,7 @@ const iosHref = iosDownloadHrefFromOptions(iosDownload);
 const showAltstorePalPeek = iosDownload.primary === 'altstore';
 ---
 <!doctype html>
-<html lang="en" class="orbyt-doc-dark">
+<html lang={localeToHtmlLang(locale)} class="orbyt-doc-dark">
 <head>
     <meta charset="utf-8">
     <DocumentColorScheme
@@ -29,7 +32,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     <link rel="stylesheet" href="/css/caveat.css" />
     <link rel="stylesheet" href="/css/klee-one.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Get the App - orbyt</title>
+    <title>{t('app.title')}</title>
     
     <style>
         @font-face {
@@ -231,14 +234,14 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                 </svg>
             </a>
             
-            <div class="subtitle subtitle-desktop">scan to get the app</div>
-            <div class="subtitle subtitle-mobile">get the app</div>
+            <div class="subtitle subtitle-desktop">{t('app.subtitle.desktop')}</div>
+            <div class="subtitle subtitle-mobile">{t('app.subtitle.mobile')}</div>
             
             <div class="qr-section">
                 <div class="qr-container">
-                    <img class="qr-code" src={qrCodeUrl} alt="QR code to download orbyt app" />
+                    <img class="qr-code" src={qrCodeUrl} alt={t('app.qr.alt')} />
                 </div>
-                <div class="qr-label">or download directly below</div>
+                <div class="qr-label">{t('app.qr.caption')}</div>
             </div>
             
             <div class="buttons">
@@ -248,10 +251,10 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                         { 'download-button-wrap--pal': showAltstorePalPeek },
                     ]}
                 >
-                    {showAltstorePalPeek && <AltstorePalPeek href={iosHref} />}
-                    <a href="/ios" class="download-button">iOS</a>
+                    {showAltstorePalPeek && <AltstorePalPeek href={iosHref} locale={locale} />}
+                    <a href="/ios" class="download-button">{t('app.button.ios')}</a>
                 </div>
-                <a href="/android" class="download-button">Android Waitlist</a>
+                <a href="/android" class="download-button">{t('app.button.android_waitlist')}</a>
             </div>
         </div>
     </div>

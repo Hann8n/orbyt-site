@@ -1,0 +1,66 @@
+{
+  "index.title": "orbyt - video communities",
+  "index.meta.description": "a new video app for bluesky",
+  "index.motto": "video communities",
+  "index.button.ios": "iOS",
+  "index.button.android_waitlist": "Android Waitlist",
+  "index.schema.organization_description": "a new video app for bluesky",
+
+  "app.title": "Get the App - orbyt",
+  "app.subtitle.desktop": "scan to get the app",
+  "app.subtitle.mobile": "get the app",
+  "app.qr.alt": "QR code to download orbyt app",
+  "app.qr.caption": "or download directly below",
+  "app.button.ios": "iOS",
+  "app.button.android_waitlist": "Android Waitlist",
+
+  "404.title": "404 - Page Not Found | Orbyt",
+  "404.heading": "No Signal",
+  "404.message": "This page doesn't exist or has been moved.",
+  "404.action.back": "Go Back",
+  "404.action.home": "Homepage",
+
+  "contact.title": "Contact Us - Orbyt",
+  "contact.logo.alt": "Orbyt",
+  "contact.heading": "Contact Us",
+  "contact.section.general": "For general inquiries",
+  "contact.section.press": "Press & media requests",
+  "contact.section.bugs": "Bug reports",
+  "contact.section.copyright": "Copyright and content issues",
+  "contact.copyright.html": "Orbyt is a third-party client for Bluesky. Content is hosted on the AT Protocol network, not by Orbyt. For copyright takedowns or content-related legal issues, please contact <a href=\"https://bsky.social/about/support\" target=\"_blank\" rel=\"noopener\">Bluesky Support</a> directly.",
+
+  "footer.link.bluesky": "bluesky",
+  "footer.link.community": "community",
+  "footer.link.terms": "terms",
+  "footer.link.privacy": "privacy",
+  "footer.link.contact": "contact",
+
+  "privacy.title": "Privacy Policy - Orbyt",
+  "privacy.heading": "Privacy Policy",
+  "privacy.last_updated": "Last Updated: February 2, 2026",
+  "privacy.logo.alt": "Orbyt",
+
+  "terms.title": "Terms of Use - Orbyt",
+  "terms.heading": "Terms of Use",
+  "terms.last_updated": "Last Updated: February 2, 2026",
+  "terms.logo.alt": "Orbyt",
+
+  "profile.install_cta": "Get the app",
+  "profile.empty_feed": "nothing here, yet...",
+  "profile.load_more": "Load more",
+  "profile.loading": "Loading...",
+  "profile.breadcrumb.home": "Home",
+
+  "post.install_cta": "Get the app",
+  "post.breadcrumb.home": "Home",
+  "post.caption.more": "More",
+
+  "altstore.tip_label": "get it on altstore",
+  "altstore.aria_label": "Add orbyt source in AltStore PAL",
+  "altstore.dialog.title": "Scan with your iPhone",
+  "altstore.dialog.qr_alt": "QR code for AltStore PAL — scan with your iPhone",
+  "altstore.dialog.hint": "Adds the orbyt source in AltStore PAL",
+  "altstore.dialog.close": "Close",
+  "altstore.dialog.need_altstore": "New to AltStore?",
+  "altstore.dialog.get_altstore": "Learn More"
+}

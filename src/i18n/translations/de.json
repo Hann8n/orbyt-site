@@ -1,0 +1,66 @@
+{
+  "index.title": "orbyt – Video-Communities",
+  "index.meta.description": "eine neue Video-App für Bluesky",
+  "index.motto": "Video-Communities",
+  "index.button.ios": "iOS",
+  "index.button.android_waitlist": "Android-Warteliste",
+  "index.schema.organization_description": "eine neue Video-App für Bluesky",
+
+  "app.title": "App herunterladen – orbyt",
+  "app.subtitle.desktop": "Zum Herunterladen scannen",
+  "app.subtitle.mobile": "App herunterladen",
+  "app.qr.alt": "QR-Code zum Herunterladen der orbyt-App",
+  "app.qr.caption": "oder direkt unten herunterladen",
+  "app.button.ios": "iOS",
+  "app.button.android_waitlist": "Android-Warteliste",
+
+  "404.title": "404 – Seite nicht gefunden | Orbyt",
+  "404.heading": "Kein Signal",
+  "404.message": "Diese Seite existiert nicht oder wurde verschoben.",
+  "404.action.back": "Zurück",
+  "404.action.home": "Startseite",
+
+  "contact.title": "Kontakt – Orbyt",
+  "contact.logo.alt": "Orbyt",
+  "contact.heading": "Kontakt",
+  "contact.section.general": "Allgemeine Anfragen",
+  "contact.section.press": "Presse & Medienanfragen",
+  "contact.section.bugs": "Fehlerberichte",
+  "contact.section.copyright": "Urheberrecht und Inhaltsprobleme",
+  "contact.copyright.html": "Orbyt ist ein Drittanbieter-Client für Bluesky. Inhalte werden im AT-Protokoll-Netzwerk gehostet, nicht von Orbyt. Für Urheberrechtsbeschwerden oder inhaltsbezogene rechtliche Probleme wenden Sie sich bitte direkt an den <a href=\"https://bsky.social/about/support\" target=\"_blank\" rel=\"noopener\">Bluesky-Support</a>.",
+
+  "footer.link.bluesky": "bluesky",
+  "footer.link.community": "Community",
+  "footer.link.terms": "Nutzungsbedingungen",
+  "footer.link.privacy": "Datenschutz",
+  "footer.link.contact": "Kontakt",
+
+  "privacy.title": "Datenschutz – Orbyt",
+  "privacy.heading": "Datenschutzerklärung",
+  "privacy.last_updated": "Zuletzt aktualisiert: 2. Februar 2026",
+  "privacy.logo.alt": "Orbyt",
+
+  "terms.title": "Nutzungsbedingungen – Orbyt",
+  "terms.heading": "Nutzungsbedingungen",
+  "terms.last_updated": "Zuletzt aktualisiert: 2. Februar 2026",
+  "terms.logo.alt": "Orbyt",
+
+  "profile.install_cta": "App herunterladen",
+  "profile.empty_feed": "noch nichts hier...",
+  "profile.load_more": "Mehr laden",
+  "profile.loading": "Lädt...",
+  "profile.breadcrumb.home": "Startseite",
+
+  "post.install_cta": "App herunterladen",
+  "post.breadcrumb.home": "Startseite",
+  "post.caption.more": "Mehr",
+
+  "altstore.tip_label": "bei AltStore holen",
+  "altstore.aria_label": "orbyt-Quelle in AltStore PAL hinzufügen",
+  "altstore.dialog.title": "Mit dem iPhone scannen",
+  "altstore.dialog.qr_alt": "QR-Code für AltStore PAL – mit dem iPhone scannen",
+  "altstore.dialog.hint": "Fügt orbyt zu AltStore PAL hinzu",
+  "altstore.dialog.close": "Schließen",
+  "altstore.dialog.need_altstore": "Neu bei AltStore?",
+  "altstore.dialog.get_altstore": "Mehr erfahren"
+}

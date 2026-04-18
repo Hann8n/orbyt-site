@@ -1,13 +1,16 @@
 ---
 import AltstorePalTipArrow from './AltstorePalTipArrow.astro';
 import '../styles/altstore-pal-peek.css';
+import { useTranslations } from '../i18n/utils';
 
 interface Props {
 	href: string;
+	locale?: string;
 	ariaLabel?: string;
 }
 
-const { href, ariaLabel = 'Add orbyt source in AltStore PAL' } = Astro.props;
+const { href, locale = 'en', ariaLabel } = Astro.props;
+const t = useTranslations(locale);
 /** Same as `href` — AltStore PAL deep link for scanning from iPhone */
 const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(href)}`;
 ---
@@ -15,12 +18,12 @@ const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200
 <a
 	class="altstore-pal-peek"
 	href={href}
-	aria-label={ariaLabel}
+	aria-label={ariaLabel ?? t('altstore.aria_label')}
 	aria-haspopup="dialog"
 	data-altstore-pal-qr-trigger
 >
 	<span class="altstore-pal-peek__tip" aria-hidden="true">
-		<span class="altstore-pal-peek__tip-label">get it on altstore</span>
+		<span class="altstore-pal-peek__tip-label">{t('altstore.tip_label')}</span>
 		<AltstorePalTipArrow />
 	</span>
 	<img
@@ -41,14 +44,14 @@ const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200
 >
 	<div class="altstore-pal-qr-dialog__panel">
 		<h2 id="altstore-pal-qr-dialog-title" class="altstore-pal-qr-dialog__title">
-			Scan with your iPhone
+			{t('altstore.dialog.title')}
 		</h2>
 		<figure class="altstore-pal-qr-dialog__media">
 			<div class="altstore-pal-qr-dialog__qr-wrap">
 				<img
 					class="altstore-pal-qr-dialog__qr"
 					src={qrCodeImageUrl}
-					alt="QR code for AltStore PAL — scan with your iPhone"
+					alt={t('altstore.dialog.qr_alt')}
 					width="200"
 					height="200"
 					loading="lazy"
@@ -56,23 +59,23 @@ const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200
 				/>
 			</div>
 			<figcaption class="altstore-pal-qr-dialog__hint">
-				Adds the orbyt source in AltStore PAL
+				{t('altstore.dialog.hint')}
 			</figcaption>
 		</figure>
 		<form class="altstore-pal-qr-dialog__dismiss" method="dialog">
 			<button type="submit" class="altstore-pal-qr-dialog__close">
-				Close
+				{t('altstore.dialog.close')}
 			</button>
 		</form>
 		<p class="altstore-pal-qr-dialog__new">
-			Need AltStore?{' '}
+			{t('altstore.dialog.need_altstore')}{' '}
 			<a
 				class="altstore-pal-qr-dialog__altstore-link"
 				href="https://altstore.io/#Downloads"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				Get AltStore
+				{t('altstore.dialog.get_altstore')}
 			</a>
 		</p>
 	</div>

@@ -9,6 +9,7 @@ import { getChromeBackgroundColor, getUiColorScheme } from '../utils/profile-col
 import { getVideoAmbientBackdropInlineStyle } from '../utils/video-ambient-backdrop';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import { ClientRouter } from 'astro:transitions';
+import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const { handle } = Astro.params;
 
@@ -64,10 +65,13 @@ const uiColorScheme = getUiColorScheme(chromeBackgroundColor);
 
 // Cache at Cloudflare edge: 60s fresh, serve stale up to 5min while revalidating
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+
+const locale = Astro.locals.locale ?? 'en';
+const t = useTranslations(locale);
 ---
 
 <!doctype html>
-<html lang="en" class={uiColorScheme === 'dark' ? 'orbyt-doc-dark' : 'orbyt-doc-light'}>
+<html lang={localeToHtmlLang(locale)} class={uiColorScheme === 'dark' ? 'orbyt-doc-dark' : 'orbyt-doc-light'}>
 
 <head>
     <meta charset="utf-8">
@@ -217,7 +221,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
           <span class="logo-text">orbyt</span>
         </a>
         <a class='install-button mobile' href="/ios">
-          Get the app
+          {t('profile.install_cta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
@@ -256,7 +260,7 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 
       <div class="install-button-wrapper desktop">
         <a class='install-button' href="/ios">
-          Get the app
+          {t('profile.install_cta')}
           <svg class="svg-button" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.93892 19.9988L18.9736 2.96362" stroke="currentColor" stroke-width="3.993"/>
           <path d="M19 16.7368L19 2.93875L5.20193 2.93875" stroke="currentColor" stroke-width="3.993"/>
@@ -281,12 +285,12 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
       )) : (
         <div class="empty-feed">
           <div class="tv-static" aria-hidden="true"></div>
-          <p class="empty-feed-message">nothing here, yet...</p>
+          <p class="empty-feed-message">{t('profile.empty_feed')}</p>
         </div>
       )}
       {nextCursor && (
         <footer>
-          <a id="load-more">Load more</a>
+          <a id="load-more" data-load-more-text={t('profile.load_more')} data-loading-text={t('profile.loading')}>{t('profile.load_more')}</a>
         </footer>
       )}
     </div>
@@ -311,11 +315,14 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
     const handle = profileEl.dataset.handle;
     let cursor = profileEl.dataset.cursor;
     
+    const loadMoreText = loadMoreBtn.dataset.loadMoreText || 'Load more';
+    const loadingText = loadMoreBtn.dataset.loadingText || 'Loading...';
+
     loadMoreBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       if (!cursor) return;
-      
-      loadMoreBtn.textContent = 'Loading...';
+
+      loadMoreBtn.textContent = loadingText;
       
       try {
         const { data, error } = await loadMorePosts(handle ?? '', cursor);
@@ -354,13 +361,13 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
         profileEl.dataset.cursor = cursor || '';
         
         if (cursor) {
-          loadMoreBtn.textContent = 'Load more';
+          loadMoreBtn.textContent = loadMoreText;
         } else {
           loadMoreBtn.parentElement?.remove();
         }
       } catch (error) {
         console.error('Error loading more:', error);
-        loadMoreBtn.textContent = 'Load more';
+        loadMoreBtn.textContent = loadMoreText;
       }
     });
   }
