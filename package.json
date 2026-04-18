@@ -10,7 +10,8 @@
     "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
-    "altstore:r2": "bash ./scripts/altstore-r2.sh"
+    "altstore:r2": "bash ./scripts/altstore-r2.sh",
+    "altstore:release": "bash ./scripts/altstore-r2.sh release"
   },
   "repository": {
     "type": "git",

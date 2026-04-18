@@ -1,0 +1,353 @@
+---
+export const prerender = false;
+
+import { env } from 'cloudflare:workers';
+import { readSource } from '../../utils/altstore-source';
+
+const COOKIE_NAME = 'altstore_admin';
+const SOURCE_URL = 'https://getorbyt.com/altstore/source.json';
+const MANIFEST_URL = 'https://downloads.getorbyt.com/manifest.json';
+const RELEASE_API = '/api/admin/altstore/release';
+
+// --- Auth ---
+const secret = env.ADMIN_SECRET;
+
+// ?token=... in URL → set cookie + redirect clean
+const urlToken = Astro.url.searchParams.get('token');
+if (urlToken && urlToken === secret) {
+  Astro.cookies.set(COOKIE_NAME, secret, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 30,
+    path: '/',
+  });
+  return Astro.redirect('/admin/altstore');
+}
+
+const cookieToken = Astro.cookies.get(COOKIE_NAME)?.value;
+const isAuthed = cookieToken === secret;
+
+// POST from login form
+if (Astro.request.method === 'POST' && !isAuthed) {
+  const form = await Astro.request.formData();
+  const submitted = form.get('token');
+  if (submitted === secret) {
+    Astro.cookies.set(COOKIE_NAME, secret, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30,
+      path: '/',
+    });
+    return Astro.redirect('/admin/altstore');
+  }
+}
+
+// Read current source for display
+let currentVersion = null as null | { version: string; buildVersion: string; date: string; localizedDescription?: string; downloadURL: string; size: number };
+let versionHistory: typeof currentVersion[] = [];
+
+if (isAuthed) {
+  try {
+    const source = await readSource(env.orbyt_altstore_adp);
+    const versions = source.apps[0]?.versions ?? [];
+    currentVersion = versions[0] ?? null;
+    versionHistory = versions.slice(1, 5);
+  } catch {
+    // continue with null
+  }
+}
+
+const today = new Date().toISOString().split('T')[0];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AltStore Admin · Orbyt</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f0f13; color: #e0e0e8; min-height: 100vh; padding: 2rem 1rem; }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    .card { background: #1a1a22; border: 1px solid #2a2a36; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #9B59B6; margin-bottom: 1rem; }
+    .meta-row { display: flex; gap: 0.5rem; align-items: baseline; margin-bottom: 0.4rem; font-size: 0.9rem; }
+    .meta-label { color: #888; min-width: 100px; font-size: 0.8rem; }
+    .meta-value { color: #e0e0e8; font-family: monospace; font-size: 0.85rem; word-break: break-all; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #9B59B6; color: #fff; margin-left: 0.5rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.78rem; color: #888; font-weight: 500; }
+    input, textarea { background: #0f0f13; border: 1px solid #2a2a36; border-radius: 8px; color: #e0e0e8; font-size: 0.9rem; padding: 0.6rem 0.75rem; width: 100%; font-family: inherit; }
+    input:focus, textarea:focus { outline: none; border-color: #9B59B6; }
+    textarea { resize: vertical; min-height: 80px; }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: #9B59B6; color: #fff; }
+    .btn-secondary { background: #2a2a36; color: #e0e0e8; }
+    .btn-danger { background: #c0392b; color: #fff; }
+    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+    .status-line { font-size: 0.8rem; margin-top: 0.75rem; min-height: 1.2em; }
+    .ok { color: #2ecc71; }
+    .err { color: #e74c3c; }
+    .warn { color: #f39c12; }
+    .history-item { padding: 0.6rem 0; border-bottom: 1px solid #2a2a36; font-size: 0.82rem; color: #888; }
+    .history-item:last-child { border-bottom: none; }
+    .history-item strong { color: #ccc; }
+    .link { color: #9B59B6; text-decoration: none; font-size: 0.82rem; }
+    .link:hover { text-decoration: underline; }
+    .login-wrap { max-width: 360px; margin: 8vh auto; }
+    .login-wrap h1 { margin-bottom: 1.5rem; }
+    .divider { height: 1px; background: #2a2a36; margin: 0.5rem 0 1rem; }
+    @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+  {!isAuthed ? (
+    <div class="login-wrap">
+      <h1>AltStore Admin</h1>
+      <div class="card">
+        <h2>Sign in</h2>
+        <form method="POST">
+          <div class="form-group" style="margin-bottom:1rem">
+            <label for="token">Admin secret</label>
+            <input id="token" name="token" type="password" placeholder="Enter ADMIN_SECRET" required autofocus />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">Sign in</button>
+        </form>
+      </div>
+    </div>
+  ) : (
+    <>
+      <h1>AltStore Admin <span style="color:#9B59B6">· Orbyt</span></h1>
+      <p class="subtitle">
+        Source: <a class="link" href={SOURCE_URL} target="_blank">{SOURCE_URL}</a>
+      </p>
+
+      <!-- Current Release -->
+      <div class="card">
+        <h2>Current release</h2>
+        {currentVersion ? (
+          <>
+            <div class="meta-row">
+              <span class="meta-label">Version</span>
+              <span class="meta-value">{currentVersion.version} <span class="badge">build {currentVersion.buildVersion}</span></span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Date</span>
+              <span class="meta-value">{currentVersion.date}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Size</span>
+              <span class="meta-value">{(currentVersion.size / 1_000_000).toFixed(1)} MB</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Changelog</span>
+              <span class="meta-value">{currentVersion.localizedDescription ?? '—'}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Download</span>
+              <span class="meta-value">{currentVersion.downloadURL}</span>
+            </div>
+          </>
+        ) : (
+          <p style="color:#888;font-size:0.9rem">No releases published yet. Add one below.</p>
+        )}
+
+        {versionHistory.length > 0 && (
+          <>
+            <div class="divider" style="margin-top:1rem"></div>
+            <p style="font-size:0.75rem;color:#888;margin-bottom:0.5rem">Previous releases</p>
+            {versionHistory.map((v) => v && (
+              <div class="history-item">
+                <strong>{v.version}</strong> (build {v.buildVersion}) · {v.date}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      <!-- Publish New Release -->
+      <div class="card">
+        <h2>Publish new release</h2>
+        <form id="release-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="version">Version *</label>
+              <input id="version" name="version" placeholder="1.1.3" required />
+            </div>
+            <div class="form-group">
+              <label for="buildVersion">Build * </label>
+              <input id="buildVersion" name="buildVersion" placeholder="63" required />
+            </div>
+            <div class="form-group">
+              <label for="date">Date *</label>
+              <input id="date" name="date" type="date" value={today} required />
+            </div>
+            <div class="form-group">
+              <label for="size">Size (bytes) *</label>
+              <input id="size" name="size" type="number" placeholder="70307293" required />
+            </div>
+            <div class="form-group full">
+              <label for="localizedDescription">Changelog</label>
+              <textarea id="localizedDescription" name="localizedDescription" placeholder="What's new in this release…"></textarea>
+            </div>
+            <div class="form-group full">
+              <label for="downloadURL">Download URL (manifest.json)</label>
+              <input id="downloadURL" name="downloadURL" value="https://downloads.getorbyt.com/manifest.json" />
+            </div>
+            <div class="form-group">
+              <label for="minOSVersion">Min iOS version</label>
+              <input id="minOSVersion" name="minOSVersion" value="16.4" />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="publish-btn">Publish release</button>
+          </div>
+          <p class="status-line" id="release-status"></p>
+        </form>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <h2>Quick actions</h2>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="check-source-btn">Verify source.json</button>
+          <button class="btn btn-secondary" id="check-manifest-btn">Verify manifest.json</button>
+          <button class="btn btn-secondary" id="federate-btn">Federate with AltStore</button>
+        </div>
+        <p class="status-line" id="action-status"></p>
+      </div>
+
+      <!-- CLI Release Checklist -->
+      <div class="card">
+        <h2>CLI release checklist</h2>
+        <p style="font-size:0.82rem;color:#888;margin-bottom:1rem">Run these steps before publishing above. The <code style="color:#ccc">release</code> command handles steps 1–2 automatically.</p>
+        <pre style="background:#0f0f13;border:1px solid #2a2a36;border-radius:8px;padding:1rem;font-size:0.78rem;overflow-x:auto;color:#b0b0c0;line-height:1.7"># 1) In orbyt-app — download + extract the new ADP from App Store Connect
+./scripts/altstore-pal.sh download &lt;ADP_ID&gt;
+unzip orbyt-adp-&lt;ADP_ID&gt;.zip -d adp-extracted
+
+# 2) In orbyt-site — upload ADP to R2 (one command)
+ADMIN_SECRET=... npm run altstore:release -- orbyt-altstore-adp 1.1.3 63 2026-04-18 70307293 ../orbyt-app/adp-extracted
+
+# 3) Fill in the form above and click "Publish release"
+
+# 4) Optionally redeploy if you changed any other site files
+npm run build &amp;&amp; npx wrangler deploy</pre>
+      </div>
+    </>
+  )}
+
+  </div>
+
+  {isAuthed && (
+    <script define:vars={{ RELEASE_API, SOURCE_URL, MANIFEST_URL }}>
+      const releaseForm = document.getElementById('release-form');
+      const releaseStatus = document.getElementById('release-status');
+      const publishBtn = document.getElementById('publish-btn');
+      const actionStatus = document.getElementById('action-status');
+
+      releaseForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        publishBtn.disabled = true;
+        releaseStatus.textContent = 'Publishing…';
+        releaseStatus.className = 'status-line warn';
+
+        const fd = new FormData(releaseForm);
+        const body = {
+          version: fd.get('version'),
+          buildVersion: fd.get('buildVersion'),
+          date: fd.get('date'),
+          size: Number(fd.get('size')),
+          localizedDescription: fd.get('localizedDescription') || undefined,
+          downloadURL: fd.get('downloadURL') || undefined,
+          minOSVersion: fd.get('minOSVersion') || undefined,
+        };
+
+        try {
+          const res = await fetch(RELEASE_API, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            releaseStatus.textContent = `✓ Published ${data.version.version} (build ${data.version.buildVersion})`;
+            releaseStatus.className = 'status-line ok';
+            setTimeout(() => location.reload(), 1500);
+          } else {
+            releaseStatus.textContent = `✗ Error: ${data.error}`;
+            releaseStatus.className = 'status-line err';
+          }
+        } catch (err) {
+          releaseStatus.textContent = `✗ Network error: ${err.message}`;
+          releaseStatus.className = 'status-line err';
+        } finally {
+          publishBtn.disabled = false;
+        }
+      });
+
+      document.getElementById('check-source-btn').addEventListener('click', async () => {
+        actionStatus.textContent = 'Checking source.json…';
+        actionStatus.className = 'status-line warn';
+        try {
+          const res = await fetch(SOURCE_URL, { cache: 'no-store' });
+          actionStatus.textContent = res.ok
+            ? `✓ source.json → ${res.status} OK`
+            : `✗ source.json → ${res.status}`;
+          actionStatus.className = res.ok ? 'status-line ok' : 'status-line err';
+        } catch (err) {
+          actionStatus.textContent = `✗ ${err.message}`;
+          actionStatus.className = 'status-line err';
+        }
+      });
+
+      document.getElementById('check-manifest-btn').addEventListener('click', async () => {
+        actionStatus.textContent = 'Checking manifest.json…';
+        actionStatus.className = 'status-line warn';
+        try {
+          const res = await fetch(MANIFEST_URL, { cache: 'no-store' });
+          actionStatus.textContent = res.ok
+            ? `✓ manifest.json → ${res.status} OK`
+            : `✗ manifest.json → ${res.status}`;
+          actionStatus.className = res.ok ? 'status-line ok' : 'status-line err';
+        } catch (err) {
+          actionStatus.textContent = `✗ ${err.message}`;
+          actionStatus.className = 'status-line err';
+        }
+      });
+
+      document.getElementById('federate-btn').addEventListener('click', async () => {
+        if (!confirm('Federate your source with AltStore? Only needed once (or after URL changes).')) return;
+        actionStatus.textContent = 'Federating…';
+        actionStatus.className = 'status-line warn';
+        try {
+          const res = await fetch('https://api.altstore.io/federate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source: SOURCE_URL }),
+          });
+          const text = await res.text();
+          actionStatus.textContent = res.ok
+            ? `✓ Federated successfully`
+            : `ℹ Federation response ${res.status}: ${text.slice(0, 120)}`;
+          actionStatus.className = res.ok ? 'status-line ok' : 'status-line warn';
+        } catch (err) {
+          actionStatus.textContent = `✗ ${err.message}`;
+          actionStatus.className = 'status-line err';
+        }
+      });
+    </script>
+  )}
+</body>
+</html>
