@@ -284,7 +284,7 @@
 	}
 
 	.download-button-wrap--pal .altstore-pal-peek__tip-label {
-		font-family: 'Caveat', cursive;
+		font-family: 'Caveat', 'Klee One', cursive;
 		font-size: 0.94rem;
 		font-weight: 400;
 		line-height: 1;
@@ -354,7 +354,7 @@
 /* ---------------------------------------------------------------------------
    Touch (no hover) — celebrate AltStore the same way desktop does, but
    without relying on hover. The corner peek stays glued to the iOS button
-   and the handwritten Caveat tip is always-visible (it's the desktop hover
+   and the handwritten Caveat / Klee One tip is always-visible (it's the desktop hover
    state, made persistent).
    --------------------------------------------------------------------------- */
 @media (hover: none) and (pointer: coarse) {
@@ -397,7 +397,7 @@
 	}
 
 	.download-button-wrap--pal .altstore-pal-peek__tip-label {
-		font-family: 'Caveat', cursive;
+		font-family: 'Caveat', 'Klee One', cursive;
 		font-size: 1.18rem;
 		font-weight: 400;
 		line-height: 1;
