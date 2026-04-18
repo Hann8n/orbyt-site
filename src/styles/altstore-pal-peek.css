@@ -1,26 +1,5 @@
 /* AltStore PAL badge + tip; parent must include .download-button-wrap--pal on the wrap */
 
-.download-button-wrap--pal .altstore-pal-hint {
-	display: none;
-	margin: 0;
-	padding: 0;
-	font-family: 'Figtree', sans-serif;
-	font-size: 13px;
-	font-weight: 500;
-	letter-spacing: 0.05em;
-	color: #888;
-	text-align: center;
-	line-height: 1.4;
-	pointer-events: none;
-}
-
-@media (hover: none), (pointer: coarse) {
-	.download-button-wrap--pal .altstore-pal-hint {
-		display: block;
-		margin-top: 10px;
-	}
-}
-
 .download-button-wrap--pal {
 	--altstore-badge-border: 2px;
 	--altstore-badge-clip: polygon(
@@ -351,7 +330,7 @@
 	}
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
 	.download-button-wrap--pal .altstore-pal-peek {
 		transition: none;
 		transform: translate(38%, -40%) rotate(7deg);
@@ -370,49 +349,107 @@
 		height: 40px;
 		right: 4px;
 	}
-
-	.download-button-wrap--pal .altstore-pal-hint {
-		font-size: 12px;
-		margin-top: 8px;
-	}
 }
 
+/* ---------------------------------------------------------------------------
+   Touch (no hover) — celebrate AltStore the same way desktop does, but
+   without relying on hover. The corner peek stays glued to the iOS button
+   and the handwritten Caveat tip is always-visible (it's the desktop hover
+   state, made persistent).
+   --------------------------------------------------------------------------- */
 @media (hover: none) and (pointer: coarse) {
-	.download-button-wrap--pal .altstore-pal-peek {
-		z-index: 2;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 50px;
-		height: 50px;
-		top: 0;
-		right: 0;
-		box-sizing: border-box;
-		box-shadow: none;
+	.download-button-wrap--pal {
+		/* Reserve room for the badge that overflows the button's top edge */
+		padding-top: 16px;
 	}
 
-	.download-button-wrap--pal .altstore-pal-peek::before {
-		inset: auto;
-		width: calc(38px + 2 * var(--altstore-badge-border));
-		height: calc(38px + 2 * var(--altstore-badge-border));
-		left: 50%;
+	.download-button-wrap--pal .altstore-pal-peek {
+		width: 50px;
+		height: 50px;
+		top: 2px;
+		right: 8px;
+		transform-origin: 58% 76%;
+		transform: translate(28%, -36%) rotate(7deg);
+		transition: transform 0.18s ease;
+	}
+
+	.download-button-wrap--pal .altstore-pal-peek:active {
+		transform: translate(28%, -34%) rotate(7deg) scale(0.96);
+	}
+
+	/* Persistent hand-drawn tip pointing at the badge */
+	.download-button-wrap--pal .altstore-pal-peek__tip {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		direction: ltr;
+		gap: 8px;
+		position: absolute;
+		right: 100%;
 		top: 50%;
-		transform: translate(-50%, -50%);
+		transform: translateY(calc(-50% - 6px));
+		margin-right: 4px;
+		padding: 2px 0;
+		pointer-events: none;
+		white-space: nowrap;
+		opacity: 1;
+		z-index: 2;
+	}
+
+	.download-button-wrap--pal .altstore-pal-peek__tip-label {
+		font-family: 'Caveat', cursive;
+		font-size: 1.18rem;
+		font-weight: 400;
+		line-height: 1;
+		color: rgba(255, 255, 255, 0.94);
+		letter-spacing: 0.02em;
+		text-transform: lowercase;
+	}
+
+	.download-button-wrap--pal .altstore-pal-peek__tip-arrow {
+		display: block;
+		width: 26px;
+		height: auto;
+		flex-shrink: 0;
+		align-self: center;
+		margin: 2px 2px 2px 1px;
+		opacity: 0.95;
+		overflow: visible;
+		transform-origin: 32% 48%;
+		transform: rotate(30deg);
 	}
 
 	.download-button-wrap--pal .altstore-pal-peek__img {
-		width: 38px;
-		height: 38px;
-		max-width: 38px;
-		max-height: 38px;
-		flex-shrink: 0;
-		-webkit-clip-path: var(--altstore-badge-clip);
-		clip-path: var(--altstore-badge-clip);
 		filter:
-			drop-shadow(0 2px 5px rgba(0, 0, 0, 0.22)) drop-shadow(0 0 18px rgba(1, 245, 179, 0.12));
+			drop-shadow(0 2px 6px rgba(0, 0, 0, 0.22))
+			drop-shadow(0 0 22px rgba(1, 245, 179, 0.18));
+	}
+}
+
+@media (hover: none) and (pointer: coarse) and (max-width: 500px) {
+	.download-button-wrap--pal {
+		padding-top: 14px;
 	}
 
-	.download-button-wrap--pal .altstore-pal-peek:active .altstore-pal-peek__img {
-		opacity: 0.92;
+	.download-button-wrap--pal .altstore-pal-peek {
+		width: 46px;
+		height: 46px;
+		right: 6px;
+	}
+
+	.download-button-wrap--pal .altstore-pal-peek__tip-label {
+		font-size: 1.1rem;
+	}
+
+	.download-button-wrap--pal .altstore-pal-peek__tip-arrow {
+		width: 23px;
+	}
+}
+
+@media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: reduce) {
+	.download-button-wrap--pal .altstore-pal-peek,
+	.download-button-wrap--pal .altstore-pal-peek:active {
+		transition: none;
+		transform: translate(28%, -36%) rotate(7deg);
 	}
 }

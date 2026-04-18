@@ -2,7 +2,6 @@
 export const prerender = false;
 
 import AltstorePalPeek from '../components/AltstorePalPeek.astro';
-import AltstorePalTouchHint from '../components/AltstorePalTouchHint.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import {
@@ -270,7 +269,6 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                 >
                     {showAltstorePalPeek && <AltstorePalPeek href={iosHref} />}
                     <a href="/ios" class="download-button">iOS</a>
-                    {showAltstorePalPeek && <AltstorePalTouchHint />}
                 </div>
                 <a href="/android" class="download-button">Android Waitlist</a>
             </div>

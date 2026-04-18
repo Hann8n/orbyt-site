@@ -1,7 +1,6 @@
 ---
-// All users see this landing page with QR code
+// QR helps desktop users open this URL on iPhone; hidden on touch (same page on device).
 import AltstorePalPeek from '../components/AltstorePalPeek.astro';
-import AltstorePalTouchHint from '../components/AltstorePalTouchHint.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import {
 	getIosDownloadOptionsFromRequest,
@@ -185,8 +184,11 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
             .subtitle-mobile {
                 display: block;
             }
+            .qr-section {
+                display: none;
+            }
             .buttons {
-                margin-top: 40px;
+                margin-top: 28px;
             }
         }
         
@@ -248,7 +250,6 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                 >
                     {showAltstorePalPeek && <AltstorePalPeek href={iosHref} />}
                     <a href="/ios" class="download-button">iOS</a>
-                    {showAltstorePalPeek && <AltstorePalTouchHint />}
                 </div>
                 <a href="/android" class="download-button">Android Waitlist</a>
             </div>
