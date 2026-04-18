@@ -1,10 +1,21 @@
 ---
 // All users see this landing page with QR code
+import AltstorePalPeek from '../components/AltstorePalPeek.astro';
+import AltstorePalTouchHint from '../components/AltstorePalTouchHint.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import {
+	getIosDownloadOptionsFromRequest,
+	iosDownloadHrefFromOptions,
+} from '../utils/ios-distribution';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+
+export const prerender = false;
 
 const appUrl = 'https://getorbyt.com/app';
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
+const iosDownload = getIosDownloadOptionsFromRequest(Astro.request);
+const iosHref = iosDownloadHrefFromOptions(iosDownload);
+const showAltstorePalPeek = iosDownload.primary === 'altstore';
 ---
 <!doctype html>
 <html lang="en" class="orbyt-doc-dark">
@@ -29,7 +40,9 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
         }
     </style>
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap" rel="stylesheet" />
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
     
@@ -123,7 +136,21 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
             margin-top: 10px;
             width: 100%;
             max-width: 400px;
+            overflow: visible;
         }
+        .download-button-wrap {
+            position: relative;
+            width: 100%;
+            margin: 0 auto 12px auto;
+            overflow: visible;
+        }
+
+        .download-button-wrap .download-button {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+        }
+
         .download-button {
             background: #551DEF;
             border: 2px solid #000000;
@@ -144,7 +171,7 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
         .download-button:hover {
             opacity: 0.9;
         }
-        
+
         /* Mobile-specific text */
         .subtitle-mobile {
             display: none;
@@ -182,6 +209,7 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
                 font-size: 18px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -212,7 +240,16 @@ const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgco
             </div>
             
             <div class="buttons">
-                <a href="/ios" class="download-button">iOS</a>
+                <div
+                    class:list={[
+                        'download-button-wrap',
+                        { 'download-button-wrap--pal': showAltstorePalPeek },
+                    ]}
+                >
+                    {showAltstorePalPeek && <AltstorePalPeek href={iosHref} />}
+                    <a href="/ios" class="download-button">iOS</a>
+                    {showAltstorePalPeek && <AltstorePalTouchHint />}
+                </div>
                 <a href="/android" class="download-button">Android Waitlist</a>
             </div>
         </div>
