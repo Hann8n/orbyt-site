@@ -1,0 +1,144 @@
+a:hover {
+  color: #f3f5fe;
+}
+
+a.logo {
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-doc--landing {
+  --bg-color: var(--orbyt-page-bg);
+  --fg-color: var(--orbyt-white);
+  /* Tight stack: mark / wordmark / slogan */
+  --landing-logo-icon-wordmark-gap: clamp(4px, 1.2vw, 10px);
+  --landing-wordmark-slogan-gap: clamp(6px, 1.6vw, 14px);
+  /* Breathing room before CTAs */
+  --landing-hero-actions-gap: clamp(40px, 12vw, 96px);
+}
+
+/* Hero column — constrains content to a readable width on all screen sizes */
+.hero-column {
+  width: 100%;
+  max-width: 420px;
+}
+
+.download-button-wrap {
+  position: relative;
+  margin: 0 0 10px 0;
+  overflow: visible;
+}
+
+.download-button-wrap .download-button {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.download-button {
+  background: #551def;
+  border: 2px solid #000000;
+  border-radius: 30px;
+  min-height: 56px;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  color: #e0ebff;
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+.home-hero {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.home-actions {
+  text-align: center;
+  margin-top: var(--landing-hero-actions-gap);
+}
+
+.logo {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--landing-logo-icon-wordmark-gap);
+}
+
+.logo-icon {
+  width: 110px;
+  height: auto;
+  display: block;
+  margin: 0;
+  color: var(--fg-color);
+}
+
+.logo-icon .logo-bg {
+  fill: var(--bg-color);
+}
+
+.logo-icon .logo-fg {
+  fill: var(--fg-color);
+  stroke: var(--fg-color);
+}
+
+.logo-icon .logo-outline {
+  fill: none;
+}
+
+.logo-text {
+  font-family: 'Figtree', sans-serif;
+  font-weight: 900;
+  font-size: 42px;
+  color: var(--fg-color);
+  text-align: center;
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
+  display: block;
+  margin: 0 auto;
+}
+
+.home-motto {
+  margin-top: var(--landing-wordmark-slogan-gap);
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.motto-text {
+  font-family: 'Figtree', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #01f5b3;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 360px) {
+  .logo-icon {
+    width: 88px;
+  }
+
+  .logo-text {
+    font-size: 34px;
+  }
+
+  .motto-text {
+    font-size: 17px;
+  }
+
+  .download-button {
+    font-size: 17px;
+    min-height: 50px;
+  }
+}

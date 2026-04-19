@@ -1,5 +1,6 @@
 ---
 export const prerender = true;
+import { ClientRouter } from 'astro:transitions';
 ---
 
 <!doctype html>
@@ -7,6 +8,7 @@ export const prerender = true;
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Android Beta sign up</title>
+    <ClientRouter />
     <script is:inline async src="https://tally.so/widgets/embed.js"></script>
     <style is:global>
       html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }

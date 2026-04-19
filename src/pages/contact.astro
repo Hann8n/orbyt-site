@@ -5,6 +5,7 @@ import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+import { ClientRouter } from 'astro:transitions';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
@@ -22,6 +23,7 @@ const t = useTranslations(locale);
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{t('contact.title')}</title>
+    <ClientRouter />
 
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -38,27 +40,31 @@ const t = useTranslations(locale);
     <SkipToContent />
 
     <div class="site-doc">
-        <header class="site-doc__masthead">
+        <div class="site-doc__content">
             <a href="/" class="site-doc__logo">
                 <img src="/images/orbyt-logo.svg" alt={t('contact.logo.alt')}>
             </a>
-            <h1>{t('contact.heading')}</h1>
-        </header>
+            <div class="site-doc__content-main">
+                <header class="site-doc__masthead">
+                <h1>{t('contact.heading')}</h1>
+                </header>
 
-        <main id="main-content" class="site-doc__prose">
+                <main id="main-content" class="site-doc__prose">
 
-            <h2>{t('contact.section.general')}</h2>
-            <p><a href="mailto:hello@getorbyt.com">hello@getorbyt.com</a></p>
+                    <h2>{t('contact.section.general')}</h2>
+                    <p><a href="mailto:hello@getorbyt.com">hello@getorbyt.com</a></p>
 
-            <h2>{t('contact.section.press')}</h2>
-            <p><a href="mailto:press@getorbyt.com">press@getorbyt.com</a></p>
+                    <h2>{t('contact.section.press')}</h2>
+                    <p><a href="mailto:press@getorbyt.com">press@getorbyt.com</a></p>
 
-            <h2>{t('contact.section.bugs')}</h2>
-            <p><a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
+                    <h2>{t('contact.section.bugs')}</h2>
+                    <p><a href="mailto:support@getorbyt.com">support@getorbyt.com</a></p>
 
-            <h2>{t('contact.section.copyright')}</h2>
-            <p set:html={t('contact.copyright.html')} />
-        </main>
+                    <h2>{t('contact.section.copyright')}</h2>
+                    <p set:html={t('contact.copyright.html')} />
+                </main>
+            </div>
+        </div>
 
         <SiteFooter locale={locale} currentPath="/contact" countryCode={countryCode} />
     </div>

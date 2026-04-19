@@ -5,6 +5,7 @@ import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+import { ClientRouter } from 'astro:transitions';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 import { getTermsContent } from '../i18n/legal/terms-content';
 
@@ -24,6 +25,7 @@ const termsBody = getTermsContent(locale);
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{t('terms.title')}</title>
+    <ClientRouter />
 
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -40,15 +42,19 @@ const termsBody = getTermsContent(locale);
     <SkipToContent />
 
     <div class="site-doc">
-        <header class="site-doc__masthead">
+        <div class="site-doc__content">
             <a href="/" class="site-doc__logo">
                 <img src="/images/orbyt-logo.svg" alt={t('terms.logo.alt')}>
             </a>
-            <h1>{t('terms.heading')}</h1>
-            <p class="site-doc__subtitle">{t('terms.last_updated')}</p>
-        </header>
+            <div class="site-doc__content-main">
+                <header class="site-doc__masthead">
+                <h1>{t('terms.heading')}</h1>
+                <p class="site-doc__subtitle">{t('terms.last_updated')}</p>
+                </header>
 
-        <main id="main-content" class="site-doc__prose" set:html={termsBody} />
+                <main id="main-content" class="site-doc__prose" set:html={termsBody} />
+            </div>
+        </div>
 
         <SiteFooter locale={locale} currentPath="/terms" countryCode={countryCode} />
     </div>

@@ -37,6 +37,55 @@ body:has(> .site-doc) * {
   flex-direction: column;
 }
 
+.site-doc__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-doc__content-main {
+  flex: 1;
+  view-transition-name: site-doc-page;
+}
+
+::view-transition-old(site-doc-page),
+::view-transition-new(site-doc-page) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(site-doc-page) {
+  animation-name: site-doc-fade-out;
+}
+
+::view-transition-new(site-doc-page) {
+  animation-name: site-doc-fade-in;
+}
+
+@keyframes site-doc-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes site-doc-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .site-doc--landing > .main-content {
   flex: 1;
   display: flex;
@@ -54,6 +103,7 @@ body:has(> .site-doc) * {
 .site-doc__logo {
   display: block;
   margin-bottom: 2rem;
+  view-transition-name: site-doc-logo;
 }
 
 .site-doc__logo img {
@@ -154,5 +204,12 @@ body:has(> .site-doc) * {
 
   .site-doc__prose h3 {
     font-size: 1.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(site-doc-page),
+  ::view-transition-new(site-doc-page) {
+    animation-duration: 0.01ms;
   }
 }

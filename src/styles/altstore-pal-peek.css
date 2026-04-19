@@ -363,7 +363,8 @@
 		right: 8px;
 		transform-origin: 58% 76%;
 		transform: translate(28%, -36%) rotate(7deg);
-		transition: transform 0.18s ease;
+		/* Avoid first-paint twitch on mobile when layout settles */
+		transition: none;
 	}
 
 	.download-button-wrap--pal .altstore-pal-peek:active {

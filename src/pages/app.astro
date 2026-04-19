@@ -2,6 +2,9 @@
 // QR helps desktop users open this URL on iPhone; hidden on touch (same page on device).
 import AltstorePalPeek from '../components/AltstorePalPeek.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SkipToContent from '../components/SkipToContent.astro';
+import { ClientRouter } from 'astro:transitions';
 import {
 	getIosDownloadOptionsFromRequest,
 	iosDownloadHrefFromOptions,
@@ -12,6 +15,7 @@ import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 export const prerender = false;
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 const appUrl = 'https://getorbyt.com/app';
 const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(appUrl)}`;
@@ -29,87 +33,42 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
       tileColor={SITE_DOCUMENT.orbytBlack}
     />
     <link rel="stylesheet" href="/css/tokens.css" />
+    <link rel="stylesheet" href="/css/site-footer.css" />
+    <link rel="stylesheet" href="/css/site-document.css" />
+    <link rel="stylesheet" href="/css/site-landing-hero.css" />
     <link rel="stylesheet" href="/css/caveat.css" />
     <link rel="stylesheet" href="/css/klee-one.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{t('app.title')}</title>
+    <ClientRouter />
     
-    <style>
-        @font-face {
-            font-family: 'Figtree';
-            src: url('/fonts/Figtree/Figtree-VariableFont_wght.woff2') format('woff2');
-            font-weight: 300 900;
-            font-style: normal;
-            font-display: fallback;
-        }
-    </style>
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Caveat/Caveat-latin-400.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
     
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            min-height: 100%;
-        }
-        body {
-            --bg-color: #000;
-            --fg-color: #f3f5fe;
-            background: var(--bg-color);
-            font-family: 'Figtree', sans-serif;
-            min-height: 100dvh;
-            display: grid;
-            place-items: center;
-            overflow-x: hidden;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-        }
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .logo-icon {
-            width: 120px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-        .logo-icon .logo-fg {
-            fill: var(--fg-color);
-            stroke: var(--fg-color);
-        }
-        .logo {
-            display: block;
-            transition: opacity 0.2s ease;
-        }
-        .logo:hover {
-            opacity: 0.8;
-        }
-        .subtitle {
+        /* /app only — QR + subtitle copy; hero / CTAs come from site-landing-hero.css (same as index) */
+        .app-subtitle {
             font-family: 'Figtree', sans-serif;
             font-weight: 600;
             font-size: 28px;
             color: var(--fg-color);
+            line-height: 1.25;
             text-align: center;
-            display: block;
-            margin: 20px auto 0;
+            margin: 0;
         }
-        .qr-section {
-            margin: 40px 0;
+
+        .app-subtitle--mobile {
+            display: none;
+        }
+
+        .app-qr-section {
+            margin-top: clamp(28px, 7vw, 40px);
             text-align: center;
         }
-        .qr-container {
+
+        .app-qr-container {
             background: var(--bg-color);
             padding: 20px;
             border-radius: 20px;
@@ -118,109 +77,68 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
         }
 
         @supports (corner-shape: squircle) {
-            .qr-container {
+            .app-qr-container {
                 corner-shape: var(--orbyt-corner-shape, squircle);
             }
         }
-        .qr-code {
+
+        .app-qr-code {
             width: 200px;
             height: 200px;
             display: block;
         }
-        .qr-label {
+
+        .app-qr-label {
             font-size: 14px;
             color: #888;
             margin-top: 16px;
             letter-spacing: 0.05em;
         }
-        .buttons {
-            text-align: center;
-            margin-top: 10px;
-            width: 100%;
-            max-width: 400px;
-            overflow: visible;
-        }
-        .download-button-wrap {
-            position: relative;
-            width: 100%;
-            margin: 0 auto 12px auto;
-            overflow: visible;
+
+        a.logo {
+            transition: opacity 0.2s ease;
         }
 
-        .download-button-wrap .download-button {
-            position: relative;
-            z-index: 1;
-            margin: 0;
+        a.logo:hover {
+            opacity: 0.85;
         }
 
-        .download-button {
-            background: #551DEF;
-            border: 2px solid #000000;
-            border-radius: 30px;
-            min-height: 60px;
-            padding: 0.75rem 1.5rem;
-            font-weight: bold;
-            font-size: 20px;
-            line-height: 1.2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            text-decoration: none;
-            color: #E0EBFF;
-            width: 100%;
-            margin: 0 auto 12px auto;
-        }
-        .download-button:hover {
-            opacity: 0.9;
-        }
-
-        /* Mobile-specific text */
-        .subtitle-mobile {
-            display: none;
-        }
-        
-        /* Touch devices (mobile/tablet) */
         @media (hover: none) and (pointer: coarse) {
-            .subtitle-desktop {
+            .app-subtitle--desktop {
                 display: none;
             }
-            .subtitle-mobile {
+
+            .app-subtitle--mobile {
                 display: block;
             }
-            .qr-section {
+
+            .app-qr-section {
                 display: none;
             }
-            .buttons {
-                margin-top: 28px;
-            }
         }
-        
+
         @media (max-width: 500px) {
-            .logo-icon {
-                width: 90px;
-            }
-            .subtitle {
+            .app-subtitle {
                 font-size: 22px;
             }
-            .qr-section {
-                margin: 30px 0;
+
+            .app-qr-section {
+                margin-top: 30px;
             }
-            .qr-code {
+
+            .app-qr-code {
                 width: 180px;
                 height: 180px;
             }
-            .download-button {
-                min-height: 50px;
-                font-size: 18px;
-            }
         }
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-content">
+    <SkipToContent />
+    <div class="site-doc site-doc--landing">
+        <main id="main-content" class="main-content">
+            <div class="hero-column">
+            <div class="home-hero">
             <a href="/" class="logo">
                 <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
                     <defs>
@@ -234,18 +152,21 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                     <path class="logo-fg" mask="url(#cutout-mask)" stroke-width="65" stroke-linejoin="round" stroke-linecap="round" d="M349 129.3c-23.9 5.4-36.8 31.5-26.1 53.2 8 16.2 25.2 24.4 42.1 20.1 7.4-1.9 5.3-3.4 18.5 13.9 10.3 13.6 33.6 44.2 36.7 48.4 3.5 4.6 3.5 4.6-1.1 8.9-5.9 5.6-14.1 16.9-19 26-5 9.4-3.4 8.6-22.1 10.2-136.2 11.1-177 34.7-192.6 111.5-16.5 81.2-16.5 193.6.1 276.7 10.5 52.9 39.8 83.7 89.3 93.9 6 1.3 6 1.3 2.5 8.8-18.4 39.4-5.4 73.1 30 78.1 24.5 3.5 32.3-1.8 73.7-50 20.8-24.3 16.8-22.1 37-20.5 50.9 4.1 138.2 4.1 189 0 20.2-1.6 16.2-3.8 37 20.5 41.4 48.2 49.2 53.5 73.7 50 35.4-5 48.4-38.7 30-78.1-3.5-7.5-3.5-7.5 2.5-8.8 49.5-10.2 78.8-41 89.3-93.9 16.6-83.1 16.6-195.5.1-276.7C824 344.7 783.2 321.1 647 310c-18.7-1.6-17.1-.8-22.1-10.2-4.9-9.1-13.1-20.4-19-26-4.6-4.3-4.6-4.3-1.1-8.9 3.1-4.2 26.4-34.8 36.7-48.4 13.2-17.3 11.1-15.8 18.5-13.9 41.5 10.6 64.2-49.2 26.3-69.3-32-17.1-68 17.2-51.7 49.3 3.1 6.1 3.1 6.1-11.8 25.5-8.2 10.7-20 26-26.1 34.1-11.1 14.8-11.1 14.8-14.7 12.6-44.5-26.5-94.5-26.5-139 0-3.6 2.2-3.6 2.2-14.7-12.6-6.1-8.1-17.9-23.4-26.1-34.1-14.9-19.4-14.9-19.4-11.8-25.5 13.8-27.1-11.7-59.8-41.4-53.3Z"/>
                 </svg>
             </a>
-            
-            <div class="subtitle subtitle-desktop">{t('app.subtitle.desktop')}</div>
-            <div class="subtitle subtitle-mobile">{t('app.subtitle.mobile')}</div>
-            
-            <div class="qr-section">
-                <div class="qr-container">
-                    <img class="qr-code" src={qrCodeUrl} alt={t('app.qr.alt')} />
+            </div>
+
+            <div class="home-motto">
+                <p class="app-subtitle app-subtitle--desktop">{t('app.subtitle.desktop')}</p>
+                <p class="app-subtitle app-subtitle--mobile">{t('app.subtitle.mobile')}</p>
+            </div>
+
+            <div class="app-qr-section" aria-hidden="false">
+                <div class="app-qr-container">
+                    <img class="app-qr-code" src={qrCodeUrl} alt={t('app.qr.alt')} />
                 </div>
-                <div class="qr-label">{t('app.qr.caption')}</div>
+                <div class="app-qr-label">{t('app.qr.caption')}</div>
             </div>
             
-            <div class="buttons">
+            <div class="home-actions">
                 <div
                     class:list={[
                         'download-button-wrap',
@@ -257,7 +178,9 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                 </div>
                 <a href="/android" class="download-button">{t('app.button.android_waitlist')}</a>
             </div>
-        </div>
+            </div>
+        </main>
+        <SiteFooter locale={locale} currentPath="/app" countryCode={countryCode} />
     </div>
 </body>
 </html>

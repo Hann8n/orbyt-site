@@ -5,6 +5,7 @@ import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
+import { ClientRouter } from 'astro:transitions';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
@@ -23,6 +24,7 @@ const t = useTranslations(locale);
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{t('404.title')}</title>
+    <ClientRouter />
     
     <!-- Critical: Load fonts immediately, before any external resources -->
     <link rel="stylesheet" href="/css/fonts.css">
