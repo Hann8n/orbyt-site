@@ -1,0 +1,66 @@
+{
+  "index.title": "orbyt – video toplulukları",
+  "index.meta.description": "bluesky için yeni bir video uygulaması",
+  "index.motto": "video toplulukları",
+  "index.button.ios": "iOS",
+  "index.button.android_waitlist": "Android Bekleme Listesi",
+  "index.schema.organization_description": "bluesky için yeni bir video uygulaması",
+
+  "app.title": "Uygulamayı İndir – orbyt",
+  "app.subtitle.desktop": "Uygulamayı indirmek için tarat",
+  "app.subtitle.mobile": "Uygulamayı indir",
+  "app.qr.alt": "orbyt uygulamasını indirmek için QR kodu",
+  "app.qr.caption": "ya da aşağıdan doğrudan indir",
+  "app.button.ios": "iOS",
+  "app.button.android_waitlist": "Android Bekleme Listesi",
+
+  "404.title": "404 – Sayfa Bulunamadı | Orbyt",
+  "404.heading": "Sinyal Yok",
+  "404.message": "Bu sayfa mevcut değil veya taşındı.",
+  "404.action.back": "Geri Dön",
+  "404.action.home": "Ana Sayfa",
+
+  "contact.title": "Bize Ulaşın – Orbyt",
+  "contact.logo.alt": "Orbyt",
+  "contact.heading": "Bize Ulaşın",
+  "contact.section.general": "Genel sorular için",
+  "contact.section.press": "Basın ve medya talepleri",
+  "contact.section.bugs": "Hata bildirimleri",
+  "contact.section.copyright": "Telif hakkı ve içerik sorunları",
+  "contact.copyright.html": "Orbyt, Bluesky için bir üçüncü taraf istemcisidir. İçerikler AT Protocol ağında barındırılmakta olup Orbyt tarafından barındırılmamaktadır. Telif hakkı ihlalleri veya içerikle ilgili hukuki sorunlar için lütfen doğrudan <a href=\"https://bsky.social/about/support\" target=\"_blank\" rel=\"noopener\">Bluesky Destek</a> ile iletişime geçin.",
+
+  "footer.link.bluesky": "bluesky",
+  "footer.link.community": "topluluk",
+  "footer.link.terms": "koşullar",
+  "footer.link.privacy": "gizlilik",
+  "footer.link.contact": "iletişim",
+
+  "privacy.title": "Gizlilik Politikası – Orbyt",
+  "privacy.heading": "Gizlilik Politikası",
+  "privacy.last_updated": "Son güncelleme: 2 Şubat 2026",
+  "privacy.logo.alt": "Orbyt",
+
+  "terms.title": "Kullanım Koşulları – Orbyt",
+  "terms.heading": "Kullanım Koşulları",
+  "terms.last_updated": "Son güncelleme: 2 Şubat 2026",
+  "terms.logo.alt": "Orbyt",
+
+  "profile.install_cta": "Uygulamayı İndir",
+  "profile.empty_feed": "henüz burada bir şey yok...",
+  "profile.load_more": "Daha fazla yükle",
+  "profile.loading": "Yükleniyor...",
+  "profile.breadcrumb.home": "Ana Sayfa",
+
+  "post.install_cta": "Uygulamayı İndir",
+  "post.breadcrumb.home": "Ana Sayfa",
+  "post.caption.more": "Daha fazla",
+
+  "altstore.tip_label": "altstore'da edinin",
+  "altstore.aria_label": "AltStore PAL'e orbyt kaynağını ekle",
+  "altstore.dialog.title": "iPhone'unuzla tarayın",
+  "altstore.dialog.qr_alt": "AltStore PAL için QR kodu — iPhone'unuzla tarayın",
+  "altstore.dialog.hint": "AltStore PAL'e orbyt kaynağını ekler",
+  "altstore.dialog.close": "Kapat",
+  "altstore.dialog.need_altstore": "AltStore'da yeni misiniz?",
+  "altstore.dialog.get_altstore": "Daha fazla bilgi"
+}
