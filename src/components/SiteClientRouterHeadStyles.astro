@@ -1,0 +1,36 @@
+---
+/** Public CSS links for `ClientRouter` pages; keeps `site-download-cta.css` in one place. */
+interface Props {
+  documentShell?: boolean
+  omitSiteDocument?: boolean
+  landingHero?: boolean
+  landingAccentFonts?: boolean
+}
+
+const {
+  documentShell = false,
+  omitSiteDocument = false,
+  landingHero = false,
+  landingAccentFonts = false,
+} = Astro.props
+---
+
+{
+    documentShell && (
+        <>
+            <link rel="stylesheet" href="/css/tokens.css" />
+            <link rel="stylesheet" href="/css/site-footer.css" />
+            {!omitSiteDocument && <link rel="stylesheet" href="/css/site-document.css" />}
+        </>
+    )
+}
+<link rel="stylesheet" href="/css/site-download-cta.css" />
+{landingHero && <link rel="stylesheet" href="/css/site-landing-hero.css" />}
+{
+    landingAccentFonts && (
+        <>
+            <link rel="stylesheet" href="/css/caveat.css" />
+            <link rel="stylesheet" href="/css/klee-one.css" />
+        </>
+    )
+}

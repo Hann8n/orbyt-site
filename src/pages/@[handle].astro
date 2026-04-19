@@ -8,6 +8,7 @@ import { parseRichText } from '../utils/richtext';
 import { getChromeBackgroundColor, getUiColorScheme } from '../utils/profile-colors';
 import { getVideoAmbientBackdropInlineStyle } from '../utils/video-ambient-backdrop';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import { ClientRouter } from 'astro:transitions';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
@@ -92,6 +93,7 @@ const t = useTranslations(locale);
     <link rel="stylesheet" href="/css/skeleton.css">
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <SiteClientRouterHeadStyles />
 
     <title>{ogTitle}</title>
     <meta name="description" content={ogDescription} />

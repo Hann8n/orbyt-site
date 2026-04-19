@@ -3,6 +3,7 @@ export const prerender = false;
 
 import AltstorePalPeek from '../components/AltstorePalPeek.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { ClientRouter } from 'astro:transitions';
@@ -30,12 +31,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
       themeColor={SITE_DOCUMENT.orbytBlack}
       tileColor={SITE_DOCUMENT.orbytBlack}
     />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/site-footer.css" />
-    <link rel="stylesheet" href="/css/site-document.css" />
-    <link rel="stylesheet" href="/css/site-landing-hero.css" />
-    <link rel="stylesheet" href="/css/caveat.css" />
-    <link rel="stylesheet" href="/css/klee-one.css" />
+    <SiteClientRouterHeadStyles documentShell landingHero landingAccentFonts />
     <meta name="google-site-verification" content="4xaimUg28uLCqKwsPNIz6QeG_tfnLlAdHgS5bC_90JU"/>
     {hreflangLinks('/').map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />

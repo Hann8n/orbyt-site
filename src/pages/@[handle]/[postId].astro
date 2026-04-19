@@ -4,6 +4,7 @@ export const prerender = false; // SSR route (shell-only, lightweight)
 import { fetchPost, toAbsoluteUrl, getImageMimeType } from '../../utils/bluesky-api';
 import { parseRichText } from '../../utils/richtext';
 import DocumentColorScheme from '../../components/DocumentColorScheme.astro';
+import SiteClientRouterHeadStyles from '../../components/SiteClientRouterHeadStyles.astro';
 import { SITE_DOCUMENT } from '../../utils/site-document-theme';
 import { getVideoAmbientBackdropInlineStyle } from '../../utils/video-ambient-backdrop';
 import { ClientRouter } from 'astro:transitions';
@@ -123,7 +124,8 @@ const finalOgTitle = `post by @${authorHandle}`;
     <link rel="stylesheet" href="/css/skeleton.css">
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/embed.css">
-    <link rel="stylesheet" href="/css/post.css"> 
+    <link rel="stylesheet" href="/css/post.css">
+    <SiteClientRouterHeadStyles />
 
     <style>
       @media screen and (max-width: 699px) {

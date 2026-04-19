@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
+import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
@@ -34,9 +35,7 @@ const termsBody = getTermsContent(locale);
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="manifest" href="/favicon/site.webmanifest">
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/site-footer.css" />
-    <link rel="stylesheet" href="/css/site-document.css" />
+    <SiteClientRouterHeadStyles documentShell />
 </head>
 <body>
     <SkipToContent />

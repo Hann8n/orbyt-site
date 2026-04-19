@@ -1,0 +1,53 @@
+/* Download CTAs + home-actions; pulled in from `SiteClientRouterHeadStyles.astro` on ClientRouter routes. */
+.home-actions {
+	--landing-fluid-step: clamp(0px, 1.25vw, 10px);
+	--landing-hero-actions-gap: calc(28px + var(--landing-fluid-step) * 1.7);
+	text-align: center;
+	margin-top: var(--landing-hero-actions-gap);
+	display: grid;
+	gap: calc(8px + var(--landing-fluid-step) * 0.4);
+}
+
+.download-button-wrap {
+	position: relative;
+	margin: 0 0 calc(8px + var(--landing-fluid-step) * 0.4) 0;
+	overflow: visible;
+}
+
+.download-button-wrap .download-button {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	max-width: none;
+	width: 100%;
+}
+
+.download-button {
+	background: #551def;
+	border: 2px solid #000000;
+	border-radius: 9999px;
+	padding-block: calc(0.82em + var(--landing-fluid-step) * 0.025);
+	padding-inline: calc(1.4em + var(--landing-fluid-step) * 0.05);
+	font-weight: bold;
+	font-size: calc(17px + var(--landing-fluid-step) * 0.3);
+	line-height: 1.2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	text-decoration: none;
+	color: #d2ddff;
+	width: 100%;
+	margin: 0;
+}
+
+.download-button:hover,
+.download-button:focus-visible {
+	color: #f3f5fe;
+}
+
+@media (max-width: 360px) {
+	.home-actions {
+		--landing-fluid-step: 0px;
+	}
+}

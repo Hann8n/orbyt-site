@@ -1,5 +1,6 @@
 ---
 export const prerender = true;
+import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import { ClientRouter } from 'astro:transitions';
 ---
 
@@ -8,6 +9,7 @@ import { ClientRouter } from 'astro:transitions';
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Android Beta sign up</title>
+    <SiteClientRouterHeadStyles />
     <ClientRouter />
     <script is:inline async src="https://tally.so/widgets/embed.js"></script>
     <style is:global>
