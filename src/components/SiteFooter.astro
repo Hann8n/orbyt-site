@@ -26,5 +26,7 @@ const t = useTranslations(locale)
     <a href="/terms">{t('footer.link.terms')}</a>
     <a href="/privacy">{t('footer.link.privacy')}</a>
     <a href="/contact">{t('footer.link.contact')}</a>
+    <div class="site-footer__lang">
+        <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+    </div>
 </footer>
-<LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
