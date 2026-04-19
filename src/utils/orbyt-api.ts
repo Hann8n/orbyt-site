@@ -1,3 +1,4 @@
+/** Profile color theme returned by the Orbyt color API. */
 export interface ColorData {
   textColor: string;
   backgroundColor: string;
@@ -5,10 +6,16 @@ export interface ColorData {
   isBeta: boolean;
 }
 
+/** Minimal interface for the Cloudflare service binding to the `orbyt-api` Worker. */
 export interface OrbytApiBinding {
   fetch(request: Request | string, init?: RequestInit): Promise<Response>;
 }
 
+/**
+ * Fetches profile color theme data for a DID from the Orbyt API.
+ * Tries targets in priority order: Cloudflare service binding → localhost (dev) → public API.
+ * Returns `null` if all targets fail or return a non-OK status.
+ */
 export async function getColor(
   did: string,
   binding?: OrbytApiBinding

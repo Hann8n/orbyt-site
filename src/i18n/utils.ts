@@ -185,10 +185,15 @@ const translations: Record<string, Record<string, string>> = {
   tr,
 }
 
+/** Returns `true` if `locale` is `"en"` or one of the supported non-default locales. */
 export function isValidLocale(locale: string): boolean {
   return locale === DEFAULT_LOCALE || (SUPPORTED_LOCALES as readonly string[]).includes(locale)
 }
 
+/**
+ * Returns a `t(key)` function scoped to `locale`.
+ * Lookup order: locale dict → fallback locale dict (e.g. es-MX → es-419) → English → key itself.
+ */
 export function useTranslations(locale: string) {
   const dict = translations[locale] ?? {}
   const fallback = FALLBACKS[locale]
@@ -202,16 +207,23 @@ export function useTranslations(locale: string) {
   }
 }
 
+/** Maps a locale string to the value for the HTML `lang` attribute (currently 1:1). */
 export function localeToHtmlLang(locale: string): string {
   return locale
 }
 
+/** Constructs a locale-prefixed URL path; English returns the bare path (no `/en/` prefix). */
 export function getLocaleUrl(locale: string, path = '/'): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
   if (locale === DEFAULT_LOCALE) return normalizedPath
   return `/${locale}${normalizedPath === '/' ? '/' : normalizedPath}`
 }
 
+/**
+ * Generates `<link rel="alternate" hreflang>` objects for a canonical path.
+ * Includes `x-default` and `en` pointing to the un-prefixed URL, plus one
+ * entry per supported locale at `/{locale}{canonicalPath}`.
+ */
 export function hreflangLinks(canonicalPath: string): Array<{ hreflang: string; href: string }> {
   const base = 'https://getorbyt.com'
   const links = [

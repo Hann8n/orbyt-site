@@ -3,6 +3,11 @@ import { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale } from './i18n/utils'
 
 const LOCALE_COOKIE = 'orbyt-locale'
 
+/**
+ * Parses the `Accept-Language` header and returns the best-matching supported locale.
+ * Tries an exact case-insensitive match first, then a base-language prefix match
+ * (e.g. `de-AT` → `de`, `pt-PT` → `pt-BR`), then English variants, then defaults to `en`.
+ */
 function matchAcceptLanguage(header: string | null): string {
   if (!header) return DEFAULT_LOCALE
 
@@ -34,6 +39,20 @@ function matchAcceptLanguage(header: string | null): string {
   return DEFAULT_LOCALE
 }
 
+/**
+ * Astro middleware that resolves the active locale for every request and stores
+ * it in `context.locals.locale`. Also reads Cloudflare geo-IP (`cf.country` or
+ * `CF-IPCountry` header) into `context.locals.countryCode` for geo-aware flag display.
+ *
+ * Detection order:
+ * 1. `x-orbyt-locale` header set by an earlier internal rewrite (skips re-detection)
+ * 2. URL path prefix — `/de/`, `/ja/`, etc. (rewrites internally, strips prefix)
+ * 3. `orbyt-locale` cookie (persists user's manual language choice)
+ * 4. `Accept-Language` header
+ * 5. Default: `en`
+ *
+ * Non-English locales detected at the root path (`/`) are redirected to `/{locale}/`.
+ */
 export const onRequest = defineMiddleware(async (context, next) => {
   // Read Cloudflare geo-IP country — available via the cf object in Workers,
   // or the CF-IPCountry header when running behind Cloudflare.

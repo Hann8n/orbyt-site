@@ -34,6 +34,7 @@ const EU_MEMBER_CODES = new Set([
 	'SE',
 ]);
 
+/** Uppercases and validates a raw CF-IPCountry value; returns `null` for unknown/Tor (`XX`, `T1`) and malformed codes. */
 function normalizeCountryCode(value: string | null | undefined): string | null {
 	if (value == null || value === '') return null;
 	const code = value.trim().toUpperCase();
@@ -41,6 +42,7 @@ function normalizeCountryCode(value: string | null | undefined): string | null {
 	return code;
 }
 
+/** Returns `true` for EU member states and Japan, where AltStore PAL is the primary iOS distribution channel. */
 function isAltstorePalRegion(cfIpCountry: string | null | undefined): boolean {
 	const code = normalizeCountryCode(cfIpCountry);
 	if (code == null) return false;
@@ -59,6 +61,7 @@ const DEFAULT_ALTSTORE_SOURCE = 'https://getorbyt.com/altstore/source.json';
 /** Same marketplace ID as `public/altstore/source.json` */
 const DEFAULT_APP_STORE = 'https://apps.apple.com/app/id6751679299';
 
+/** Builds iOS download options based on the visitor's country; AltStore PAL is primary for EU and Japan. */
 export function getIosDownloadOptions(
 	cfIpCountry: string | null | undefined,
 	overrides?: Partial<Pick<IosDownloadOptions, 'altstoreSourceUrl' | 'appStoreUrl'>>,
@@ -74,6 +77,7 @@ export function getIosDownloadOptions(
 	};
 }
 
+/** Reads `cf-ipcountry` from the incoming request headers and delegates to `getIosDownloadOptions`. */
 export function getIosDownloadOptionsFromRequest(
 	request: Request,
 	overrides?: Partial<Pick<IosDownloadOptions, 'altstoreSourceUrl' | 'appStoreUrl'>>,
@@ -89,6 +93,7 @@ function altstorePalSourceDeepLink(sourceUrl: string): string {
 	return `altstore-pal://source?url=${encodeURIComponent(sourceUrl)}`;
 }
 
+/** Resolves the primary iOS download href from pre-built options (AltStore deep link or App Store URL). */
 function iosHrefForOptions(options: IosDownloadOptions): string {
 	return options.primary === 'altstore'
 		? altstorePalSourceDeepLink(options.altstoreSourceUrl)

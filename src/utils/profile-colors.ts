@@ -4,6 +4,7 @@
  */
 export const ORBYT_BLACK = '#05070a' as const;
 
+/** Computes WCAG relative luminance for a 6-digit hex color using the IEC 61966-2-1 transfer function. */
 function getRelativeLuminance(hex: string): number {
   const color = hex.replace('#', '');
   const r = parseInt(color.substring(0, 2), 16) / 255;
@@ -14,6 +15,7 @@ function getRelativeLuminance(hex: string): number {
   return 0.2126 * transform(r) + 0.7152 * transform(g) + 0.0722 * transform(b);
 }
 
+/** Linear RGB blend of two 6-digit hex colors; `ratio` 0 = `color1`, 1 = `color2`. */
 function blendColors(color1: string, color2: string, ratio: number): string {
   const r = Math.round(
     parseInt(color1.slice(1, 3), 16) * (1 - ratio) + parseInt(color2.slice(1, 3), 16) * ratio

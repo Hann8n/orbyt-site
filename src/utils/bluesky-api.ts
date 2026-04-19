@@ -2,6 +2,7 @@ const BLUESKY_API_BASE = 'https://public.api.bsky.app/xrpc';
 const SITE_URL = 'https://getorbyt.com';
 const API_TIMEOUT = 5000;
 
+/** Normalized profile fields returned from `app.bsky.actor.getProfile`. */
 export interface ProfileData {
   handle: string;
   displayName?: string;
@@ -10,6 +11,7 @@ export interface ProfileData {
   did: string;
 }
 
+/** Normalized post fields used by SSR profile and post pages. */
 export interface PostData {
   text: string;
   createdAt?: string;
@@ -83,6 +85,7 @@ const FETCH_HEADERS: HeadersInit = {
   'User-Agent': 'Orbyt/1.0 (https://getorbyt.com)',
 };
 
+/** Wraps `fetch` with an `AbortController` timeout so hung API calls don't block SSR. */
 async function fetchWithTimeout(url: string, timeout: number = API_TIMEOUT): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -96,13 +99,14 @@ async function fetchWithTimeout(url: string, timeout: number = API_TIMEOUT): Pro
   }
 }
 
+/** Fetches a Bluesky profile by handle; returns `null` on any API or network error. */
 export async function fetchProfile(handle: string): Promise<ProfileData | null> {
   try {
     const url = `${BLUESKY_API_BASE}/app.bsky.actor.getProfile?actor=${encodeURIComponent(handle)}`;
     const response = await fetchWithTimeout(url);
-    
+
     if (!response.ok) return null;
-    
+
     const data = (await response.json()) as BskyProfileResponse;
     if (data.error || !data.handle || !data.did) return null;
 
@@ -118,13 +122,14 @@ export async function fetchProfile(handle: string): Promise<ProfileData | null> 
   }
 }
 
+/** Resolves an AT Protocol handle to its DID via `com.atproto.identity.resolveHandle`. */
 async function resolveHandle(handle: string): Promise<string | null> {
   try {
     const url = `${BLUESKY_API_BASE}/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(handle)}`;
     const response = await fetchWithTimeout(url);
-    
+
     if (!response.ok) return null;
-    
+
     const data = (await response.json()) as { did?: string };
     return data.did || null;
   } catch {
@@ -132,17 +137,22 @@ async function resolveHandle(handle: string): Promise<string | null> {
   }
 }
 
+/**
+ * Fetches a single post by handle + rkey (post ID).
+ * Resolves the handle to a DID first, then constructs the AT URI for `getPosts`.
+ * Handles plain video embeds and `recordWithMedia` wrappers; falls back to image thumbnails.
+ */
 export async function fetchPost(handle: string, postId: string): Promise<PostData | null> {
   try {
     const did = await resolveHandle(handle);
     if (!did) return null;
-    
+
     const atUri = `at://${did}/app.bsky.feed.post/${postId}`;
     const url = `${BLUESKY_API_BASE}/app.bsky.feed.getPosts?uris=${encodeURIComponent(atUri)}`;
     const response = await fetchWithTimeout(url);
-    
+
     if (!response.ok) return null;
-    
+
     const data = (await response.json()) as BskyGetPostsResponse;
     const posts = data.posts;
     if (!posts || posts.length === 0) return null;
@@ -152,7 +162,7 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
     let thumbnail: string | undefined;
     let videoUrl: string | undefined;
     let aspectRatio: { width: number; height: number } | undefined;
-    
+
     if (post.embed) {
       if (post.embed.$type === 'app.bsky.embed.video#view') {
         thumbnail = post.embed.thumbnail;
@@ -186,7 +196,7 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
         thumbnail = post.embed.images[0].thumb || post.embed.images[0].fullsize;
       }
     }
-    
+
     return {
       text: post.record?.text || '',
       createdAt: post.record?.createdAt,
@@ -208,6 +218,7 @@ export async function fetchPost(handle: string, postId: string): Promise<PostDat
   }
 }
 
+/** A minimal video post entry used for the infinite-scroll feed grid. */
 export interface VideoPost {
   uri: string;
   postId: string;
@@ -215,23 +226,31 @@ export interface VideoPost {
   caption: string;
 }
 
+/** Paginated result from `fetchVideoPosts`. */
 export interface VideoFeedResult {
   posts: VideoPost[];
   cursor: string | null;
 }
 
+/** Extracts the rkey (last path segment) from an AT URI. */
 function extractPostId(uri: string): string | null {
   if (!uri) return null;
   const parts = uri.split('/');
   return parts[parts.length - 1] || null;
 }
 
+/** Truncates `text` to `maxLength` characters, appending `…` if cut. */
 function truncateText(text: string, maxLength: number = 90): string {
   if (!text) return '';
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength).trim() + '...';
 }
 
+/**
+ * Fetches the video-only feed for a handle using `posts_with_video` filter.
+ * Skips posts whose embed type is not `app.bsky.embed.video#view`.
+ * Returns an empty result (no throw) on any network or API error.
+ */
 export async function fetchVideoPosts(handle: string, cursor?: string, limit: number = 30): Promise<VideoFeedResult> {
   try {
     let url = `${BLUESKY_API_BASE}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&filter=posts_with_video&limit=${limit}`;
@@ -240,7 +259,7 @@ export async function fetchVideoPosts(handle: string, cursor?: string, limit: nu
     }
 
     const response = await fetchWithTimeout(url);
-    
+
     if (!response.ok) {
       return { posts: [], cursor: null };
     }
@@ -283,6 +302,7 @@ export async function fetchVideoPosts(handle: string, cursor?: string, limit: nu
   }
 }
 
+/** Ensures `url` is absolute using `SITE_URL` as the base; returns `fallback` when `url` is empty. */
 export function toAbsoluteUrl(url: string | undefined, fallback: string = '/images/post/Orbyt-with-background.png'): string {
   if (!url) return `${SITE_URL}${fallback}`;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -290,11 +310,12 @@ export function toAbsoluteUrl(url: string | undefined, fallback: string = '/imag
   return `${SITE_URL}/${url}`;
 }
 
+/** Infers the image MIME type from URL path extension; defaults to `image/jpeg`. */
 export function getImageMimeType(url: string): string {
   if (!url) return 'image/jpeg';
-  
+
   const urlLower = url.toLowerCase();
-  
+
   if (urlLower.includes('.png') || urlLower.endsWith('png')) {
     return 'image/png';
   }

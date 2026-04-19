@@ -5,6 +5,7 @@ import { parseRichText } from "../utils/richtext";
 import { getVideoAmbientBackdropInlineStyle } from "../utils/video-ambient-backdrop";
 
 export const server = {
+  /** Loads the next page of video posts for a handle using the stored cursor. */
   loadMorePosts: defineAction({
     input: z.object({
       handle: z.string(),
