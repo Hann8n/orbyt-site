@@ -103,10 +103,15 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
         --fg-color: var(--orbyt-white);
     }
 
+    /* Hero column — constrains content to a readable width on all screen sizes */
+    .hero-column {
+        width: 100%;
+        max-width: 420px;
+    }
+
     .download-button-wrap {
         position: relative;
-        max-width: 500px;
-        margin: 0 auto clamp(8px, 1.5vw, 12px) auto;
+        margin: 0 0 10px 0;
         overflow: visible;
     }
 
@@ -122,10 +127,10 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
         background: #551DEF;
         border: 2px solid #000000;
         border-radius: 30px;
-        min-height: clamp(50px, 4vw + 37px, 60px);
+        min-height: 56px;
         padding: 0.75rem 1.5rem;
         font-weight: bold;
-        font-size: clamp(19px, 0.8vw + 17px, 23px);
+        font-size: 19px;
         line-height: 1.2;
         display: flex;
         align-items: center;
@@ -133,8 +138,8 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
         text-align: center;
         text-decoration: none;
         color: #E0EBFF;
-        max-width: 500px;
-        margin: 0 auto clamp(8px, 1.5vw, 12px) auto;
+        width: 100%;
+        margin: 0 0 10px 0;
     }
 
     .home-hero {
@@ -144,7 +149,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
 
     .home-actions {
         text-align: center;
-        margin-top: clamp(28px, 2.5vw + 18px, 40px);
+        margin-top: 32px;
     }
 
     .logo {
@@ -152,7 +157,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     }
 
     .logo-icon {
-        width: clamp(108px, 12vw + 60px, 160px);
+        width: 110px;
         height: auto;
         display: block;
         margin: 0 auto;
@@ -175,7 +180,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     .logo-text {
         font-family: 'Figtree', sans-serif;
         font-weight: 900;
-        font-size: clamp(34px, 3vw + 22px, 48px);
+        font-size: 42px;
         color: var(--fg-color);
         text-align: center;
         text-box-trim: trim-start;
@@ -185,7 +190,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     }
 
     .home-motto {
-        margin-top: clamp(6px, 1vw, 10px);
+        margin-top: 8px;
         margin-bottom: 0;
         text-align: center;
     }
@@ -193,12 +198,19 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     .motto-text {
         font-family: 'Figtree', sans-serif;
         font-weight: 500;
-        font-size: clamp(20px, 1.5vw + 15px, 28px);
+        font-size: 20px;
         color: #01f5b3;
         text-align: center;
         display: block;
-        margin: clamp(12px, 1.5vw, 20px) auto;
+        margin: 16px auto 0;
         letter-spacing: -0.02em;
+    }
+
+    @media (max-width: 360px) {
+        .logo-icon { width: 88px; }
+        .logo-text { font-size: 34px; }
+        .motto-text { font-size: 17px; }
+        .download-button { font-size: 17px; min-height: 50px; }
     }
     </style>
 </head>
@@ -207,6 +219,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     <SkipToContent />
     <div class="site-doc site-doc--landing">
         <main id="main-content" class="main-content">
+            <div class="hero-column">
             <div class="home-hero">
                 <div class="logo">
                     <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
@@ -237,6 +250,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
                     <a href="/ios" class="download-button">{t('index.button.ios')}</a>
                 </div>
                 <a href="/android" class="download-button">{t('index.button.android_waitlist')}</a>
+            </div>
             </div>
         </main>
 

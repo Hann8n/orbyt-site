@@ -49,6 +49,25 @@ body:has(> .site-doc) * {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+}
+
+/* On taller viewports (desktop/tablet landscape) shift content up from dead-center */
+@media (min-height: 600px) {
+  .site-doc--landing > .main-content {
+    justify-content: flex-start;
+    padding-top: clamp(4rem, 12vh, 8rem);
+    padding-bottom: 2rem;
+  }
+}
+
+/* On short viewports (phone landscape, small phones) keep centering */
+@media (max-height: 599px) {
+  .site-doc--landing > .main-content {
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 }
 
 .site-doc__masthead {
