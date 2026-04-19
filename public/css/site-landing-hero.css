@@ -10,22 +10,24 @@ a.logo {
 .site-doc--landing {
   --bg-color: var(--orbyt-page-bg);
   --fg-color: var(--orbyt-white);
+  /* Shared fluid step keeps all hero elements scaling together */
+  --landing-fluid-step: clamp(0px, 1.25vw, 10px);
   /* Tight stack: mark / wordmark / slogan */
-  --landing-logo-icon-wordmark-gap: clamp(4px, 1.2vw, 10px);
-  --landing-wordmark-slogan-gap: clamp(6px, 1.6vw, 14px);
+  --landing-logo-icon-wordmark-gap: calc(5px + var(--landing-fluid-step) * 0.35);
+  --landing-wordmark-slogan-gap: calc(7px + var(--landing-fluid-step) * 0.45);
   /* Breathing room before CTAs */
-  --landing-hero-actions-gap: clamp(40px, 12vw, 96px);
+  --landing-hero-actions-gap: calc(28px + var(--landing-fluid-step) * 1.7);
 }
 
 /* Hero column — constrains content to a readable width on all screen sizes */
 .hero-column {
   width: 100%;
-  max-width: 420px;
+  max-width: calc(340px + var(--landing-fluid-step) * 16);
 }
 
 .download-button-wrap {
   position: relative;
-  margin: 0 0 10px 0;
+  margin: 0 0 calc(8px + var(--landing-fluid-step) * 0.4) 0;
   overflow: visible;
 }
 
@@ -40,20 +42,20 @@ a.logo {
 .download-button {
   background: #551def;
   border: 2px solid #000000;
-  border-radius: 30px;
-  min-height: 56px;
-  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  padding-block: calc(0.82em + var(--landing-fluid-step) * 0.025);
+  padding-inline: calc(1.4em + var(--landing-fluid-step) * 0.05);
   font-weight: bold;
-  font-size: 19px;
+  font-size: calc(17px + var(--landing-fluid-step) * 0.3);
   line-height: 1.2;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  color: #e0ebff;
+  color: #d2ddff;
   width: 100%;
-  margin: 0 0 10px 0;
+  margin: 0;
 }
 
 .home-hero {
@@ -64,6 +66,8 @@ a.logo {
 .home-actions {
   text-align: center;
   margin-top: var(--landing-hero-actions-gap);
+  display: grid;
+  gap: calc(8px + var(--landing-fluid-step) * 0.4);
 }
 
 .logo {
@@ -75,7 +79,7 @@ a.logo {
 }
 
 .logo-icon {
-  width: 110px;
+  width: calc(100px + var(--landing-fluid-step) * 3.4);
   height: auto;
   display: block;
   margin: 0;
@@ -98,7 +102,7 @@ a.logo {
 .logo-text {
   font-family: 'Figtree', sans-serif;
   font-weight: 900;
-  font-size: 42px;
+  font-size: calc(38px + var(--landing-fluid-step) * 1.6);
   color: var(--fg-color);
   text-align: center;
   text-box-trim: trim-start;
@@ -116,29 +120,16 @@ a.logo {
 .motto-text {
   font-family: 'Figtree', sans-serif;
   font-weight: 500;
-  font-size: 20px;
+  font-size: calc(18px + var(--landing-fluid-step) * 0.6);
   color: #01f5b3;
   text-align: center;
   display: block;
   margin: 0 auto;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
 }
 
 @media (max-width: 360px) {
-  .logo-icon {
-    width: 88px;
-  }
-
-  .logo-text {
-    font-size: 34px;
-  }
-
-  .motto-text {
-    font-size: 17px;
-  }
-
-  .download-button {
-    font-size: 17px;
-    min-height: 50px;
+  .site-doc--landing {
+    --landing-fluid-step: 0px;
   }
 }

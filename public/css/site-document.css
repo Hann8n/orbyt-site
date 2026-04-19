@@ -92,8 +92,8 @@ body * {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: clamp(0.2rem, 1vw + 0.8vmin, 1.75rem);
-  padding-bottom: clamp(0.75rem, 3vw + 1vmin, 2rem);
+  padding-top: clamp(0.5rem, 2vh, 1.4rem);
+  padding-bottom: clamp(1rem, 3.5vh, 2.2rem);
 }
 
 .site-doc__masthead {
