@@ -1,5 +1,6 @@
 /** Mentions with a TLD link to /@handle; URLs become external links. */
 
+/** Escapes `&`, `<`, `>`, `"`, and `'` so user-provided text is safe to embed in HTML. */
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -9,6 +10,11 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#x27;');
 }
 
+/**
+ * Converts plain Bluesky post text to HTML, turning `@mention.bsky.social`
+ * handles into profile links and bare/www/TLD URLs into external anchor tags.
+ * Overlap between mentions and URLs is resolved in favour of the mention.
+ */
 export function parseRichText(text: string, options?: {
   mentionClass?: string;
   linkClass?: string;
@@ -125,6 +131,7 @@ export function parseRichText(text: string, options?: {
   return result;
 }
 
+/** Truncates `text` to `maxLength` characters (appending `…`) before calling `parseRichText`. */
 export function parseRichTextTruncated(text: string, maxLength: number = 90, options?: {
   mentionClass?: string;
   linkClass?: string;

@@ -8,6 +8,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 ---
 <!DOCTYPE html>
@@ -153,7 +154,7 @@ const t = useTranslations(locale);
             <p>If you have any questions about these Terms or Orbyt, visit our <a href="/contact">contact page</a>.</p>
         </main>
 
-        <SiteFooter locale={locale} currentPath="/terms" />
+        <SiteFooter locale={locale} currentPath="/terms" countryCode={countryCode} />
     </div>
 
 </body>

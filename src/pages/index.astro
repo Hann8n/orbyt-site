@@ -13,6 +13,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, hreflangLinks, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 const iosDownload = getIosDownloadOptionsFromRequest(Astro.request);
 const iosHref = iosDownloadHrefFromOptions(iosDownload);
@@ -264,7 +265,7 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
             </div>
         </main>
 
-        <SiteFooter locale={locale} currentPath="/" />
+        <SiteFooter locale={locale} currentPath="/" countryCode={countryCode} />
     </div>
 </body>
 </html>

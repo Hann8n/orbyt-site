@@ -5,9 +5,10 @@ import { useTranslations } from '../i18n/utils'
 interface Props {
   locale?: string
   currentPath?: string
+  countryCode?: string
 }
 
-const { locale = 'en', currentPath = '/' } = Astro.props
+const { locale = 'en', currentPath = '/', countryCode } = Astro.props
 const t = useTranslations(locale)
 ---
 <footer class="site-footer">
@@ -29,6 +30,6 @@ const t = useTranslations(locale)
         <a href="/contact">{t('footer.link.contact')}</a>
     </nav>
     <div class="site-footer__lang">
-        <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+        <LanguageSwitcher currentLocale={locale} currentPath={currentPath} countryCode={countryCode} />
     </div>
 </footer>

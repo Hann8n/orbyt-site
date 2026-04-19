@@ -8,6 +8,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 ---
 
@@ -190,7 +191,7 @@ const t = useTranslations(locale);
             </div>
         </main>
 
-        <SiteFooter locale={locale} />
+        <SiteFooter locale={locale} countryCode={countryCode} />
     </div>
 </body>
 </html>
