@@ -273,7 +273,7 @@
 		position: absolute;
 		right: 100%;
 		top: 50%;
-		transform: translateY(calc(-50% - 13px));
+		transform: translateY(calc(-50% - 8px)) rotate(-2.5deg);
 		margin-right: 5px;
 		padding: 2px 0;
 		pointer-events: none;
@@ -380,7 +380,7 @@
 		position: absolute;
 		right: 100%;
 		top: 50%;
-		transform: translateY(calc(-50% - 6px));
+		transform: translateY(calc(-50% - 1px)) rotate(-2.5deg);
 		margin-right: 4px;
 		padding: 2px 0;
 		pointer-events: none;
