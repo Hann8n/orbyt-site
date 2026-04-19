@@ -3,6 +3,9 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://getorbyt.com',
+  devToolbar: {
+    enabled: false,
+  },
   vite: {
     optimizeDeps: {
       exclude: ['fsevents'],

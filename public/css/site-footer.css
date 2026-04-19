@@ -64,7 +64,7 @@
 .site-footer__lang {
   display: flex;
   align-items: center;
-  padding: 0.3rem 0 0.3rem 2px;
+  padding: 0.15rem 0 0.15rem 2px;
 }
 
 @media (max-width: 600px) {
@@ -80,15 +80,16 @@
   }
 
   .site-footer a {
-    min-height: 2.75rem;
+    min-height: 2.25rem;
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
+    font-size: 12.5px;
     white-space: normal;
   }
 
   .site-footer__lang {
-    min-height: 2.75rem;
+    min-height: 2.25rem;
     padding: 0 0.5rem;
     width: 100%;
   }
