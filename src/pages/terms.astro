@@ -3,6 +3,7 @@ export const prerender = false;
 
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
@@ -32,7 +33,7 @@ const t = useTranslations(locale);
     <link rel="stylesheet" href="/css/site-document.css" />
 </head>
 <body>
-
+    <SkipToContent />
 
     <div class="site-doc">
         <header class="site-doc__masthead">
@@ -43,7 +44,7 @@ const t = useTranslations(locale);
             <p class="site-doc__subtitle">{t('terms.last_updated')}</p>
         </header>
 
-        <main class="site-doc__prose">
+        <main id="main-content" class="site-doc__prose">
             <p>Welcome to Orbyt, a video social networking application! We're excited to have you on board as a user. Orbyt runs on the Authenticated Transfer Protocol ("AT Protocol"), a decentralized social networking protocol that supports many different kinds of services. These Terms of Service apply to the Orbyt service.</p>
 
             <p>Before you dive into using Orbyt, please take a moment to carefully read these Terms. This document outlines our legal obligations to each other and they apply to your use of our services.</p>

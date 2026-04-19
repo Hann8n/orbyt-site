@@ -263,17 +263,18 @@ footer {
 }
 #load-more {
   background: var(--orbyt-profile-text);
+  border: none;
   color: var(--orbyt-profile-bg);
   border-radius: 30px;
   cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
   padding: 5px 20px;
   text-decoration: none;
 }
 #load-more:hover,
-#load-more:active,
-#load-more:visited {
+#load-more:active {
   color: var(--orbyt-profile-bg);
-  text-decoration: none;
 }
 
 .loading {

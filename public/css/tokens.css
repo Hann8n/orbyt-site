@@ -9,6 +9,12 @@ html {
   box-sizing: inherit;
 }
 
+:focus-visible {
+  outline: 2px solid var(--orbyt-teal);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 html.orbyt-doc-dark {
   color-scheme: dark;
 }

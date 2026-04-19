@@ -3,6 +3,7 @@ export const prerender = false;
 
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
@@ -139,12 +140,15 @@ const t = useTranslations(locale);
         .nav-button {
             display: inline-flex;
             background: #f3f5fe;
+            border: none;
             color: #000000;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 700;
             text-decoration: none;
             padding: 0.625rem 1.25rem;
             border-radius: 999px;
-            font-size: 0.875rem;
-            font-weight: 700;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
@@ -173,13 +177,14 @@ const t = useTranslations(locale);
     </style>
 </head>
 <body>
+    <SkipToContent />
     <div class="container">
-        <main class="main-content">
+        <main id="main-content" class="main-content">
             <div class="tv-static" aria-hidden="true"></div>
             <h1 class="error-title">{t('404.heading')}</h1>
             <p class="error-message">{t('404.message')}</p>
             <div class="error-actions">
-                <a href="#" onclick="window.history.back(); return false;" class="nav-button">{t('404.action.back')}</a>
+                <button type="button" onclick="window.history.back()" class="nav-button">{t('404.action.back')}</button>
                 <a href="/" class="nav-button nav-button--secondary">{t('404.action.home')}</a>
             </div>
         </main>

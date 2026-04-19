@@ -1,0 +1,27 @@
+---
+interface Props {
+  targetId?: string
+}
+const { targetId = 'main-content' } = Astro.props
+---
+<a href={`#${targetId}`} class="skip-to-content">Skip to main content</a>
+
+<style>
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--orbyt-teal);
+  color: var(--orbyt-black);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+.skip-to-content:focus {
+  top: 0;
+}
+</style>

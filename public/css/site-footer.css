@@ -45,6 +45,10 @@
   color: var(--orbyt-white);
 }
 
+.site-footer a:focus-visible {
+  color: var(--orbyt-white);
+}
+
 .site-footer__lang {
   flex-basis: 100%;
   width: 100%;

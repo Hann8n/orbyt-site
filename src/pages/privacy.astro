@@ -3,6 +3,7 @@ export const prerender = false;
 
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
@@ -32,7 +33,7 @@ const t = useTranslations(locale);
     <link rel="stylesheet" href="/css/site-document.css" />
 </head>
 <body>
-
+    <SkipToContent />
 
     <div class="site-doc">
         <header class="site-doc__masthead">
@@ -43,7 +44,7 @@ const t = useTranslations(locale);
             <p class="site-doc__subtitle">{t('privacy.last_updated')}</p>
         </header>
 
-        <main class="site-doc__prose">
+        <main id="main-content" class="site-doc__prose">
             <p>This Privacy Policy describes how Orbyt ("we", "us", "our") collects, uses, and shares information when you use our mobile application ("Orbyt" or "the App").</p>
 
             <p><strong>Important:</strong> Orbyt is a third-party client application that connects to the Bluesky network via the AT Protocol. When you use Orbyt, your data is shared with the decentralized AT Protocol network. You should also review <a href="https://bsky.social/about/support/privacy-policy" target="_blank" rel="noopener">Bluesky's Privacy Policy</a> to understand how your data is handled on their network.</p>

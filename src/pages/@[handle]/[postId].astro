@@ -404,7 +404,7 @@ const finalOgTitle = `post by @${authorHandle}`;
           <div class="video-ambient-backdrop" aria-hidden="true"></div>
           <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
           </video>
-          <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" style={`view-transition-name: video-${postId}`} />
+          <img id="video-thumbnail" class="video-thumbnail" src={thumbnail} alt="" aria-hidden="true" style={`view-transition-name: video-${postId}`} />
         </div>
 
         <div id="post-overlay" class="post-overlay">

@@ -4,6 +4,7 @@ export const prerender = false;
 import AltstorePalPeek from '../components/AltstorePalPeek.astro';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SkipToContent from '../components/SkipToContent.astro';
 import {
 	getIosDownloadOptionsFromRequest,
 	iosDownloadHrefFromOptions,
@@ -245,8 +246,9 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
 </head>
 
 <body>
+    <SkipToContent />
     <div class="site-doc site-doc--landing">
-        <main class="main-content">
+        <main id="main-content" class="main-content">
             <div class="home-hero">
                 <div class="logo">
                     <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="65 65 894 894">
