@@ -21,11 +21,13 @@ const t = useTranslations(locale)
             <rect fill="url(#squigglePattern)" width="100%" height="100%"/>
         </svg>
     </div>
-    <a href="https://bsky.app/profile/getorbyt.com">{t('footer.link.bluesky')}</a>
-    <a href="https://community.getorbyt.com">{t('footer.link.community')}</a>
-    <a href="/terms">{t('footer.link.terms')}</a>
-    <a href="/privacy">{t('footer.link.privacy')}</a>
-    <a href="/contact">{t('footer.link.contact')}</a>
+    <nav aria-label="Site links">
+        <a href="https://bsky.app/profile/getorbyt.com">{t('footer.link.bluesky')}</a>
+        <a href="https://community.getorbyt.com">{t('footer.link.community')}</a>
+        <a href="/terms">{t('footer.link.terms')}</a>
+        <a href="/privacy">{t('footer.link.privacy')}</a>
+        <a href="/contact">{t('footer.link.contact')}</a>
+    </nav>
     <div class="site-footer__lang">
         <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
     </div>

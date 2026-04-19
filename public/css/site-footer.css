@@ -26,6 +26,10 @@
   margin-bottom: var(--site-footer-margin-bottom);
 }
 
+.site-footer nav {
+  display: contents;
+}
+
 .site-footer a {
   font-style: normal;
   font-weight: bold;
