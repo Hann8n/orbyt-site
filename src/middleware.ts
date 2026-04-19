@@ -54,11 +54,11 @@ function matchAcceptLanguage(header: string | null): string {
  * Non-English locales detected at the root path (`/`) are redirected to `/{locale}/`.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Read Cloudflare geo-IP country — available via the cf object in Workers,
-  // or the CF-IPCountry header when running behind Cloudflare.
-  const cf = (context.locals as { runtime?: { cf?: { country?: string } } }).runtime?.cf
-  const rawCountry = cf?.country ?? context.request.headers.get('CF-IPCountry') ?? undefined
-  context.locals.countryCode = rawCountry?.toUpperCase()
+  // Read Cloudflare geo-IP country from request headers.
+  // Keep this header-only to avoid runtime-specific object access failures.
+  const rawCountry = context.request.headers.get('CF-IPCountry') ?? undefined
+  const countryCode = rawCountry?.toUpperCase()
+  context.locals.countryCode = countryCode && /^[A-Z]{2}$/.test(countryCode) ? countryCode : undefined
 
   // If this is a rewritten request from a locale-prefix path, skip re-detection
   const preResolved = context.request.headers.get('x-orbyt-locale')
