@@ -54,7 +54,8 @@ body:has(> .site-doc) * {
 @media (min-height: 600px) {
   .site-doc--landing > .main-content {
     justify-content: flex-start;
-    padding-top: clamp(4rem, 12vh, 8rem);
+    /* Tighter above-logo gap: scales down with viewport height, low floor for laptops */
+    padding-top: clamp(1.25rem, 5vh, 3.5rem);
     padding-bottom: 2rem;
   }
 }
@@ -63,7 +64,7 @@ body:has(> .site-doc) * {
 @media (max-height: 599px) {
   .site-doc--landing > .main-content {
     justify-content: center;
-    padding-top: 1rem;
+    padding-top: 0.5rem;
     padding-bottom: 1rem;
   }
 }
