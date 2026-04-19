@@ -20,8 +20,9 @@ const currentFlagCode = getFlagCountryCode(currentLocale, countryCode)
     class="lang-flag"
     width="20"
     height="15"
-    loading="lazy"
-    decoding="async"
+    loading="eager"
+    decoding="sync"
+    fetchpriority="high"
   />
   <span class="lang-code">{LOCALE_CODES[currentLocale]}</span>
   <select
