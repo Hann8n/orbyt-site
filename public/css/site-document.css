@@ -46,27 +46,14 @@ body:has(> .site-doc) * {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-}
-
-/* On taller viewports (desktop/tablet landscape) shift content up from dead-center */
-@media (min-height: 600px) {
-  .site-doc--landing > .main-content {
-    justify-content: flex-start;
-    /* Tighter above-logo gap: scales down with viewport height, low floor for laptops */
-    padding-top: clamp(1.25rem, 5vh, 3.5rem);
-    padding-bottom: 2rem;
-  }
-}
-
-/* On short viewports (phone landscape, small phones) keep centering */
-@media (max-height: 599px) {
-  .site-doc--landing > .main-content {
-    justify-content: center;
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;
-  }
+  /*
+   * Fluid vertical inset (no height breakpoints): same idea as --site-page-padding-x
+   * clamp(1rem, 5vw, 2rem) — vw for width scale, vmin so short/landscape viewports tighten too.
+   */
+  padding-top: clamp(0.625rem, 2vw + 2vmin, 3.25rem);
+  padding-bottom: clamp(0.75rem, 3vw + 1vmin, 2rem);
 }
 
 .site-doc__masthead {
