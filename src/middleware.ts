@@ -35,6 +35,12 @@ function matchAcceptLanguage(header: string | null): string {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Read Cloudflare geo-IP country — available via the cf object in Workers,
+  // or the CF-IPCountry header when running behind Cloudflare.
+  const cf = (context.locals as { runtime?: { cf?: { country?: string } } }).runtime?.cf
+  const rawCountry = cf?.country ?? context.request.headers.get('CF-IPCountry') ?? undefined
+  context.locals.countryCode = rawCountry?.toUpperCase()
+
   // If this is a rewritten request from a locale-prefix path, skip re-detection
   const preResolved = context.request.headers.get('x-orbyt-locale')
   if (preResolved && isValidLocale(preResolved)) {

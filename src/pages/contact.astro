@@ -8,6 +8,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 ---
 <!DOCTYPE html>
@@ -59,7 +60,7 @@ const t = useTranslations(locale);
             <p set:html={t('contact.copyright.html')} />
         </main>
 
-        <SiteFooter locale={locale} currentPath="/contact" />
+        <SiteFooter locale={locale} currentPath="/contact" countryCode={countryCode} />
     </div>
 
 </body>

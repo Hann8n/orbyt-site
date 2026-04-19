@@ -1,18 +1,28 @@
 ---
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_CODES } from '../i18n/utils'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, LOCALE_LABELS, LOCALE_CODES, LOCALE_FLAG_COUNTRY, getFlagCountryCode } from '../i18n/utils'
 
 interface Props {
   currentLocale: string
   currentPath?: string
+  countryCode?: string
 }
 
-const { currentLocale, currentPath = '/' } = Astro.props
+const { currentLocale, currentPath = '/', countryCode } = Astro.props
 const allLocales = [DEFAULT_LOCALE, ...SUPPORTED_LOCALES]
-
+const currentFlagCode = getFlagCountryCode(currentLocale, countryCode)
 ---
 
 <div class="lang-switcher" role="group" aria-label="Language">
-  <span class="lang-flag" aria-hidden="true">{LOCALE_FLAGS[currentLocale]}</span>
+  <img
+    src={`/flags/${currentFlagCode}.svg`}
+    alt=""
+    aria-hidden="true"
+    class="lang-flag"
+    width="20"
+    height="15"
+    loading="lazy"
+    decoding="async"
+  />
   <span class="lang-code">{LOCALE_CODES[currentLocale]}</span>
   <select
     id="lang-select"
@@ -59,8 +69,11 @@ const allLocales = [DEFAULT_LOCALE, ...SUPPORTED_LOCALES]
 
   .lang-flag {
     display: block;
-    font-size: 18px;
-    line-height: 1;
+    width: 20px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
   .lang-code {

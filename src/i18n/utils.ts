@@ -1,6 +1,7 @@
 import en from './translations/en.json'
 import de from './translations/de.json'
 import esMX from './translations/es-MX.json'
+import esES from './translations/es-ES.json'
 import fr from './translations/fr.json'
 import ja from './translations/ja.json'
 import ko from './translations/ko.json'
@@ -9,13 +10,14 @@ import es419 from './translations/es-419.json'
 
 export const DEFAULT_LOCALE = 'en'
 
-export const SUPPORTED_LOCALES = ['de', 'es-MX', 'fr', 'ja', 'ko', 'pt-BR', 'es-419'] as const
+export const SUPPORTED_LOCALES = ['de', 'es-MX', 'es-ES', 'fr', 'ja', 'ko', 'pt-BR', 'es-419'] as const
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number] | 'en'
 
 export const LOCALE_LABELS: Record<string, string> = {
   en: 'English',
   de: 'Deutsch',
   'es-MX': 'Español (MX)',
+  'es-ES': 'Español (ES)',
   fr: 'Français',
   ja: '日本語',
   ko: '한국어',
@@ -27,6 +29,7 @@ export const LOCALE_CODES: Record<string, string> = {
   en: 'EN',
   de: 'DE',
   'es-MX': 'ES',
+  'es-ES': 'ES',
   fr: 'FR',
   ja: 'JA',
   ko: 'KO',
@@ -34,10 +37,49 @@ export const LOCALE_CODES: Record<string, string> = {
   'es-419': 'ES',
 }
 
+/** ISO 3166-1 alpha-2 country code for the flag SVG to display per locale */
+export const LOCALE_FLAG_COUNTRY: Record<string, string> = {
+  en: 'us',
+  de: 'de',
+  'es-MX': 'mx',
+  'es-ES': 'es',
+  fr: 'fr',
+  ja: 'jp',
+  ko: 'kr',
+  'pt-BR': 'br',
+  'es-419': 'ar',
+}
+
+/**
+ * When the active locale is English, map Cloudflare country codes to a
+ * region-appropriate flag so e.g. British visitors see the Union Jack.
+ */
+export const ENGLISH_COUNTRY_FLAG_MAP: Record<string, string> = {
+  GB: 'gb',
+  AU: 'au',
+  CA: 'ca',
+  IE: 'ie',
+  NZ: 'nz',
+  ZA: 'za',
+  IN: 'in',
+  SG: 'sg',
+  PH: 'ph',
+}
+
+/** Returns the SVG filename stem (e.g. "gb") for the flag to display. */
+export function getFlagCountryCode(locale: string, countryCode?: string): string {
+  if (locale === DEFAULT_LOCALE && countryCode) {
+    return ENGLISH_COUNTRY_FLAG_MAP[countryCode] ?? LOCALE_FLAG_COUNTRY[locale] ?? 'us'
+  }
+  return LOCALE_FLAG_COUNTRY[locale] ?? 'us'
+}
+
+// Keep emoji flags for any non-switcher uses (e.g. <meta>, schema)
 export const LOCALE_FLAGS: Record<string, string> = {
   en: '🇺🇸',
   de: '🇩🇪',
   'es-MX': '🇲🇽',
+  'es-ES': '🇪🇸',
   fr: '🇫🇷',
   ja: '🇯🇵',
   ko: '🇰🇷',
@@ -53,6 +95,7 @@ const translations: Record<string, Record<string, string>> = {
   en,
   de,
   'es-MX': esMX,
+  'es-ES': esES,
   fr,
   ja,
   ko,

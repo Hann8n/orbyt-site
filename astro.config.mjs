@@ -15,7 +15,7 @@ export default defineConfig({
     },
     routes: {
       strategy: 'exclude',
-      exclude: ['/css/*', '/fonts/*', '/images/*', '/favicon/*', '/js/*'],
+      exclude: ['/css/*', '/fonts/*', '/images/*', '/favicon/*', '/js/*', '/flags/*'],
     },
   }),
 });

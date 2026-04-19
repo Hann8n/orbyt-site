@@ -8,6 +8,7 @@ import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
 
 const locale = Astro.locals.locale ?? 'en';
+const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
 ---
 <!DOCTYPE html>
@@ -181,7 +182,7 @@ const t = useTranslations(locale);
             <p>If you have questions about this Privacy Policy, visit our <a href="/contact">contact page</a>.</p>
         </main>
 
-        <SiteFooter locale={locale} currentPath="/privacy" />
+        <SiteFooter locale={locale} currentPath="/privacy" countryCode={countryCode} />
     </div>
 
 </body>
