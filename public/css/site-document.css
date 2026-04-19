@@ -6,7 +6,7 @@
   font-display: fallback;
 }
 
-body:has(> .site-doc) {
+body {
   margin: 0;
   font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--orbyt-page-bg);
@@ -18,7 +18,7 @@ body:has(> .site-doc) {
   overflow-y: auto;
 }
 
-body:has(> .site-doc) * {
+body * {
   box-sizing: border-box;
 }
 
