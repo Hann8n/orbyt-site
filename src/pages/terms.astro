@@ -6,10 +6,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
+import { getTermsContent } from '../i18n/legal/terms-content';
 
 const locale = Astro.locals.locale ?? 'en';
 const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
+const termsBody = getTermsContent(locale);
 ---
 <!DOCTYPE html>
 <html lang={localeToHtmlLang(locale)} class="orbyt-doc-dark">
@@ -46,113 +48,7 @@ const t = useTranslations(locale);
             <p class="site-doc__subtitle">{t('terms.last_updated')}</p>
         </header>
 
-        <main id="main-content" class="site-doc__prose">
-            <p>Welcome to Orbyt, a video social networking application! We're excited to have you on board as a user. Orbyt runs on the Authenticated Transfer Protocol ("AT Protocol"), a decentralized social networking protocol that supports many different kinds of services. These Terms of Service apply to the Orbyt service.</p>
-
-            <p>Before you dive into using Orbyt, please take a moment to carefully read these Terms. This document outlines our legal obligations to each other and they apply to your use of our services.</p>
-
-            <p>Orbyt is available as a mobile application ("Orbyt App" or "the App"). Your use of Orbyt is subject to these Terms of Service ("Terms"), and Orbyt Privacy Policy, which are referenced in our Terms and available to read separately.</p>
-
-            <p>These terms only apply to social networking that happens on Orbyt services, including the Sites and Orbyt App. If you're using another social networking application on the AT Protocol that isn't Orbyt (we call this a "Developer Application"), the developers of the other service will provide the terms and conditions that govern your experience.</p>
-
-            <p>When we say "Orbyt," "we," "us," and "our" in these Terms, we mean Orbyt.</p>
-
-            <h2>Important Notes</h2>
-            <ul>
-                <li>Orbyt is available as a mobile application ("Orbyt App" or "the App").</li>
-                <li>Your use of Orbyt is subject to these Terms of Service ("Terms"), and Orbyt Privacy Policy.</li>
-                <li>These terms only apply to social networking that happens on Orbyt services.</li>
-                <li>When we say "Orbyt," "we," "us," and "our" in these Terms, we mean Orbyt.</li>
-            </ul>
-
-            <h2>Relationship to Bluesky and the AT Protocol</h2>
-            <p>Orbyt is a third-party client application that connects to the Bluesky network via the AT Protocol. When you use Orbyt to post content, interact with other users, or access the social network, your activity occurs on the decentralized AT Protocol network operated by Bluesky Social, PBC and other services.</p>
-            <p><strong>Important:</strong> By using Orbyt, you also agree to comply with:</p>
-            <ul>
-                <li><a href="https://bsky.social/about/support/tos" target="_blank" rel="noopener">Bluesky's Terms of Service</a></li>
-                <li><a href="https://bsky.social/about/support/community-guidelines" target="_blank" rel="noopener">Bluesky's Community Guidelines</a></li>
-                <li><a href="https://bsky.social/about/support/privacy-policy" target="_blank" rel="noopener">Bluesky's Privacy Policy</a></li>
-            </ul>
-            <p>Orbyt is not affiliated with, endorsed by, or sponsored by Bluesky Social, PBC. Bluesky is not responsible for Orbyt's content, practices, or any actions taken by Orbyt. If you have issues specific to the Bluesky network or AT Protocol, you should contact Bluesky directly.</p>
-
-            <h2>Who Can Use Orbyt</h2>
-            
-            <h3>Eligibility</h3>
-            <p>To use Orbyt, you must be at least 13 years old and legally permitted to use Orbyt based on the laws in your country. If you are not yet an adult according to the laws of your country, your parent or legal guardian must read these Terms on your behalf. If you're a parent or legal guardian, and you allow your child (who meets the minimum age for your country) to use the services, then these terms also apply to you, and you're responsible for your child's activity on the services.</p>
-
-            <h3>Accounts</h3>
-            <p>To use Orbyt, you must create an account ("Account"). Don't share your Account with others, because you're responsible for all activities under your Account, whether or not you know about them. If you're using Orbyt on behalf of a company or organization, you confirm that you have the authority to represent your company or organization. If you believe your Account created through Orbyt has been compromised, <a href="/contact">report it to us</a>.</p>
-
-            <h2>User Content</h2>
-            
-            <h3>User Content</h3>
-            <p>"User Content" means any type of content you make available on Orbyt ("Content"), such as your posts, profile, photos, videos, direct messages, or links.</p>
-
-            <h3>Your Responsibility for User Content</h3>
-            <p>You, not Orbyt, are solely responsible for all of your User Content. Orbyt does not control others' use of your content.</p>
-
-            <h3>Orbyt's Use of User Content</h3>
-            <p>User Content is only used only in connection with: (a) providing Orbyt and Content, including by sharing User Content throughout Orbyt and the AT Protocol as well as developing and improving our current and future offerings; and (b) promoting and marketing Orbyt.</p>
-
-            <h3>Orbyt's Permission to Use Your User Content</h3>
-            <p>You keep your ownership of User Content, subject to the license below. Orbyt does not own rights to your User Content except as provided in that license. By sharing User Content through Orbyt, you grant us permission to:</p>
-            <ul>
-                <li>Use User Content to develop, provide, and improve Orbyt, the AT Protocol, and any of our future offerings.</li>
-                <li>Modify or otherwise utilize User Content in any media.</li>
-                <li>Grant others the right to take the actions above.</li>
-                <li>Remove or modify User Content for any reason, including User Content that we believe violates these Terms or other policies.</li>
-            </ul>
-
-            <h3>Public Nature of Content</h3>
-            <p>Orbyt operates on the AT Protocol, a decentralized social networking protocol where most user activity is public by design. This includes your posts, profile information, likes, follows, and blocks. You should have no expectation of privacy for content you post publicly through Orbyt.</p>
-
-            <h3>Content Deletion and the Decentralized Network</h3>
-            <p>If you delete content or your account, we will use reasonable efforts to remove your content from Orbyt and notify other services on the AT Protocol of the deletion. However, due to the decentralized nature of the AT Protocol, we cannot control or force other services and applications on the AT Protocol to delete your content. Some posts and data may continue to exist on other services outside our control. Complete deletion across the entire network may not always be possible.</p>
-
-            <h2>General Prohibitions and Enforcement</h2>
-            <p>You agree not to use Orbyt to:</p>
-            <ul>
-                <li>Violate any applicable laws or regulations</li>
-                <li>Infringe on the rights of others</li>
-                <li>Post content that is harmful, offensive, or inappropriate</li>
-                <li>Attempt to gain unauthorized access to our systems</li>
-                <li>Interfere with the proper functioning of the service</li>
-            </ul>
-
-            <h2>Termination</h2>
-            
-            <h3>Your Right to Termination</h3>
-            <p>If you want to delete your Account, you can do so through your account settings. If your account was terminated by Orbyt, we retain the right to keep a copy of your data for trust and safety purposes. These Terms will survive termination of your Account.</p>
-            <p><strong>Important:</strong> Due to the decentralized nature of the AT Protocol, deleting your Orbyt account does not guarantee removal of your content from other services on the AT Protocol network. We will notify other services of your account deletion, but we cannot force them to delete your data. To request removal from those services, you must contact them directly.</p>
-
-            <h3>Our Right to Termination</h3>
-            <p>We reserve the right to suspend or terminate your account and/or specific services offered within Orbyt without notice, at our discretion, for the following reasons:</p>
-            <ul>
-                <li>We believe you've violated these Terms, the Orbyt Privacy Policy or the Orbyt Copyright Policy</li>
-                <li>We're required to do so due to a court order, legal requirement, or regulatory requirement</li>
-                <li>Continuing to allow your account to be active, giving you access to some or all services, or hosting your content creates risk for Orbyt, other users, or third parties</li>
-            </ul>
-
-            <h2>Appeals</h2>
-            <p>You can appeal any enforcement decision from these Terms, including suspension or termination, by <a href="/contact">contacting us</a>.</p>
-
-            <h2>Updates</h2>
-            <p>We update our terms from time to time, and will either post the updated Terms or send other communications to let you know about any changes. If you keep using Orbyt, you agree to the updated Terms. If you don't agree, you must stop using Orbyt.</p>
-
-            <h2>Warranty Disclaimers</h2>
-            <p><strong>Summary:</strong> We work hard to offer great services, but there are certain aspects that we can't guarantee.</p>
-            <p>Our Services and all included content are provided on an "as is" basis without warranty of any kind, whether express or implied. WITHOUT LIMITING THE FOREGOING, WE DISCLAIM ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT, AND ANY WARRANTIES ARISING OUT OF COURSE OF DEALING OR USAGE OF TRADE. WE MAKE NO WARRANTY THAT ORBYT WILL MEET YOUR REQUIREMENTS OR BE AVAILABLE ON AN UNINTERRUPTED, SECURE, OR ERROR-FREE BASIS.</p>
-
-            <h2>Limitation of Liability</h2>
-            <p><strong>Summary:</strong> This section limits what you can recover from us in a dispute to any direct damages that you suffer up to $100. This doesn't apply where it would be illegal to do so.</p>
-            <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, ORBYT WILL NOT BE LIABLE FOR ANY INCIDENTAL, SPECIAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES, OR DAMAGES FOR LOST PROFITS, LOST REVENUES, LOST SAVINGS, LOST BUSINESS OPPORTUNITY, LOSS OF DATA OR GOODWILL, SERVICE INTERRUPTION, COMPUTER OR MOBILE DEVICE DAMAGE OR SYSTEM FAILURE OR THE COST OF SUBSTITUTE SERVICES OF ANY KIND ARISING OUT OF OR IN CONNECTION WITH THESE TERMS OR FROM THE USE OF OR INABILITY TO USE ORBYT OR FOR ANY ERROR OR DEFECT IN ORBYT.</p>
-
-            <h2>Governing Law</h2>
-            <p>These Terms and any action related thereto will be governed by the laws of the State of New Jersey, without regard to conflict of laws provisions.</p>
-
-            <h2>Contact Information</h2>
-            <p>If you have any questions about these Terms or Orbyt, visit our <a href="/contact">contact page</a>.</p>
-        </main>
+        <main id="main-content" class="site-doc__prose" set:html={termsBody} />
 
         <SiteFooter locale={locale} currentPath="/terms" countryCode={countryCode} />
     </div>

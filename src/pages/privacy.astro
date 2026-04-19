@@ -6,10 +6,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
 import { SITE_DOCUMENT } from '../utils/site-document-theme';
 import { useTranslations, localeToHtmlLang } from '../i18n/utils';
+import { getPrivacyContent } from '../i18n/legal/privacy-content';
 
 const locale = Astro.locals.locale ?? 'en';
 const countryCode = Astro.locals.countryCode;
 const t = useTranslations(locale);
+const privacyBody = getPrivacyContent(locale);
 ---
 <!DOCTYPE html>
 <html lang={localeToHtmlLang(locale)} class="orbyt-doc-dark">
@@ -46,141 +48,7 @@ const t = useTranslations(locale);
             <p class="site-doc__subtitle">{t('privacy.last_updated')}</p>
         </header>
 
-        <main id="main-content" class="site-doc__prose">
-            <p>This Privacy Policy describes how Orbyt ("we", "us", "our") collects, uses, and shares information when you use our mobile application ("Orbyt" or "the App").</p>
-
-            <p><strong>Important:</strong> Orbyt is a third-party client application that connects to the Bluesky network via the AT Protocol. When you use Orbyt, your data is shared with the decentralized AT Protocol network. You should also review <a href="https://bsky.social/about/support/privacy-policy" target="_blank" rel="noopener">Bluesky's Privacy Policy</a> to understand how your data is handled on their network.</p>
-
-            <h2>Information We Collect</h2>
-            
-            <h3>Information from Bluesky</h3>
-            <p>When you log in to Orbyt using your Bluesky account, we access the following information from your Bluesky profile:</p>
-            <ul>
-                <li><strong>DID (Decentralized Identifier)</strong>: Your unique identifier on the AT Protocol</li>
-                <li><strong>Handle</strong>: Your username (e.g., @username.bsky.social)</li>
-                <li><strong>Display Name</strong>: Your profile display name</li>
-                <li><strong>Avatar</strong>: Your profile picture</li>
-            </ul>
-            <p>We use Bluesky's OAuth system for authentication. Orbyt does not store your Bluesky password.</p>
-
-            <h3>Information Stored on Our Servers</h3>
-            <p>We maintain a small amount of data on our servers to provide Orbyt-specific features:</p>
-            <ul>
-                <li><strong>Profile Colors</strong>: Custom text and background colors you set in the app</li>
-                <li><strong>Join Date</strong>: The date you first used Orbyt (for beta user features)</li>
-                <li><strong>Beta Status</strong>: Whether you are an early Orbyt user</li>
-            </ul>
-            <p>This data is indexed from your com.getorbyt.profile record on the AT Protocol and is minimal by design.</p>
-
-            <h3>Information Stored Locally on Your Device</h3>
-            <p>The following information is stored only on your device and is not sent to our servers:</p>
-            <ul>
-                <li><strong>Account Information</strong>: Your saved Bluesky accounts for quick switching</li>
-                <li><strong>OAuth Tokens</strong>: Secure authentication tokens (stored in device secure storage)</li>
-                <li><strong>Subscribed Channels</strong>: Feeds and channels you've subscribed to</li>
-                <li><strong>Watch History</strong>: Videos you've watched (used to filter your "Your Mix" feed)</li>
-                <li><strong>App Preferences</strong>: Your settings and UI preferences</li>
-            </ul>
-
-            <h3>Information Shared with the AT Protocol Network</h3>
-            <p>Orbyt operates on the AT Protocol, a decentralized social networking protocol. When you use Orbyt, the following information is shared with and stored on the AT Protocol network (including Bluesky and other services):</p>
-            <ul>
-                <li><strong>Public Content</strong>: Your posts, profile information, display name, avatar, bio, likes, follows, blocks, and other social interactions are public by design and visible to anyone on the AT Protocol network.</li>
-                <li><strong>Orbyt Profile Data</strong>: Your profile colors and subscribed channels are stored in your com.getorbyt.profile record on the AT Protocol.</li>
-            </ul>
-            <p>This data is not controlled solely by Orbyt and is subject to the policies of the AT Protocol network and its operators, including Bluesky Social, PBC.</p>
-
-            <h3>Automatically Collected Information</h3>
-            <p>When you use Orbyt, we may automatically collect:</p>
-            <ul>
-                <li><strong>Device Information</strong>: Device type, operating system, and app version (for compatibility and troubleshooting)</li>
-                <li><strong>IP Address</strong>: Collected through standard network requests to our API</li>
-            </ul>
-
-            <h3>Website Analytics</h3>
-            <p>Our website (getorbyt.com) uses <strong>Cloudflare Web Analytics</strong>, a privacy-focused analytics service. Cloudflare Web Analytics:</p>
-            <ul>
-                <li>Does not use cookies</li>
-                <li>Does not track individual users across sites</li>
-                <li>Does not collect personal information</li>
-                <li>Only collects aggregate, anonymized data about page views and performance</li>
-            </ul>
-            <p>You can learn more about Cloudflare's privacy practices at <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com/privacypolicy</a>.</p>
-
-            <p><strong>The Orbyt mobile app does not use any third-party analytics or tracking services.</strong></p>
-
-            <h2>How We Use Your Information</h2>
-            <p>We use the information we collect to:</p>
-            <ul>
-                <li>Provide and operate the Orbyt app</li>
-                <li>Enable you to sign in with your Bluesky account</li>
-                <li>Display your profile colors and customizations</li>
-                <li>Show personalized feed content based on your subscriptions</li>
-                <li>Filter your "Your Mix" feed based on watch history (processed locally)</li>
-                <li>Identify beta users for early access features</li>
-                <li>Respond to support requests</li>
-            </ul>
-
-            <h2>How We Share Your Information</h2>
-            <ul>
-                <li><strong>AT Protocol Network</strong>: When you use Orbyt, your public content is shared with the decentralized AT Protocol network, including Bluesky and other services. This sharing is necessary for the app to function.</li>
-                <li><strong>Service Providers</strong>: We use Cloudflare for hosting and content delivery. They may process data on our behalf subject to their privacy policies.</li>
-                <li><strong>Legal Requirements</strong>: We may disclose information if required by law or to protect our rights and safety.</li>
-            </ul>
-            <p>We do not sell your personal information.</p>
-
-            <h2>Data Retention</h2>
-            <ul>
-                <li><strong>Server Data</strong>: Profile colors and join dates are retained while your Bluesky account exists and has interacted with Orbyt.</li>
-                <li><strong>Local Data</strong>: Data stored on your device remains until you clear the app cache, delete the app, or remove your account.</li>
-                <li><strong>Watch History</strong>: Automatically cleaned up after 30 days.</li>
-            </ul>
-
-            <h2>Data Deletion</h2>
-            <p>You can delete your data in the following ways:</p>
-            <ul>
-                <li><strong>Local Data</strong>: Use "Clear Cache" in app settings, or delete and reinstall the app</li>
-                <li><strong>Account Removal</strong>: Use "Remove Account" in app settings to clear all local account data</li>
-                <li><strong>Server Data</strong>: <a href="/contact">Contact us</a> to request deletion of your server-side data</li>
-            </ul>
-            
-            <h3>Limitations on Deletion (AT Protocol)</h3>
-            <p><strong>Important:</strong> Due to the decentralized nature of the AT Protocol, we cannot guarantee complete deletion of your data across all services on the network. When you delete content:</p>
-            <ul>
-                <li>We will use reasonable efforts to remove your content from Orbyt.</li>
-                <li>We will notify other services on the AT Protocol of the deletion.</li>
-                <li>However, we cannot control or force other services and applications on the AT Protocol to delete your data. Some posts and information may continue to exist on services outside our control.</li>
-                <li>To request removal from other AT Protocol services, you must contact those services directly.</li>
-            </ul>
-
-            <h2>Security</h2>
-            <p>We take reasonable measures to protect your information:</p>
-            <ul>
-                <li>OAuth tokens are stored in your device's secure storage (Keychain on iOS, Keystore on Android)</li>
-                <li>Our API uses HTTPS encryption for all communications</li>
-                <li>We do not store your Bluesky password</li>
-            </ul>
-            <p>However, no method of transmission over the internet or electronic storage is 100% secure.</p>
-
-            <h2>Children's Privacy</h2>
-            <p>Orbyt is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us.</p>
-
-            <h2>Your Rights</h2>
-            <p>Depending on your location, you may have rights regarding your personal information, including:</p>
-            <ul>
-                <li>Access to your personal information</li>
-                <li>Correction of inaccurate information</li>
-                <li>Deletion of your information</li>
-                <li>Data portability</li>
-            </ul>
-            <p>To exercise these rights, <a href="/contact">contact us</a>.</p>
-
-            <h2>Changes to This Policy</h2>
-            <p>We may update this Privacy Policy from time to time. We will notify you of significant changes through the app or by updating the "Last Updated" date above.</p>
-
-            <h2>Contact Us</h2>
-            <p>If you have questions about this Privacy Policy, visit our <a href="/contact">contact page</a>.</p>
-        </main>
+        <main id="main-content" class="site-doc__prose" set:html={privacyBody} />
 
         <SiteFooter locale={locale} currentPath="/privacy" countryCode={countryCode} />
     </div>
