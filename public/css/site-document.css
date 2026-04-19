@@ -1,8 +1,3 @@
-/**
- * Shared layout + “prose” typography for static document pages (contact, privacy, terms).
- * Scope everything under .site-doc so .container and other globals stay untouched.
- */
-
 @font-face {
   font-family: 'Figtree';
   src: url('/fonts/Figtree/Figtree-VariableFont_wght.woff2') format('woff2');
@@ -48,10 +43,6 @@ body:has(> .site-doc) * {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /*
-   * Fluid vertical inset (no height breakpoints): same idea as --site-page-padding-x
-   * clamp(1rem, 5vw, 2rem) — vw for width scale, vmin so short/landscape viewports tighten too.
-   */
   padding-top: clamp(0.2rem, 1vw + 0.8vmin, 1.75rem);
   padding-bottom: clamp(0.75rem, 3vw + 1vmin, 2rem);
 }

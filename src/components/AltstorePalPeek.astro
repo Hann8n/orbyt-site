@@ -11,7 +11,6 @@ interface Props {
 
 const { href, locale = 'en', ariaLabel } = Astro.props;
 const t = useTranslations(locale);
-/** Same as `href` — AltStore PAL deep link for scanning from iPhone */
 const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=000000&color=f3f5fe&data=${encodeURIComponent(href)}`;
 ---
 
