@@ -54,9 +54,9 @@ function matchAcceptLanguage(header: string | null): string {
  * Non-English locales detected at the root path (`/`) are redirected to `/{locale}/`.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Read Cloudflare geo-IP country — available via the cf object in Workers,
+  // Read Cloudflare geo-IP country — available via context.request.cf in Astro v6,
   // or the CF-IPCountry header when running behind Cloudflare.
-  const cf = (context.locals as { runtime?: { cf?: { country?: string } } }).runtime?.cf
+  const cf = (context.request as { cf?: { country?: string } }).cf
   const rawCountry = cf?.country ?? context.request.headers.get('CF-IPCountry') ?? undefined
   context.locals.countryCode = rawCountry?.toUpperCase()
 
