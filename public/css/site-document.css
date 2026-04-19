@@ -3,8 +3,6 @@
  * Scope everything under .site-doc so .container and other globals stay untouched.
  */
 
-@import url("/css/site-footer.css");
-
 @font-face {
   font-family: 'Figtree';
   src: url('/fonts/Figtree/Figtree-VariableFont_wght.woff2') format('woff2');
@@ -21,7 +19,6 @@ body:has(> .site-doc) {
   min-height: 100dvh;
   color: var(--orbyt-white);
   position: relative;
-  scrollbar-gutter: stable both-edges;
   overflow-x: hidden;
   overflow-y: auto;
 }

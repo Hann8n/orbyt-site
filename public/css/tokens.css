@@ -1,6 +1,7 @@
 /* Design tokens (aligned with app theme). Profile body overrides --orbyt-chrome / --orbyt-profile-*. */
 html {
   box-sizing: border-box;
+  scrollbar-gutter: stable both-edges;
 }
 
 *,
