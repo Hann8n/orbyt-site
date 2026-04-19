@@ -23,6 +23,28 @@ export const LOCALE_LABELS: Record<string, string> = {
   'es-419': 'Español (LA)',
 }
 
+export const LOCALE_CODES: Record<string, string> = {
+  en: 'EN',
+  de: 'DE',
+  'es-MX': 'ES',
+  fr: 'FR',
+  ja: 'JA',
+  ko: 'KO',
+  'pt-BR': 'PT',
+  'es-419': 'ES',
+}
+
+export const LOCALE_FLAGS: Record<string, string> = {
+  en: '🇺🇸',
+  de: '🇩🇪',
+  'es-MX': '🇲🇽',
+  fr: '🇫🇷',
+  ja: '🇯🇵',
+  ko: '🇰🇷',
+  'pt-BR': '🇧🇷',
+  'es-419': '🇦🇷',
+}
+
 const FALLBACKS: Partial<Record<string, string>> = {
   'es-419': 'es-MX',
 }

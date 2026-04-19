@@ -29,21 +29,149 @@ html.orbyt-doc-light {
   --orbyt-black: #05070a;
   --orbyt-purple: #551def;
   --orbyt-teal: #01f5b3;
+  --orbyt-coral: #fe5f79;
 
-  /* Neutrals (common surfaces / text) */
-  --orbyt-neutral-900: #0e141b;
+  /* Purple scale */
+  --orbyt-purple-50:  #f5f0ff;
+  --orbyt-purple-100: #ece0ff;
+  --orbyt-purple-200: #d4bfff;
+  --orbyt-purple-300: #b894ff;
+  --orbyt-purple-400: #9b6aff;
+  --orbyt-purple-500: #551def;
+  --orbyt-purple-600: #4a14cc;
+  --orbyt-purple-700: #3c10a6;
+  --orbyt-purple-800: #2e0c80;
+  --orbyt-purple-900: #200858;
+  --orbyt-purple-950: #120430;
+
+  /* Teal scale */
+  --orbyt-teal-50:  #e0fff5;
+  --orbyt-teal-100: #b3ffe9;
+  --orbyt-teal-200: #75ffd8;
+  --orbyt-teal-300: #38ffc6;
+  --orbyt-teal-400: #01f5b3;
+  --orbyt-teal-500: #00d69c;
+  --orbyt-teal-600: #00b382;
+  --orbyt-teal-700: #008f68;
+  --orbyt-teal-800: #006b4e;
+  --orbyt-teal-900: #004734;
+  --orbyt-teal-950: #00291e;
+
+  /* Coral scale */
+  --orbyt-coral-50:  #fff0f2;
+  --orbyt-coral-100: #ffdbdf;
+  --orbyt-coral-200: #ffb8c2;
+  --orbyt-coral-300: #ff8d9e;
+  --orbyt-coral-400: #fe5f79;
+  --orbyt-coral-500: #f5355a;
+  --orbyt-coral-600: #db1f44;
+  --orbyt-coral-700: #b71a39;
+  --orbyt-coral-800: #93152e;
+  --orbyt-coral-900: #6f1023;
+  --orbyt-coral-950: #450a15;
+
+  /* Pink scale */
+  --orbyt-pink-50:  #fff0f8;
+  --orbyt-pink-100: #ffd9ef;
+  --orbyt-pink-200: #ffb3df;
+  --orbyt-pink-300: #ff80c7;
+  --orbyt-pink-400: #ff4dad;
+  --orbyt-pink-500: #f72595;
+  --orbyt-pink-600: #d60f7a;
+  --orbyt-pink-700: #ad0c63;
+  --orbyt-pink-800: #850a4c;
+  --orbyt-pink-900: #5c0735;
+  --orbyt-pink-950: #33041d;
+
+  /* Neutral scale */
+  --orbyt-neutral-0:   #f3f5fe;
+  --orbyt-neutral-50:  #f3f5fe;
+  --orbyt-neutral-100: #e4eaf5;
   --orbyt-neutral-200: #ccd7e9;
   --orbyt-neutral-300: #a8b8d4;
   --orbyt-neutral-400: #7a8aa8;
+  --orbyt-neutral-500: #5a6580;
+  --orbyt-neutral-600: #3d4659;
+  --orbyt-neutral-700: #282f3d;
+  --orbyt-neutral-800: #1a1f2a;
+  --orbyt-neutral-900: #0e141b;
+  --orbyt-neutral-925: #0c1118;
+  --orbyt-neutral-950: #0a0e14;
+  --orbyt-neutral-975: #05070a;
   --orbyt-neutral-muted: var(--orbyt-neutral-300);
+
+  /* Amber scale */
+  --orbyt-amber-50:  #fffaeb;
+  --orbyt-amber-100: #fff0c2;
+  --orbyt-amber-200: #ffdf85;
+  --orbyt-amber-300: #ffcc3d;
+  --orbyt-amber-400: #ffb800;
+  --orbyt-amber-500: #ffa500;
+  --orbyt-amber-600: #d68a00;
+  --orbyt-amber-700: #ad7000;
+  --orbyt-amber-800: #855600;
+  --orbyt-amber-900: #5c3c00;
+  --orbyt-amber-950: #332100;
+
+  /* Blue scale */
+  --orbyt-blue-50:  #f0f5ff;
+  --orbyt-blue-100: #dce8ff;
+  --orbyt-blue-200: #b8d4ff;
+  --orbyt-blue-300: #85b8ff;
+  --orbyt-blue-400: #5299ff;
+  --orbyt-blue-500: #2b7fff;
+  --orbyt-blue-600: #1766e6;
+  --orbyt-blue-700: #1355c0;
+  --orbyt-blue-800: #12449a;
+  --orbyt-blue-900: #103374;
+  --orbyt-blue-950: #0d1f45;
+
+  /* Orange scale */
+  --orbyt-orange-50:  #fff5f0;
+  --orbyt-orange-100: #ffe5d6;
+  --orbyt-orange-200: #ffc9a8;
+  --orbyt-orange-300: #ffa670;
+  --orbyt-orange-400: #ff7c33;
+  --orbyt-orange-500: #ff6b35;
+  --orbyt-orange-600: #eb4f0a;
+  --orbyt-orange-700: #c44108;
+  --orbyt-orange-800: #9c3409;
+  --orbyt-orange-900: #752709;
+  --orbyt-orange-950: #451607;
+
+  /* Cyan scale */
+  --orbyt-cyan-50:  #f0feff;
+  --orbyt-cyan-100: #ccfcff;
+  --orbyt-cyan-200: #8ff8ff;
+  --orbyt-cyan-300: #3df0ff;
+  --orbyt-cyan-400: #00e5ff;
+  --orbyt-cyan-500: #00b5d6;
+  --orbyt-cyan-600: #0096b3;
+  --orbyt-cyan-700: #007890;
+  --orbyt-cyan-800: #005e70;
+  --orbyt-cyan-900: #004452;
+  --orbyt-cyan-950: #002830;
+
+  /* Overlays */
+  --orbyt-overlay-black-15: rgba(5, 7, 10, 0.15);
+  --orbyt-overlay-black-35: rgba(5, 7, 10, 0.35);
+  --orbyt-overlay-black-50: rgba(5, 7, 10, 0.50);
+  --orbyt-overlay-black-60: rgba(5, 7, 10, 0.60);
+  --orbyt-overlay-black-70: rgba(5, 7, 10, 0.70);
+  --orbyt-overlay-black-75: rgba(5, 7, 10, 0.75);
+  --orbyt-overlay-black-85: rgba(5, 7, 10, 0.85);
+  --orbyt-overlay-black-95: rgba(5, 7, 10, 0.95);
+  --orbyt-overlay-white-10: rgba(255, 255, 255, 0.10);
+  --orbyt-overlay-white-30: rgba(255, 255, 255, 0.30);
+  --orbyt-overlay-white-80: rgba(255, 255, 255, 0.80);
 
   /* Marketing / embed surfaces */
   --orbyt-page-bg: var(--orbyt-black);
   --orbyt-page-fg: var(--orbyt-neutral-muted);
-  --orbyt-install-surface: #e4eaf5;
+  --orbyt-install-surface: var(--orbyt-neutral-100);
 
   /* Default profile chrome (SSR normally sets --orbyt-chrome on body) */
-  --orbyt-chrome-fallback: #0c1118;
+  --orbyt-chrome-fallback: var(--orbyt-neutral-925);
 
   /* Scrims / shadows (Orbyt black rgb — matches app Colors.overlay) */
   --orbyt-scrim-rgb: 5, 7, 10;

@@ -71,6 +71,7 @@ body:has(> .site-doc) * {
   color: var(--orbyt-white);
   margin: 0 0 0.75rem;
   line-height: 1.1;
+  overflow-wrap: break-word;
 }
 
 .site-doc__subtitle {
@@ -85,6 +86,7 @@ body:has(> .site-doc) * {
   flex: 1;
   line-height: 1.6;
   font-size: 1rem;
+  overflow-wrap: break-word;
 }
 
 .site-doc__prose h2 {
