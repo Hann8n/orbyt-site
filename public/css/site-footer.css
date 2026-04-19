@@ -30,7 +30,7 @@
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   @media (max-width: 480px) {
     .site-footer {
-      margin-bottom: max(1.75rem, env(safe-area-inset-bottom));
+      margin-bottom: max(1rem, env(safe-area-inset-bottom));
     }
   }
 }

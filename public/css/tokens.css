@@ -185,7 +185,9 @@ html.orbyt-doc-light {
   --site-content-max-width: 800px;
   --site-page-padding-x: clamp(1rem, 5vw, 2rem);
   --site-page-padding-y: clamp(1rem, 5vw, 2rem);
-  --site-footer-margin-bottom: 2.5rem;
+  /* Tighter than sides/top so the footer sits closer to the viewport edge */
+  --site-page-padding-bottom: clamp(0.75rem, 3vw, 1.25rem);
+  --site-footer-margin-bottom: 1rem;
 
   /*
    * CSS Borders 4 — corner-shape + border-radius (squircle ≡ superellipse(2)).
