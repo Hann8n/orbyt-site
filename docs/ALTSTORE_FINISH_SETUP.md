@@ -4,7 +4,7 @@ Your app is approved, notarized, and AltStore PAL is configured. Complete these 
 
 **Prerequisites:** These instructions assume `orbyt-app` and `orbyt-site` are sibling directories (e.g. both under `orbyt-master`). Run commands from the parent directory, or adjust paths to your layout.
 
-**Cloudflare note:** Do not deploy the ADP folder from `public/`. The IPA files are larger than Cloudflare Workers static asset limits. Use R2 for the ADP payload and keep only `source.json` and the icon on the website.
+**Cloudflare note:** Do not deploy the ADP folder from `public/`. The IPA files are larger than Cloudflare Workers static asset limits. Use R2 for the ADP payload. The public source URL (`https://getorbyt.com/altstore/source.json`) is served dynamically by the site Worker and should be managed via `orbyt-api` admin.
 
 **Routing note:** `getorbyt.com/*` is served by the Cloudflare Worker route configured in `wrangler.jsonc`, so deploy production with `wrangler deploy`.
 
@@ -91,7 +91,7 @@ This script will:
 1. create the R2 bucket if needed
 2. enable the public `r2.dev` URL (fallback)
 3. upload `manifest.json`, `signature`, and `variant/*.ipa`
-4. update `public/altstore/source.json` so `downloadURL` points to `https://downloads.getorbyt.com/manifest.json` when available, otherwise it falls back to `r2.dev`
+4. print the preferred manifest URL (`https://downloads.getorbyt.com/manifest.json` when available, otherwise `r2.dev`) for use in `orbyt-api` admin publish flow
 
 If you want to use a different bucket name, replace `orbyt-altstore-adp` with your preferred name.
 
@@ -124,7 +124,7 @@ cp orbyt-app/src/assets/AppIcons/iOS/orbyt.png \
 
    https://getorbyt.com/altstore/source.json
 
-3. Verify the ADP manifest URL stored inside `source.json` returns `200`.
+3. Verify the ADP manifest URL referenced by published source JSON returns `200`.
 
 ---
 
@@ -177,18 +177,20 @@ mkdir -p .altstore
 rm -rf .altstore/adp
 mv ../orbyt-app/adp-extracted .altstore/adp
 
-# 4) Upload ADP to R2 and update public/altstore/source.json downloadURL
+# 4) Upload ADP to R2 and note printed manifest URL
 npm run altstore:r2 -- setup orbyt-altstore-adp
 
-# 5) Deploy production route (getorbyt.com/*)
+# 5) In orbyt-api admin, update source downloadURL to printed manifest URL, then publish
+
+# 6) Deploy production route (getorbyt.com/*)
 npm run build
 npx wrangler deploy
 
-# 6) Verify live URLs
+# 7) Verify live URLs
 curl -sS -o /dev/null -w 'source %{http_code}\n' https://getorbyt.com/altstore/source.json
 curl -sS -o /dev/null -w 'manifest %{http_code}\n' https://downloads.getorbyt.com/manifest.json
 
-# 7) Federate source
+# 8) Federate source
 curl -X POST -H "Content-Type: application/json" -d '{"source":"https://getorbyt.com/altstore/source.json"}' https://api.altstore.io/federate
 ```
 

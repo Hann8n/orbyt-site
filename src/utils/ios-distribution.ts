@@ -58,7 +58,7 @@ export type IosDownloadOptions = Readonly<{
 }>;
 
 const DEFAULT_ALTSTORE_SOURCE = 'https://getorbyt.com/altstore/source.json';
-/** Same marketplace ID as `public/altstore/source.json` */
+/** Same marketplace ID as the canonical source served at `/altstore/source.json` */
 const DEFAULT_APP_STORE = 'https://apps.apple.com/app/id6751679299';
 
 /** Builds iOS download options based on the visitor's country; AltStore PAL is primary for EU and Japan. */

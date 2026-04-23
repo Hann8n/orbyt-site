@@ -1,7 +1,7 @@
 # AltStore PAL assets
 
 - `orbyt-icon.png` — App icon (1024×1024), already added
-- `source.json` — Hosted from this site at `https://getorbyt.com/altstore/source.json`
+- `source.json` — Served dynamically at `https://getorbyt.com/altstore/source.json` via the site Worker route (`src/pages/altstore/source.json.ts`)
 - `.altstore/adp/` — Keep extracted ADP contents here locally, then upload them to R2
 
 Default manifest host is `https://downloads.getorbyt.com/manifest.json`.

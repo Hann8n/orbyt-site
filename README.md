@@ -55,7 +55,7 @@ Website for orbyt, a video app for Bluesky.
 - **Config:** [wrangler.jsonc](wrangler.jsonc) — assets binding, ORBYT_API service, R2 bucket binding
 - **Deploy Command:** `npm run build && npx wrangler deploy`
 - **Pages cleanup:** If you previously created a Pages project, see [docs/CLOUDFLARE_PAGES_CLEANUP.md](docs/CLOUDFLARE_PAGES_CLEANUP.md)
-- **AltStore ADP:** hosted in Cloudflare R2; only `public/altstore/source.json` and `public/altstore/orbyt-icon.png` stay in site assets
+- **AltStore ADP:** hosted in Cloudflare R2; source JSON is served dynamically at `/altstore/source.json` via `src/pages/altstore/source.json.ts`, and `public/altstore/orbyt-icon.png` remains static
 - **AltStore Runbook:** see [docs/ALTSTORE_FINISH_SETUP.md](docs/ALTSTORE_FINISH_SETUP.md) → "Quick Release Checklist"
 
 ## Project Structure

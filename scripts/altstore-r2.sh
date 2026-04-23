@@ -3,7 +3,6 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEFAULT_ADP_DIR="${ALTSTORE_ADP_DIR:-$ROOT_DIR/.altstore/adp}"
-SOURCE_JSON="$ROOT_DIR/public/altstore/source.json"
 DEFAULT_BUCKET_LOCATION="${R2_BUCKET_LOCATION:-weur}"
 DEFAULT_CUSTOM_MANIFEST_URL="${ALTSTORE_CUSTOM_MANIFEST_URL:-https://downloads.getorbyt.com/manifest.json}"
 
@@ -12,14 +11,12 @@ usage() {
 Usage:
   ./scripts/altstore-r2.sh setup <bucket> [adp_dir]
   ./scripts/altstore-r2.sh upload <bucket> [adp_dir]
-  ./scripts/altstore-r2.sh set-source-url <manifest_url>
   ./scripts/altstore-r2.sh check <manifest_url>
 
 Commands:
   setup           Create the R2 bucket if needed, enable the public r2.dev URL,
-                  upload the ADP directory, and update public/altstore/source.json.
+                  and upload the ADP directory.
   upload          Upload the ADP directory to an existing R2 bucket.
-  set-source-url  Update public/altstore/source.json to point at a manifest URL.
   check           Fetch a manifest URL and print the HTTP status.
 
 Environment:
@@ -47,7 +44,7 @@ require_dir() {
 }
 
 ensure_prereqs() {
-  require_file "$SOURCE_JSON"
+  :
 }
 
 ensure_adp_dir() {
@@ -133,29 +130,6 @@ upload_adp() {
   done < <(find "$adp_dir" -type f | sort)
 }
 
-set_source_url() {
-  local manifest_url="$1"
-
-  require_file "$SOURCE_JSON"
-
-  node --input-type=commonjs - "$SOURCE_JSON" "$manifest_url" <<'NODE'
-const fs = require('node:fs');
-const [filePath, manifestUrl] = process.argv.slice(2);
-const raw = fs.readFileSync(filePath, 'utf8');
-const json = JSON.parse(raw);
-if (!Array.isArray(json.apps) || json.apps.length === 0) {
-  throw new Error('source.json has no apps array');
-}
-if (!Array.isArray(json.apps[0].versions) || json.apps[0].versions.length === 0) {
-  throw new Error('source.json has no versions array');
-}
-json.apps[0].versions[0].downloadURL = manifestUrl;
-fs.writeFileSync(filePath, `${JSON.stringify(json, null, 2)}\n`);
-NODE
-
-  echo "Updated source download URL to: $manifest_url"
-}
-
 check_url() {
   local url="$1"
   curl -sS -o /dev/null -w '%{http_code} %{url_effective}\n' "$url"
@@ -191,12 +165,12 @@ setup_bucket() {
   [[ -n "$dev_url" ]] || fail "Unable to determine r2.dev URL for bucket '$bucket'"
 
   manifest_url="$(pick_manifest_url "$dev_url")"
-  set_source_url "$manifest_url"
 
   echo
   echo "R2 setup complete."
   echo "Manifest URL: $manifest_url"
-  echo "Next: deploy the site so https://getorbyt.com/altstore/source.json serves the updated metadata."
+  echo "Next: update source JSON in orbyt-api admin (downloadURL=$manifest_url), publish, then verify:"
+  echo "  https://getorbyt.com/altstore/source.json"
 }
 
 main() {
@@ -211,10 +185,6 @@ main() {
       [[ $# -ge 2 ]] || fail "upload requires a bucket name"
       ensure_adp_dir "${3:-$DEFAULT_ADP_DIR}"
       upload_adp "$2" "${3:-$DEFAULT_ADP_DIR}"
-      ;;
-    set-source-url)
-      [[ $# -eq 2 ]] || fail "set-source-url requires a manifest URL"
-      set_source_url "$2"
       ;;
     check)
       [[ $# -eq 2 ]] || fail "check requires a manifest URL"
