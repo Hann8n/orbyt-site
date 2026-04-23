@@ -6,7 +6,6 @@ import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SkipToContent from '../components/SkipToContent.astro';
-import { ClientRouter } from 'astro:transitions';
 import {
 	getIosDownloadOptionsFromRequest,
 	iosDownloadHrefFromOptions,
@@ -39,7 +38,6 @@ const showAltstorePalPeek = iosDownload.primary === 'altstore';
     <title>{t('index.title')}</title>
     <meta name="description" content={t('index.meta.description')}>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <ClientRouter />
 
     <link rel="preload" href="/fonts/Figtree/Figtree-VariableFont_wght.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Caveat/Caveat-latin-400.woff2" as="font" type="font/woff2" crossorigin>
