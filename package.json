@@ -30,6 +30,8 @@
   "homepage": "https://github.com/Hann8n/orbyt-site#readme",
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.10",
+    "@sentry/astro": "^10.50.0",
+    "@sentry/cloudflare": "^10.50.0",
     "astro": "^6.1.7"
   },
   "devDependencies": {
