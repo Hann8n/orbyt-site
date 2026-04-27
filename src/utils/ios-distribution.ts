@@ -57,7 +57,7 @@ export type IosDownloadOptions = Readonly<{
 	appStoreUrl: string;
 }>;
 
-const DEFAULT_ALTSTORE_SOURCE = 'https://getorbyt.com/altstore/source.json';
+const DEFAULT_ALTSTORE_SOURCE = 'https://api.getorbyt.com/v1/altstore/source.json';
 /** Same marketplace ID as the canonical source served at `/altstore/source.json` */
 const DEFAULT_APP_STORE = 'https://apps.apple.com/app/id6751679299';
 
