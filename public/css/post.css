@@ -108,10 +108,9 @@ html {
   }
   
   #desktop .post-author .avatar-wrapper {
-    flex-shrink: 1;
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
-    flex: 0 1 auto;
   }
   
   #desktop .post-author .avatar-wrapper .username {

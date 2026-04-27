@@ -311,6 +311,11 @@ video {
   width: 100%;
   box-sizing: border-box;
 }
+.post-author .avatar-wrapper > a {
+  display: block;
+  flex-shrink: 0;
+  line-height: 0;
+}
 .post-author .avatar {
   width: 42px;
   height: 42px;
