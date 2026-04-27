@@ -58,15 +58,10 @@
   .post-caption-mobile-inner {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     gap: 6px;
     width: 100%;
     min-width: 0;
-  }
-  .post-caption-mobile-inner[data-collapsed="false"] {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
   }
   .post-caption-mobile-text {
     flex: 1;
@@ -86,17 +81,14 @@
     -webkit-box-orient: unset;
     overflow: visible;
   }
-  .post-caption-mobile-inner[data-collapsed="false"] .post-caption-mobile-toggle {
-    align-self: flex-end;
-  }
   .post-caption-mobile-toggle {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
     margin: 0;
-    padding: 3px 12px;
+    padding: 0 8px;
+    height: 20px;
     border: none;
     border-radius: 999px;
     cursor: pointer;
@@ -104,15 +96,13 @@
     font-size: 11px;
     font-weight: 600;
     line-height: 1;
-    letter-spacing: 0.9px;
-    min-height: 24px;
-    color: rgba(243, 245, 254, 0.9);
-    -webkit-text-fill-color: rgba(243, 245, 254, 0.9);
-    background-color: rgba(243, 245, 254, 0.18) !important;
-    background: rgba(243, 245, 254, 0.18) !important;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    overflow: hidden;
+    letter-spacing: 0.5px;
+    color: rgba(243, 245, 254, 0.88);
+    -webkit-text-fill-color: rgba(243, 245, 254, 0.88);
+    background-color: rgba(243, 245, 254, 0.12) !important;
+    background: rgba(243, 245, 254, 0.12) !important;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     -webkit-tap-highlight-color: transparent;
     -webkit-appearance: none;
     appearance: none;
@@ -127,10 +117,10 @@
     outline-offset: 2px;
   }
   .post-caption-mobile-toggle:active {
-    color: rgba(243, 245, 254, 0.98);
-    -webkit-text-fill-color: rgba(243, 245, 254, 0.98);
-    background-color: rgba(243, 245, 254, 0.28) !important;
-    background: rgba(243, 245, 254, 0.28) !important;
+    color: rgba(243, 245, 254, 1);
+    -webkit-text-fill-color: rgba(243, 245, 254, 1);
+    background-color: rgba(243, 245, 254, 0.22) !important;
+    background: rgba(243, 245, 254, 0.22) !important;
   }
 }
 .post-overlay {
@@ -147,6 +137,28 @@
   box-sizing: border-box;
   width: 100%;
   z-index: 10;
+}
+
+/*--- Caption expanded dim ---*/
+#post-media.caption-expanded .post-media-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  opacity: 1;
+}
+#post-media:not(.caption-expanded) .post-media-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  opacity: 0;
 }
 
 /*--- Video ---*/

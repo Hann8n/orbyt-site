@@ -295,6 +295,7 @@ function initMobileCaptionCollapse() {
       inner.dataset.collapsed = expanded ? 'true' : 'false';
       toggle.textContent = expanded ? 'Show' : 'Hide';
       toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      document.getElementById('post-media')?.classList.toggle('caption-expanded', !expanded);
     });
   }
 
