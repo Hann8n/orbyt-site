@@ -218,7 +218,7 @@ header.hidden {
   top: 0;
   height: 100%;
   object-fit: contain;
-  background-color: transparent;
+  background-color: #0a0e14;
   z-index: 1;
 }
 .post .play-button {

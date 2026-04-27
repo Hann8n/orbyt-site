@@ -6,7 +6,6 @@ import { fetchProfile, fetchVideoPosts, toAbsoluteUrl, getImageMimeType } from '
 import { getColor } from '../utils/orbyt-api';
 import { parseRichText } from '../utils/richtext';
 import { getChromeBackgroundColor, getUiColorScheme } from '../utils/profile-colors';
-import { getVideoAmbientBackdropInlineStyle } from '../utils/video-ambient-backdrop';
 import DocumentColorScheme from '../components/DocumentColorScheme.astro';
 import SiteClientRouterHeadStyles from '../components/SiteClientRouterHeadStyles.astro';
 import { ClientRouter } from 'astro:transitions';
@@ -274,8 +273,7 @@ const t = useTranslations(locale);
     <div class="posts">
       {videoPosts.length > 0 ? videoPosts.map((post) => (
         <div class="post">
-          <div class="post-image-container" style={getVideoAmbientBackdropInlineStyle(post.thumbnail)}>
-            <div class="video-ambient-backdrop" aria-hidden="true"></div>
+          <div class="post-image-container">
             <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
             <img class="post-thumb" src={post.thumbnail} alt="" style={`view-transition-name: video-${post.postId}`} />
             <div class="post-overlay">
@@ -305,7 +303,7 @@ const t = useTranslations(locale);
 
   // Wrapper to work around Astro actions client typing (expects FormData, accepts object)
   async function loadMorePosts(handle: string, cursor: string) {
-    return (actions as unknown as { loadMorePosts: (input: { handle: string; cursor: string }) => Promise<{ data?: { posts?: { postId: string; thumbnail: string; captionHtml: string; videoAmbientBackdropStyle: string }[]; nextCursor?: string | null }; error?: unknown }> })
+    return (actions as unknown as { loadMorePosts: (input: { handle: string; cursor: string }) => Promise<{ data?: { posts?: { postId: string; thumbnail: string; captionHtml: string }[]; nextCursor?: string | null }; error?: unknown }> })
       .loadMorePosts({ handle, cursor });
   }
 
@@ -341,8 +339,7 @@ const t = useTranslations(locale);
           const postDiv = document.createElement('div');
           postDiv.className = 'post';
           postDiv.innerHTML = `
-            <div class="post-image-container" style="${post.videoAmbientBackdropStyle}">
-              <div class="video-ambient-backdrop" aria-hidden="true"></div>
+            <div class="post-image-container">
               <img class="post-placeholder" src="/images/post/placeholder.png" alt="" />
               <img class="post-thumb" src="${post.thumbnail}" alt="" style="view-transition-name: video-${post.postId}" />
               <div class="post-overlay">

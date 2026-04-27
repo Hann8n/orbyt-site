@@ -6,7 +6,6 @@ import { parseRichText } from '../../utils/richtext';
 import DocumentColorScheme from '../../components/DocumentColorScheme.astro';
 import SiteClientRouterHeadStyles from '../../components/SiteClientRouterHeadStyles.astro';
 import { SITE_DOCUMENT } from '../../utils/site-document-theme';
-import { getVideoAmbientBackdropInlineStyle } from '../../utils/video-ambient-backdrop';
 import { ClientRouter } from 'astro:transitions';
 import { useTranslations, localeToHtmlLang } from '../../i18n/utils';
 
@@ -89,7 +88,6 @@ const ogImageAlt = caption
   ? (caption.length > 200 ? caption.substring(0, 200) + '...' : caption)
   : `Post by @${authorHandle}`;
 
-const videoAmbientBackdropStyle = getVideoAmbientBackdropInlineStyle(thumbnail);
 
 const locale = Astro.locals.locale ?? 'en';
 const t = useTranslations(locale);
@@ -402,7 +400,7 @@ const finalOgTitle = `post by @${authorHandle}`;
       </div>
 
       <div class="post-media-visual">
-        <div class="video-container" style={videoAmbientBackdropStyle}>
+        <div class="video-container">
           <div class="video-ambient-backdrop" aria-hidden="true"></div>
           <video id="vinit" muted playsinline loop autoplay preload="auto" oncontextmenu="return false;">
           </video>
