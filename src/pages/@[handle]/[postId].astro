@@ -436,7 +436,7 @@ const finalOgTitle = `post by @${authorHandle}`;
           <div class="post-author mobile-overlay">
 
             <span class='avatar-wrapper'>
-              <img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}>
+              <a href={`/@${authorHandle}`}><img id="author-avatar-mobile" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}></a>
               <div class="username">
                 <a id="author-link-mobile" href={`/@${authorHandle}`}>{authorScreenName}</a>
               </div>
@@ -491,7 +491,7 @@ const finalOgTitle = `post by @${authorHandle}`;
 
         <div class="post-author">
           <span class='avatar-wrapper'>
-            <img id="author-avatar-desktop" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}>
+            <a href={`/@${authorHandle}`}><img id="author-avatar-desktop" class='avatar' src={authorAvatar} alt={`${authorScreenName}'s avatar`}></a>
             <div class="username">
               <a id="author-link-desktop" href={`/@${authorHandle}`}>{authorScreenName}</a>
             </div>
