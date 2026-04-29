@@ -68,8 +68,7 @@ export function getIosDownloadOptions(
 ): IosDownloadOptions {
 	const altstoreSourceUrl = overrides?.altstoreSourceUrl ?? DEFAULT_ALTSTORE_SOURCE;
 	const appStoreUrl = overrides?.appStoreUrl ?? DEFAULT_APP_STORE;
-	const useAltstoreFirst =
-		import.meta.env.DEV || isAltstorePalRegion(cfIpCountry);
+	const useAltstoreFirst = isAltstorePalRegion(cfIpCountry);
 	return {
 		primary: useAltstoreFirst ? 'altstore' : 'appstore',
 		altstoreSourceUrl,
