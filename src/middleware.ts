@@ -3,6 +3,9 @@ import { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale } from './i18n/utils'
 
 const LOCALE_COOKIE = 'orbyt-locale'
 
+// Compiled once at module scope; matches /:locale and /:locale/* paths
+const LOCALE_PREFIX = new URLPattern({ pathname: '/:locale{/*}?' })
+
 /**
  * Parses the `Accept-Language` header and returns the best-matching supported locale.
  * Tries an exact case-insensitive match first, then a base-language prefix match
@@ -67,18 +70,17 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next()
   }
 
-  const { pathname } = new URL(context.request.url)
-  const segments = pathname.split('/').filter(Boolean)
-  const first = segments[0]
+  const match = LOCALE_PREFIX.exec(context.request.url)
+  const candidate = match?.pathname.groups.locale
 
   // If path starts with a supported locale prefix, consume it and rewrite internally
-  if (first && (SUPPORTED_LOCALES as readonly string[]).includes(first)) {
-    context.locals.locale = first
-    const rest = segments.slice(1).join('/')
+  if (candidate && (SUPPORTED_LOCALES as readonly string[]).includes(candidate)) {
+    context.locals.locale = candidate
+    const rest = match!.pathname.groups[0] ?? ''
     const rewritePath = rest ? `/${rest}` : '/'
     const rewriteUrl = new URL(rewritePath, context.request.url)
     const headers = new Headers(context.request.headers)
-    headers.set('x-orbyt-locale', first)
+    headers.set('x-orbyt-locale', candidate)
     return context.rewrite(new Request(rewriteUrl, { headers }))
   }
 
@@ -93,7 +95,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // Redirect root to locale prefix when non-English is detected/preferred
-  if (pathname === '/' && locale !== DEFAULT_LOCALE) {
+  if (new URL(context.request.url).pathname === '/' && locale !== DEFAULT_LOCALE) {
     return context.redirect(`/${locale}/`, 302)
   }
 
