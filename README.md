@@ -3,7 +3,7 @@
 Website for orbyt, a video app for Bluesky.
 
 <p align="left">
-  <a href="https://github.com/Hann8n/orbyt-site">GitHub</a> · <a href="https://tangled.org/jack.orbyt.video/orbyt-site">Tangled</a> · <a href="https://getorbyt.com">Live site</a> · <a href="https://bsky.app/profile/getorbyt.com">Bluesky</a> · <a href="https://community.getorbyt.com">Community</a>
+  <a href="https://github.com/Hann8n/orbyt-site">GitHub</a> · <a href="https://tangled.org/jack.orbyt.video/orbyt-site">Tangled</a> · <a href="https://getorbyt.com">Live site</a> · <a href="https://bsky.app/profile/getorbyt.com">Bluesky</a> · <a href="https://discord.gg/8gNQPFygnF">Community</a>
 </p>
 
 ## Architecture
