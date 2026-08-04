@@ -8,6 +8,7 @@
     "start": "astro dev",
     "build": "astro build && node ./scripts/patch-generated-wrangler-config.mjs",
     "check": "astro check",
+    "check:oauth": "node ./scripts/check-oauth-assets.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "altstore:r2": "bash ./scripts/altstore-r2.sh",

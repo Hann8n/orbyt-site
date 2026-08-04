@@ -1,5 +1,9 @@
 {
   "version": 1,
   "include": ["/*"],
-  "exclude": ["/oauth-client-metadata.json"]
+  "exclude": [
+    "/oauth-client-metadata.json",
+    "/oauth/ios-client-metadata.json",
+    "/.well-known/apple-app-site-association"
+  ]
 }

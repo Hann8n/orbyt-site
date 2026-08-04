@@ -1,0 +1,18 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["D8VXFBV8SJ.com.getorbyt.app"],
+        "components": [
+          {
+            "/": "/oauth/callback",
+            "comment": "Orbyt ATProto OAuth callback"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["D8VXFBV8SJ.com.getorbyt.app"]
+  }
+}

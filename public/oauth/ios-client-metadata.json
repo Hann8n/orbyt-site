@@ -1,0 +1,15 @@
+{
+  "client_id": "https://getorbyt.com/oauth/ios-client-metadata.json",
+  "client_name": "Orbyt for iOS",
+  "client_uri": "https://getorbyt.com",
+  "logo_uri": "https://getorbyt.com/images/orbyt-logo.png",
+  "tos_uri": "https://getorbyt.com/terms",
+  "policy_uri": "https://getorbyt.com/privacy",
+  "redirect_uris": ["https://getorbyt.com/oauth/callback"],
+  "scope": "atproto blob:*/* include:app.bsky.authFullApp?aud=did:web:api.bsky.app%23bsky_appview repo:com.getorbyt.profile?action=create&action=update rpc:com.atproto.moderation.createReport?aud=did:web:api.bsky.app%23bsky_appview space rpc:com.getorbyt.space.*?aud=did:web:api.getorbyt.com%23space_appview",
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none",
+  "application_type": "native",
+  "dpop_bound_access_tokens": true
+}
