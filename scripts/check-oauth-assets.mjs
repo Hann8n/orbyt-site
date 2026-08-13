@@ -21,14 +21,26 @@ for (const required of [
   'blob:*/*',
   'repo:com.getorbyt.profile?action=create&action=update',
   'rpc:com.atproto.moderation.createReport?aud=did:web:api.bsky.app%23bsky_appview',
-  'space',
-  'rpc:com.getorbyt.space.*?aud=did:web:api.getorbyt.com%23space_appview',
 ]) {
   assert(scopes.has(required), `missing required OAuth scope: ${required}`);
 }
-for (const forbidden of ['transition:generic', 'transition:chat.bsky', 'transition:email', 'repo:*']) {
+for (const forbidden of [
+  'transition:generic',
+  'transition:chat.bsky',
+  'transition:email',
+  'repo:*',
+  'rpc:*?aud=did:web:api.bsky.app',
+  'rpc:*?aud=did:web:api.bsky.app%23bsky_appview',
+  'rpc:*?aud=did:web:api.bsky.chat%23bsky_chat',
+  'rpc:com.getorbyt.space.*?aud=did:web:api.getorbyt.com%23space_appview',
+]) {
   assert(!scopes.has(forbidden), `legacy OAuth scope must not be present: ${forbidden}`);
 }
+
+const legacyMetadata = JSON.parse(
+  await readFile(new URL('../public/oauth-client-metadata.json', import.meta.url), 'utf8'),
+);
+assert.equal(legacyMetadata.scope, metadata.scope);
 
 const detail = association.applinks.details[0];
 assert.deepEqual(detail.appIDs, ['D8VXFBV8SJ.com.getorbyt.app']);

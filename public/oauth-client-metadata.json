@@ -6,7 +6,7 @@
   "tos_uri": "https://getorbyt.com/terms",
   "policy_uri": "https://getorbyt.com/privacy",
   "redirect_uris": ["com.getorbyt:/oauth/callback", "https://getorbyt.com/oauth/callback"],
-  "scope": "atproto transition:generic transition:chat.bsky transition:email account:email?action=manage repo:* blob:*/* rpc:*?aud=did:web:api.bsky.app rpc:*?aud=did:web:api.bsky.app%23bsky_appview rpc:*?aud=did:web:api.bsky.chat%23bsky_chat",
+  "scope": "atproto blob:*/* include:app.bsky.authFullApp?aud=did:web:api.bsky.app%23bsky_appview repo:com.getorbyt.profile?action=create&action=update rpc:com.atproto.moderation.createReport?aud=did:web:api.bsky.app%23bsky_appview",
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
   "token_endpoint_auth_method": "none",
